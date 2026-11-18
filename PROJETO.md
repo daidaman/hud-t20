@@ -106,9 +106,10 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - Como vale qualquer uso de item (ficha, atalho ou HUD), o gasto é o mesmo de onde quer que o item seja usado.
 
 ## Pendências (resolver nesta ordem)
+0. [ ] **Testar a 0.1.0 no mundo de teste** com mestre e jogador (roteiro no fim deste arquivo) e corrigir o que aparecer, principalmente o encaixe da `#hotbar` do v13 dentro do painel.
 1. [x] **Nome e id:** `hud-t20`.
 2. [x] **Inspeção no mundo de teste** (2026-11-17): CD, condição e combate confirmados. Falta só ver uma armadura equipada na Defesa, o que dá para conferir já com o código rodando.
-3. [ ] **De quem é a HUD.** Proposta, a confirmar: o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
+3. [ ] **De quem é a HUD.** Implementado na 0.1.0 como a proposta, falta confirmar no uso: o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
 4. [x] **Ações do turno:** arte no protótipo e tipo de execução localizado (ver "Tipo de execução do item" acima).
 5. [x] **Novo pergaminho** (2026-11-17): bege mais neutro, com fibras e manchas suaves, sem emenda ao repetir. Já em `assets/pergaminho.webp` (512 px); original em `arte-original/pergaminho-v2.png`.
 6. [x] **Combate:** procurar em `game.combats` um combate iniciado com o ator da HUD (ver "Combate" acima) e escutar `combatStart`, `combatTurnChange`, `updateCombat` e `deleteCombat`.
@@ -137,7 +138,31 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - [x] Arte das 12 peças (pergaminho a refazer).
 - [x] Protótipo interativo aprovado.
 - [x] Inspeção do sistema concluída (dados, condições, combate, tipo de execução).
+- [x] **0.1.0 (2026-11-17):** módulo com `module.json`, painel, tooltips, condições, cristal, ações do turno e atalhos. Conferido só em página de teste com dados falsos; **falta testar no mundo de teste**.
+
+## Decisões do código (0.1.0, 2026-11-17)
+- O painel é um `ApplicationV2` sem moldura inserido em `#ui-bottom`, então herda a escala de interface do Foundry; a escala extra usa `zoom`.
+- A barra nativa (`ui.hotbar.element`) é movida para dentro do painel numa caixa fora da parte do Handlebars, para não ser apagada a cada redesenho. Quando a HUD some (mestre sem token selecionado ou HUD desligada), a barra volta para o lugar original.
+- Os hooks ficam ligados durante toda a sessão, porque o painel só esconde e reaparece (não é uma janela que se fecha de vez).
+- Flags do combatente: `flags.hud-t20.gastas = { padrao, movimento, reacao }` (`true` = gasta).
+- A recarga é gravada pelo mestre ativo; sem mestre conectado, pelo primeiro dono conectado do personagem. Voltar o turno não recarrega.
+- Tooltips: as parcelas conhecidas são listadas e, se a soma não bater com o valor do sistema (modificadores globais, efeitos), entra a linha "Outros modificadores" com a diferença. O total é sempre o do sistema.
+- CD das magias só aparece se o personagem tiver magias e atributo de conjuração; senão mostra "—".
+- Fontes Cinzel e Alegreya Sans vêm do Google Fonts por `@import` (o navegador precisa de internet). Ideia futura: embutir os arquivos das fontes.
+- Só há `lang/pt-BR.json`; ele também é registrado como `en` para não aparecerem chaves cruas num Foundry em inglês.
 
 ## Ideias futuras
 - Tema completo da interface (segundo módulo).
 - Ícones próprios para condições e ações no mesmo estilo.
+
+## Roteiro de teste da 0.1.0 (mestre + jogador em aba anônima)
+1. Ativar o módulo. Jogador com personagem atribuído: a HUD aparece com o retrato, PV, PM e os quatro números. Mestre sem token selecionado: só a barra nativa, no lugar de sempre.
+2. Mestre seleciona um token: a HUD mostra aquele personagem; tira a seleção: a HUD some e a barra volta.
+3. Passar o mouse (e dar Tab) nos quatro números: conferir as contas. Equipar uma armadura e ver a Defesa.
+4. Aplicar Abalado no token: aparece o medalhão; a Iniciativa cai 2.
+5. Arrastar um item da ficha para um slot, usar pela tecla 1–0 e pelo clique; botão direito edita ou remove.
+6. Iniciar um combate com o personagem: os losangos aparecem. No turno dele, o cristal pulsa e mostra "Seu turno".
+7. Usar uma magia de ação padrão: o losango padrão apaga dos dois lados (mestre e jogador). Usar de novo: aviso de ação já gasta.
+8. Clicar num losango: gasta ou devolve. Jogador sem posse do personagem não consegue clicar.
+9. Passar o turno até voltar ao personagem: padrão e movimento acendem. Nova rodada: reação acende.
+10. Encerrar o combate: os losangos somem.

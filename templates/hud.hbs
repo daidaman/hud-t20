@@ -1,0 +1,66 @@
+<div class="hud-conteudo">
+
+  <button type="button" class="hud-retrato" data-action="abrirFicha" aria-label="{{rotuloFicha}}" data-tooltip="{{rotuloFicha}}">
+    <span class="hud-retrato-img" style="background-image:url('{{ator.img}}')"></span>
+    <img class="hud-retrato-moldura" src="modules/hud-t20/assets/moldura-retrato.webp" alt="">
+    <span class="hud-retrato-nome">{{ator.nome}} · {{ator.nivelTxt}}</span>
+  </button>
+
+  <div class="hud-status">
+    {{#if condicoes.length}}
+    <ul class="hud-condicoes">
+      {{#each condicoes}}
+      <li class="hud-cond" tabindex="0" aria-label="{{nome}}">
+        <img src="{{img}}" alt="">
+        <div class="hud-tip" role="tooltip">
+          <div class="tt">{{nome}}</div>
+          {{#each linhas}}<div class="ln"><span>{{rot}}</span><span>{{val}}</span></div>{{/each}}
+        </div>
+      </li>
+      {{/each}}
+    </ul>
+    {{/if}}
+
+    {{#each recursos}}
+    <div class="hud-recurso">
+      <span class="hud-recurso-rot">{{rotulo}}</span>
+      <div class="hud-trilho" role="meter" aria-label="{{rotulo}}" aria-valuemin="0" aria-valuemax="{{max}}" aria-valuenow="{{value}}">
+        <div class="vazio"></div>
+        <div class="cheio {{classe}}" style="width:{{pct}}%"></div>
+        <div class="txt">{{value}} / {{max}}{{#if temp}} <small>(+{{temp}})</small>{{/if}}</div>
+      </div>
+    </div>
+    {{/each}}
+
+    <div class="hud-minis">
+      {{#each stats}}
+      <div class="hud-mini" tabindex="0" aria-label="{{rotulo}}: {{valor}}">
+        <span class="val"><img src="modules/hud-t20/assets/{{icone}}" alt="">{{valor}}</span>
+        <div class="hud-tip" role="tooltip">
+          <div class="tt">{{rotulo}}</div>
+          {{#each linhas}}<div class="ln"><span>{{rot}}</span><span>{{val}}</span></div>{{/each}}
+          <div class="ln tot"><span>{{../rotuloTotal}}</span><span>{{valor}}</span></div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="hud-turno">
+    {{#if combate}}
+    <div class="hud-acoes">
+      {{#each acoes}}
+      <button type="button" class="hud-acao {{#if meio}}meio{{/if}} {{#if gasta}}gasta{{/if}}" data-action="acao" data-acao="{{chave}}"
+        aria-pressed="{{#if gasta}}true{{else}}false{{/if}}" aria-label="{{dica}}" data-tooltip="{{dica}}" {{#unless ../podeMarcar}}disabled{{/unless}}>
+        <img src="modules/hud-t20/assets/acao-{{chave}}.webp" alt="">
+      </button>
+      {{/each}}
+    </div>
+    {{/if}}
+    <div class="hud-gema {{#if vez}}vez{{/if}}" role="status">
+      <img src="modules/hud-t20/assets/gema.webp" alt="">
+      <span class="leg">{{legendaGema}}</span>
+    </div>
+  </div>
+
+</div>

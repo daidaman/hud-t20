@@ -1,0 +1,48 @@
+{
+  "HUDT20": {
+    "Config": {
+      "Mostrar": "Mostrar a HUD do personagem",
+      "MostrarDica": "Liga ou desliga o painel de baixo só neste navegador.",
+      "Escala": "Tamanho da HUD",
+      "EscalaDica": "Aumenta ou diminui o painel, além da escala de interface do Foundry. 1 é o tamanho normal."
+    },
+    "AbrirFicha": "Abrir a ficha de {nome}",
+    "Nivel": "Nv {nivel}",
+    "PV": "PV",
+    "PM": "PM",
+    "Defesa": "Defesa",
+    "Deslocamento": "Deslocamento",
+    "Iniciativa": "Iniciativa",
+    "CD": "CD das magias",
+    "Total": "Total",
+    "Base": "Base",
+    "MetadeNivel": "Metade do nível",
+    "Treino": "Treinamento",
+    "Armadura": "Armadura: {nome}",
+    "Escudo": "Escudo: {nome}",
+    "Acessorios": "Outros itens equipados",
+    "ArmaduraPesada": "Armadura pesada",
+    "Carga": "Sobrecarga",
+    "Bonus": "Bônus",
+    "Outros": "Outros",
+    "Condicoes": "Condições",
+    "OutrosMods": "Outros modificadores",
+    "AtributoChave": "{atributo} (atributo-chave)",
+    "BonusAlgumasMagias": "+{n} em algumas magias",
+    "SemMagias": "Sem magias",
+    "SemEfeitoNumerico": "Sem efeito numérico",
+    "Turno": {
+      "Seu": "Seu turno",
+      "Aguardando": "Aguardando"
+    },
+    "Acao": {
+      "padrao": "Ação padrão",
+      "movimento": "Ação de movimento",
+      "reacao": "Reação",
+      "Dica": "{acao}: {estado}. Clique para gastar ou devolver.",
+      "Disponivel": "disponível",
+      "Gasta": "gasta",
+      "JaGasta": "{acao} de {nome} já foi gasta neste turno."
+    }
+  }
+}

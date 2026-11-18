@@ -1,0 +1,325 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Alegreya+Sans:wght@400;500;700&display=swap");
+
+/* HUD de Tormenta 20 — metal escuro, filete dourado e rubi.
+   Tudo fica dentro de #hud-t20, que vai para #ui-bottom e herda a escala de interface do Foundry. */
+
+#hud-t20 {
+  --hud-ouro: #F3DDA0;
+  --hud-ouro-2: #E8D6AE;
+  --hud-bronze: #5a4630;
+  --hud-rubi: #C0262B;
+  --hud-fonte-titulo: "Cinzel", "Signika", serif;
+  --hud-fonte-texto: "Alegreya Sans", "Signika", sans-serif;
+
+  position: relative;
+  isolation: isolate;
+  align-self: center;
+  margin: 0 auto 6px;
+  zoom: var(--hud-t20-escala, 1);
+  pointer-events: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 8px 16px 8px 8px;
+  box-sizing: border-box;
+  border-style: solid;
+  border-width: 22px;
+  border-image: url("../assets/moldura-painel.webp") 50 / 22px stretch;
+  color: #F3E7CC;
+  font-family: var(--hud-fonte-texto);
+}
+
+#hud-t20::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  z-index: -1;
+  background: url("../assets/fundo-painel.webp") center / 256px repeat;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .6);
+}
+
+#hud-t20 .hud-conteudo { display: contents; }
+
+#hud-t20 button {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  line-height: normal;
+  width: auto;
+  min-height: 0;
+}
+
+#hud-t20 :focus-visible { outline: 2px solid var(--hud-ouro); outline-offset: 2px; }
+
+/* ---------- Retrato: a moldura passa ~34 px acima do painel e fica ~16 px para dentro ---------- */
+#hud-t20 .hud-retrato {
+  position: relative;
+  flex: none;
+  width: 132px;
+  height: 134px;
+  /* 34 px acima da borda de fora do painel: borda (22) + padding de cima (8) + 34 */
+  align-self: flex-start;
+  margin-top: -64px;
+  margin-left: 16px;
+  cursor: pointer;
+}
+#hud-t20 .hud-retrato-img {
+  position: absolute;
+  inset: 12px;
+  background: radial-gradient(circle at 50% 35%, #6b4a3a 0%, #3a2620 45%, #1a1210 100%);
+  background-size: cover;
+  background-position: center top;
+  border-radius: 4px;
+}
+#hud-t20 .hud-retrato-moldura {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  pointer-events: none;
+}
+#hud-t20 .hud-retrato:hover .hud-retrato-img { filter: brightness(1.15); }
+#hud-t20 .hud-retrato:hover .hud-retrato-moldura { filter: brightness(1.2) drop-shadow(0 0 8px rgba(243, 221, 160, .5)); }
+#hud-t20 .hud-retrato-nome {
+  position: absolute;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font: 700 14px var(--hud-fonte-titulo);
+  color: var(--hud-ouro);
+  text-shadow: 0 1px 3px #000;
+}
+
+/* ---------- Bloco de status ---------- */
+#hud-t20 .hud-status {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 320px;
+  align-self: flex-start;
+  padding-top: 2px;
+}
+
+#hud-t20 .hud-condicoes {
+  position: absolute;
+  left: 38px;
+  top: -62px;
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#hud-t20 .hud-cond {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, #3a1414 0%, #1a0b0b 80%);
+  box-shadow: 0 0 0 2px #B08A4A, 0 2px 6px rgba(0, 0, 0, .7);
+  cursor: help;
+}
+#hud-t20 .hud-cond > img { width: 22px; height: 22px; border: none; }
+
+#hud-t20 .hud-recurso { display: flex; align-items: center; gap: 8px; }
+#hud-t20 .hud-recurso-rot { width: 30px; font: 700 16px var(--hud-fonte-titulo); color: var(--hud-ouro-2); }
+#hud-t20 .hud-trilho {
+  position: relative;
+  flex: 1;
+  height: 30px;
+  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0 18px;
+  border-image: url("../assets/trilho.webp") 0 40 fill / 0 18px stretch;
+}
+#hud-t20 .hud-trilho .vazio { position: absolute; left: -4px; right: -4px; top: 8px; bottom: 8px; background: #0d0b0a; z-index: 0; }
+#hud-t20 .hud-trilho .cheio { position: absolute; left: -4px; top: 8px; bottom: 8px; max-width: calc(100% + 8px); z-index: 1; transition: width .3s; }
+#hud-t20 .hud-trilho .cheio.pv { background: linear-gradient(180deg, #e04a3a, #9d1c1c 60%, #6e1010); }
+#hud-t20 .hud-trilho .cheio.pm { background: linear-gradient(180deg, #5b9bea, #1f4fa0 60%, #143670); }
+#hud-t20 .hud-trilho .txt {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font: 700 15px var(--hud-fonte-texto);
+  color: #fff;
+  text-shadow: 0 1px 2px #000, 0 0 4px #000;
+}
+#hud-t20 .hud-trilho .txt small { font-size: 12px; color: #FFE7A8; }
+
+#hud-t20 .hud-minis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 2px; }
+#hud-t20 .hud-mini {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 5px 2px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(0, 0, 0, .25));
+  border: 1px solid var(--hud-bronze);
+  cursor: help;
+}
+#hud-t20 .hud-mini .val {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  font: 700 19px/1 var(--hud-fonte-titulo);
+  color: #F6EEDC;
+}
+#hud-t20 .hud-mini .val img { width: 22px; height: 22px; flex: none; border: none; }
+
+/* Tooltip com a conta: abre no mouse e no teclado */
+#hud-t20 .hud-tip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 250px;
+  z-index: 10;
+  padding: 10px 12px;
+  background: #17120e;
+  border: 1px solid #8a6a3c;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .7);
+  text-align: left;
+  pointer-events: none;
+}
+#hud-t20 .hud-mini:hover .hud-tip,
+#hud-t20 .hud-mini:focus .hud-tip,
+#hud-t20 .hud-cond:hover .hud-tip,
+#hud-t20 .hud-cond:focus .hud-tip { display: block; }
+#hud-t20 .hud-tip .tt { font: 700 13px var(--hud-fonte-titulo); color: var(--hud-ouro); margin-bottom: 6px; }
+#hud-t20 .hud-tip .ln { display: flex; justify-content: space-between; gap: 10px; font: 500 14px var(--hud-fonte-texto); color: #E8DCC2; padding: 2px 0; }
+#hud-t20 .hud-tip .ln.tot { border-top: 1px solid var(--hud-bronze); margin-top: 4px; padding-top: 5px; font-weight: 700; color: #F6EEDC; }
+
+/* ---------- Turno: losangos em arco sobre o cristal ---------- */
+#hud-t20 .hud-turno { display: flex; flex-direction: column; align-items: center; }
+#hud-t20 .hud-acoes { display: flex; align-items: flex-end; margin-bottom: -2px; }
+#hud-t20 .hud-acao { position: relative; width: 38px; height: 38px; cursor: pointer; }
+#hud-t20 .hud-acao.meio { transform: translateY(-8px); }
+#hud-t20 .hud-acao img { display: block; width: 100%; height: 100%; border: none; transition: filter .2s, opacity .2s; }
+#hud-t20 .hud-acao:not(:disabled):hover img { filter: brightness(1.2); }
+#hud-t20 .hud-acao:disabled { cursor: default; }
+#hud-t20 .hud-acao.gasta img { filter: grayscale(1) brightness(.45); opacity: .65; }
+#hud-t20 .hud-acao.gasta::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 50%;
+  height: 3px;
+  margin-top: -1px;
+  background: var(--hud-rubi);
+  transform: rotate(-45deg);
+  box-shadow: 0 0 3px #000;
+}
+
+#hud-t20 .hud-gema { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 70px; }
+#hud-t20 .hud-gema img { width: 46px; height: auto; border: none; transition: filter .3s; }
+#hud-t20 .hud-gema .leg { font: 700 11px var(--hud-fonte-titulo); letter-spacing: .04em; color: #9C8A6A; white-space: nowrap; }
+#hud-t20 .hud-gema.vez img { animation: hud-t20-pulso 1.6s ease-in-out infinite; }
+#hud-t20 .hud-gema.vez .leg { color: var(--hud-ouro); }
+@keyframes hud-t20-pulso {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(255, 60, 60, .4)) brightness(1); }
+  50% { filter: drop-shadow(0 0 14px rgba(255, 60, 60, .95)) brightness(1.3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #hud-t20 .hud-gema.vez img { animation: none; filter: drop-shadow(0 0 10px rgba(255, 60, 60, .9)) brightness(1.25); }
+}
+
+/* ---------- Atalhos: a barra nativa do Foundry, restilizada em 2 × 5 ---------- */
+#hud-t20 .hud-atalhos { display: flex; align-items: center; }
+
+#hud-t20 #hotbar {
+  position: static;
+  inset: auto;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+#hud-t20 #hotbar #action-bar {
+  display: grid;
+  grid-template-columns: repeat(5, 52px);
+  grid-auto-rows: 52px;
+  gap: 8px;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+#hud-t20 #hotbar .slot {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: url("../assets/slot.webp") center / 100% 100% no-repeat, radial-gradient(circle, #2c2620 0%, #120f0c 75%);
+  box-shadow: none;
+  overflow: visible;
+}
+#hud-t20 #hotbar .slot img,
+#hud-t20 #hotbar .slot .slot-icon {
+  position: absolute;
+  inset: 7px;
+  width: calc(100% - 14px);
+  height: calc(100% - 14px);
+  object-fit: cover;
+  border: none;
+  border-radius: 2px;
+}
+#hud-t20 #hotbar .slot:not(.full) { opacity: .45; }
+#hud-t20 #hotbar .slot.full:hover { filter: brightness(1.25); }
+#hud-t20 #hotbar .slot.active,
+#hud-t20 #hotbar .slot.dragover { box-shadow: 0 0 0 2px var(--hud-rubi), 0 0 14px rgba(220, 50, 50, .6); }
+#hud-t20 #hotbar .slot .key {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  z-index: 2;
+  font: 700 11px var(--hud-fonte-titulo);
+  color: var(--hud-ouro-2);
+  text-shadow: 0 1px 2px #000;
+  background: none;
+}
+
+/* Controles laterais da barra (página, travar etc.) ficam discretos ao lado */
+#hud-t20 #hotbar > :not(#action-bar) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: auto;
+  background: none;
+  border: none;
+  color: var(--hud-ouro-2);
+  font-family: var(--hud-fonte-titulo);
+}
