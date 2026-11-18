@@ -128,14 +128,27 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - Como vale qualquer uso de item (ficha, atalho ou HUD), o gasto é o mesmo de onde quer que o item seja usado.
 
 ## Pendências (resolver nesta ordem)
-00. [ ] **Codar a 0.2.0** conforme "Visual da 0.2.0 aprovado". Antes, conferir no código-fonte do sistema 1.5.015 como rolar o teste de Iniciativa fora de combate (método do ator para perícia `inic`) e se o sistema sobrescreve `Combat.rollInitiative`.
-0. [ ] **Testar a 0.1.2 no mundo de teste** (abrir e fechar a barra lateral, trocar para Combate e Atores, tela de notebook) com mestre e jogador (roteiro no fim deste arquivo) e corrigir o que aparecer, principalmente o encaixe da `#hotbar` do v13 dentro do painel.
+00. [x] **Codar a 0.2.0** (2026-11-18). Ver "Iniciativa no sistema" abaixo.
+01. [ ] **Testar a 0.2.0 no mundo de teste** com mestre e jogador (roteiro da 0.2.0 no fim deste arquivo). Conferir principalmente o seletor de página da barra (a estrutura `#hotbar-page-controls` foi deduzida, não medida no mundo) e o clique na Iniciativa.
+0. [ ] **Testar a 0.1.2 no mundo de teste** (pode ser junto com o da 0.2.0) (abrir e fechar a barra lateral, trocar para Combate e Atores, tela de notebook) com mestre e jogador (roteiro no fim deste arquivo) e corrigir o que aparecer, principalmente o encaixe da `#hotbar` do v13 dentro do painel.
 1. [x] **Nome e id:** `hud-t20`.
 2. [x] **Inspeção no mundo de teste** (2026-11-17): CD, condição e combate confirmados. Falta só ver uma armadura equipada na Defesa, o que dá para conferir já com o código rodando.
 3. [ ] **De quem é a HUD.** Implementado na 0.1.0 como a proposta, falta confirmar no uso: o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
 4. [x] **Ações do turno:** arte no protótipo e tipo de execução localizado (ver "Tipo de execução do item" acima).
 5. [x] **Novo pergaminho** (2026-11-17): bege mais neutro, com fibras e manchas suaves, sem emenda ao repetir. Já em `assets/pergaminho.webp` (512 px); original em `arte-original/pergaminho-v2.png`.
 6. [x] **Combate:** procurar em `game.combats` um combate iniciado com o ator da HUD (ver "Combate" acima) e escutar `combatStart`, `combatTurnChange`, `updateCombat` e `deleteCombat`.
+
+**Iniciativa no sistema (lido no código-fonte do 1.5.015, 2026-11-18):**
+- O sistema **não** sobrescreve `Combat.rollInitiative`. Só troca a fórmula: `CONFIG.Combat.initiative.formula = "1d20 + @pericias.inic.value"` e `Combat.prototype._getInitiativeFormula` (mesma conta).
+- Teste da ficha: `actor.rollPericia("inic", { event, message: true })`. Abre a janela de uso do sistema (ou pula, com Shift, conforme a configuração `UsageConfig`), aplica efeitos de uso, cria o cartão no chat e **devolve a `ChatMessage`** (total em `message.rolls[0].total`). Se a janela for cancelada, devolve `undefined`.
+- O próprio `rollPericia` tenta gravar a iniciativa, mas só em `game.combats.active` e só se ela estiver vazia. Por isso a HUD grava o total ela mesma, com `combat.setInitiative`, no combate certo.
+- Fonte usada: espelho `MatthewsGoncalves/T20Foundry` no GitHub (system.json 1.5.015); o GitLab oficial não abre deste ambiente.
+
+**Iniciativa na HUD (0.2.0):**
+- Combate do personagem para a Iniciativa: combate iniciado em que ele está; senão, qualquer combate em que ele está (os jogadores costumam rolar antes do "Começar"); senão, o combate exibido no painel, se for da cena atual. Sem nenhum: fora de combate.
+- Sem combatente: cria o combatente com o token do personagem na cena do combate; sem token na cena, avisa e não rola.
+
+**Retrato da HUD (0.2.0):** `flags.hud-t20.retrato = { img, x, y, zoom }`; `img` vazio usa `actor.img` (acompanha a ficha). A janela é `EditorRetrato` (ApplicationV2), uma por ator (id `hud-t20-retrato-<uuid>`). Jogador sem permissão de navegar nos arquivos pode digitar o caminho.
 
 ## Plano técnico (v13)
 - **Estrutura:** `module.json` (`compatibility` minimum 13, verified 13.351), `scripts/main.mjs`, `templates/hud.hbs`, `styles/hud.css`, `lang/pt-BR.json` e `assets/`.
@@ -164,6 +177,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - [x] **0.1.0 (2026-11-17):** módulo com `module.json`, painel, tooltips, condições, cristal, ações do turno e atalhos. Primeiro teste no mundo: funcionou, mas ficou grande, o retrato cortava as laterais e a HUD era espremida (e coberta pela caixa de mensagem) com a barra lateral larga.
 - [x] **0.1.1 (2026-11-17):** HUD menor, retrato inteiro e mais baixo, encaixe automático no espaço livre, botões da barra agrupados. Testado no mundo: o encaixe funcionou; os atalhos ficaram por cima do cristal.
 - [x] **0.1.2 (2026-11-17):** atalhos no lugar (anulado o `translateX(-70px)` do core na `#hotbar`). **Falta confirmar no mundo.**
+- [x] **0.2.0 (2026-11-18):** retrato maior que vaza e janela de enquadramento, tooltips translúcidos, Iniciativa clicável, barra só com o seletor de página. Conferido fora do Foundry (templates com dados falsos no navegador). **Falta testar no mundo.**
 
 ## Decisões do código (0.1.0, 2026-11-17)
 - O painel é um `ApplicationV2` sem moldura inserido em `#ui-bottom`, então herda a escala de interface do Foundry; a escala extra usa `zoom`.
@@ -191,3 +205,15 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 8. Clicar num losango: gasta ou devolve. Jogador sem posse do personagem não consegue clicar.
 9. Passar o turno até voltar ao personagem: padrão e movimento acendem. Nova rodada: reação acende.
 10. Encerrar o combate: os losangos somem.
+
+## Roteiro de teste da 0.2.0 (mestre + jogador em aba anônima)
+1. Visual: o retrato passa ~10 px acima e abaixo do painel, sem nome embaixo; o painel não encosta na borda da tela. Passar o mouse no retrato: tooltip com nome e nível, e a engrenagem no canto.
+2. Clique no retrato abre a ficha. Botão direito (ou engrenagem) abre "Retrato da HUD — <nome>".
+3. Na janela: arrastar, roda do mouse, + e −, setas (Shift anda mais), "Centralizar". "Escolher…" abre o seletor de arquivos (como jogador também; se não tiver permissão, digitar o caminho). "Usar a imagem da ficha" volta para a imagem do ator. Salvar: a HUD atualiza nos dois lados (mestre e jogador). Cancelar não muda nada.
+4. Tooltips: Defesa, Deslocamento, Iniciativa, CD e condições no estilo translúcido; equipar armadura pesada com Des positiva: a linha do atributo aparece riscada com "Não soma: armadura pesada".
+5. Iniciativa fora de combate: o clique rola o teste no chat (com a janela de uso do sistema, ou sem ela segurando Shift, conforme a configuração).
+6. Mestre cria um combate na cena **sem** o token do jogador: o tooltip diz "entrar no combate"; o jogador clica: o token entra no combate e a iniciativa aparece no painel de combate.
+7. Combate com o personagem já dentro e sem iniciativa: o clique rola e grava. Clicar de novo como jogador: aviso "só o mestre pode rolar de novo". Como mestre (token selecionado): rola de novo e substitui.
+8. Com dois combates abertos (um vazio exibido no painel): a iniciativa vai para o combate em que o personagem está, não para o exibido.
+9. Cancelar a janela de uso da Iniciativa: nada é gravado.
+10. Barra: só ▲ número ▼ ao lado dos atalhos, apagado até passar o mouse; trocar de página funciona; botão direito no atalho continua editando/removendo. Som, menu, travar e limpar sumiram.

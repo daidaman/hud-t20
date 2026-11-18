@@ -10,6 +10,7 @@
   --hud-ouro-2: #E8D6AE;
   --hud-bronze: #5a4630;
   --hud-rubi: #C0262B;
+  --hud-aco: #9FB4CC;
   --hud-fonte-titulo: "Cinzel", "Signika", serif;
   --hud-fonte-texto: "Alegreya Sans", "Signika", sans-serif;
 
@@ -18,7 +19,7 @@
   flex: none;
   width: max-content;
   align-self: center;
-  margin: 0 auto 6px;
+  margin: 0 auto 16px;
   zoom: var(--hud-t20-escala, 1);
   transform: translateX(var(--hud-t20-x, 0px)) scale(var(--hud-t20-encaixe, 1));
   transform-origin: center bottom;
@@ -27,7 +28,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 6px 12px 6px 6px;
+  padding: 2px 10px 2px 6px;
   box-sizing: border-box;
   border-style: solid;
   border-width: 18px;
@@ -60,27 +61,44 @@
 
 #hud-t20 :focus-visible { outline: 2px solid var(--hud-ouro); outline-offset: 2px; }
 
-/* ---------- Retrato: a moldura passa ~4 px acima do painel ---------- */
+/* ---------- Retrato (0.2.0): maior que o painel ----------
+   Ocupa só a altura do status (152 − 2 × 30 = 92 px) e vaza ~10 px em cima e embaixo da moldura do painel.
+   A imagem cobre a abertura da moldura (6% dos lados, 7% em cima, 11% embaixo); o enquadramento
+   vem de flags.hud-t20.retrato (--px, --py em % e --pz = zoom). */
 #hud-t20 .hud-retrato {
   position: relative;
   flex: none;
-  width: 104px;
-  height: 106px;
-  /* borda (18) + padding de cima (6) + 4 */
-  align-self: flex-start;
-  margin-top: -28px;
-  margin-left: 12px;
+  width: 150px;
+  height: 152px;
+  align-self: center;
+  margin: -30px 0 -30px 6px;
+}
+#hud-t20 .hud-retrato-abrir {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   cursor: pointer;
 }
-/* A imagem ocupa exatamente a abertura da moldura (medida na arte: 6% dos lados, 7% em cima,
-   11% embaixo) e aparece inteira (contain); o que sobrar fica com o fundo escuro. */
-#hud-t20 .hud-retrato-img {
+.hud-t20-retrato-abertura,
+#hud-t20 .hud-retrato-abertura {
   position: absolute;
   inset: 7% 6% 11% 6%;
-  background-color: #1a1210;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  overflow: hidden;
+  background: #1a1210;
+}
+img.hud-t20-enq {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  border: none;
+  object-fit: cover;
+  object-position: var(--px, 50%) var(--py, 50%);
+  transform-origin: var(--px, 50%) var(--py, 50%);
+  transform: scale(var(--pz, 1));
+  user-select: none;
+  -webkit-user-drag: none;
 }
 #hud-t20 .hud-retrato-moldura {
   position: absolute;
@@ -90,21 +108,29 @@
   border: none;
   pointer-events: none;
 }
-#hud-t20 .hud-retrato:hover .hud-retrato-img { filter: brightness(1.15); }
-#hud-t20 .hud-retrato:hover .hud-retrato-moldura { filter: brightness(1.2) drop-shadow(0 0 8px rgba(243, 221, 160, .5)); }
-#hud-t20 .hud-retrato-nome {
+#hud-t20 .hud-retrato:hover .hud-t20-enq { filter: brightness(1.12); }
+#hud-t20 .hud-retrato:hover .hud-retrato-moldura { filter: brightness(1.2) drop-shadow(0 0 6px rgba(243, 221, 160, .45)); }
+#hud-t20 .hud-retrato-ajustar {
   position: absolute;
-  left: -16px;
-  right: -16px;
-  bottom: -16px;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font: 700 12px var(--hud-fonte-titulo);
+  top: -6px;
+  right: -6px;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1210;
+  box-shadow: 0 0 0 1.5px #B08A4A, 0 2px 6px rgba(0, 0, 0, .7);
   color: var(--hud-ouro);
-  text-shadow: 0 1px 3px #000;
+  font-size: 11px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .15s;
 }
+#hud-t20 .hud-retrato:hover .hud-retrato-ajustar,
+#hud-t20 .hud-retrato:focus-within .hud-retrato-ajustar { opacity: 1; }
 
 /* ---------- Bloco de status ---------- */
 #hud-t20 .hud-status {
@@ -192,29 +218,86 @@
 }
 #hud-t20 .hud-mini .val img { width: 17px; height: 17px; flex: none; border: none; }
 
-/* Tooltip com a conta: abre no mouse e no teclado */
+/* ---------- Tooltips (0.2.0): translúcidos, no esquema do tooltip de melhorias ----------
+   Título da seção pequeno em caixa alta azul-aço, total em dourado à direita; uma linha por parcela
+   com losango, nome em negrito, valor à direita e explicação menor embaixo; parcela que não soma riscada. */
 #hud-t20 .hud-tip {
-  display: none;
   position: absolute;
   bottom: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
-  width: 240px;
+  width: 250px;
   z-index: 10;
-  padding: 8px 10px;
-  background: #17120e;
-  border: 1px solid #8a6a3c;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .7);
+  padding: 10px 12px;
+  box-sizing: border-box;
   text-align: left;
   pointer-events: none;
+  background: rgba(20, 17, 16, .8);
+  backdrop-filter: blur(7px) saturate(1.1);
+  border: 1px solid rgba(176, 138, 74, .35);
+  border-radius: 3px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .55);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .12s, visibility .12s;
 }
-#hud-t20 .hud-mini:hover .hud-tip,
-#hud-t20 .hud-mini:focus .hud-tip,
-#hud-t20 .hud-cond:hover .hud-tip,
-#hud-t20 .hud-cond:focus .hud-tip { display: block; }
-#hud-t20 .hud-tip .tt { font: 700 13px var(--hud-fonte-titulo); color: var(--hud-ouro); margin-bottom: 6px; }
-#hud-t20 .hud-tip .ln { display: flex; justify-content: space-between; gap: 10px; font: 500 14px var(--hud-fonte-texto); color: #E8DCC2; padding: 2px 0; }
-#hud-t20 .hud-tip .ln.tot { border-top: 1px solid var(--hud-bronze); margin-top: 4px; padding-top: 5px; font-weight: 700; color: #F6EEDC; }
+#hud-t20 .hud-tem-tip:hover > .hud-tip,
+#hud-t20 .hud-tem-tip:focus-visible > .hud-tip,
+#hud-t20 .hud-tem-tip:focus-within > .hud-tip { opacity: 1; visibility: visible; }
+/* Acima da engrenagem (que fica no canto de cima do retrato), para não cobri-la. */
+#hud-t20 .hud-retrato > .hud-tip { left: 0; transform: none; width: 220px; bottom: calc(100% + 8px); }
+#hud-t20 .hud-tip .cab { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+#hud-t20 .hud-tip .sec { font: 700 10.5px var(--hud-fonte-texto); letter-spacing: .13em; text-transform: uppercase; color: var(--hud-aco); }
+#hud-t20 .hud-tip .sec + ul { margin-top: 5px; }
+#hud-t20 .hud-tip .sec-2 { margin-top: 8px; }
+#hud-t20 .hud-tip .cab b { font: 700 17px var(--hud-fonte-titulo); color: var(--hud-ouro); white-space: nowrap; }
+#hud-t20 .hud-tip ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+#hud-t20 .hud-tip li {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  align-items: start;
+  column-gap: 7px;
+  font: 500 13.5px/1.3 var(--hud-fonte-texto);
+  color: #E9E2D6;
+}
+#hud-t20 .hud-tip li::before { content: ""; width: 6px; height: 6px; margin-top: 6px; transform: rotate(45deg); background: #D8C08A; }
+#hud-t20 .hud-tip li b { font-weight: 700; color: #F7F1E6; }
+#hud-t20 .hud-tip li small { grid-column: 2 / 4; display: block; font-size: 12.5px; color: #BDB4A6; margin-top: 1px; }
+#hud-t20 .hud-tip li .n { font-weight: 700; color: #F7F1E6; font-variant-numeric: tabular-nums; white-space: nowrap; }
+#hud-t20 .hud-tip li.ext,
+#hud-t20 .hud-tip li.ext b,
+#hud-t20 .hud-tip li.ext .n { color: #8f877a; }
+#hud-t20 .hud-tip li.ext b { text-decoration: line-through; }
+#hud-t20 .hud-tip li.ext::before { background: #6d665c; }
+#hud-t20 .hud-tip .pe {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(176, 138, 74, .25);
+  font: 500 12.5px var(--hud-fonte-texto);
+  color: var(--hud-ouro-2);
+}
+#hud-t20 .hud-tip .pe svg { flex: none; }
+
+/* Iniciativa clicável (rola o teste; em combate, grava no combate) */
+#hud-t20 button.hud-mini {
+  width: 100%;
+  height: 30px;
+  padding: 3px 2px;
+  border: 1px solid var(--hud-bronze);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(0, 0, 0, .25));
+  cursor: pointer;
+}
+#hud-t20 button.hud-mini:hover {
+  border-color: #B08A4A;
+  background: linear-gradient(180deg, rgba(243, 221, 160, .14), rgba(0, 0, 0, .2));
+  box-shadow: 0 0 8px rgba(243, 221, 160, .25);
+}
+#hud-t20 button.hud-mini:active .val { transform: translateY(1px); }
+#hud-t20 button.hud-mini .dado { position: absolute; right: 2px; top: 2px; width: 9px; height: 9px; opacity: .55; color: var(--hud-ouro); }
+#hud-t20 button.hud-mini:hover .dado { opacity: 1; }
 
 /* ---------- Turno: losangos em arco sobre o cristal ---------- */
 #hud-t20 .hud-turno { display: flex; flex-direction: column; align-items: center; flex: none; }
@@ -281,6 +364,7 @@
   grid-auto-rows: 42px;
   gap: 5px;
   flex: none;
+  list-style: none;
   width: auto;
   height: auto;
   margin: 0;
@@ -326,31 +410,137 @@
   background: none;
 }
 
-/* Controles da barra nativa (som, menu, travar, limpar, página): uma coluna fina à direita,
-   apagada até passar o mouse, para não poluir os atalhos. */
-#hud-t20 #hotbar > :not(#action-bar) {
+/* Controles da barra nativa (0.2.0): somem som, menu, travar e limpar.
+   Fica só o seletor de página (▲ número ▼), apagado até passar o mouse.
+   Estrutura do v13: #hotbar-controls-left (mute, menu) e #hotbar-controls-right
+   (nav#hotbar-page-controls + um bloco com lock e clear). */
+#hud-t20 #hotbar #hotbar-controls-left,
+#hud-t20 #hotbar #hotbar-controls-right > :not(#hotbar-page-controls),
+#hud-t20 #hotbar :is([data-action="mute"], [data-action="menu"], [data-action="lock"], [data-action="clear"]) {
+  display: none !important;
+}
+#hud-t20 #hotbar #hotbar-controls-right {
   order: 2;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
   flex: none;
   width: 18px;
   margin: 0;
   padding: 0;
   background: none;
   border: none;
-  font: 700 11px var(--hud-fonte-titulo);
-  color: var(--hud-ouro-2);
-  opacity: .45;
+  opacity: .55;
   transition: opacity .2s;
 }
-#hud-t20 #hotbar > :not(#action-bar) :is(button, a, .control) {
+#hud-t20 #hotbar:hover #hotbar-controls-right,
+#hud-t20 #hotbar #hotbar-controls-right:focus-within { opacity: 1; }
+#hud-t20 #hotbar #hotbar-page-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  width: 18px;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  font: 700 12px var(--hud-fonte-titulo);
+  color: var(--hud-ouro-2);
+}
+#hud-t20 #hotbar #hotbar-page-controls :is(button, a) {
   width: 18px;
   height: 18px;
   min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 11px;
   line-height: 18px;
+  color: var(--hud-ouro-2);
 }
-#hud-t20 #hotbar:hover > :not(#action-bar),
-#hud-t20 #hotbar > :not(#action-bar):focus-within { opacity: 1; }
+#hud-t20 #hotbar #hotbar-page-controls :is(button, a):hover { color: #fff; text-shadow: none; }
+#hud-t20 #hotbar #hotbar-page-controls :is(span, .page-number) {
+  font: 700 12px var(--hud-fonte-titulo);
+  line-height: 1;
+  color: var(--hud-ouro-2);
+}
+
+/* ---------- Janela "Retrato da HUD" (ApplicationV2) ---------- */
+.hud-t20-editor {
+  --hud-ouro: #F3DDA0;
+  --hud-ouro-2: #E8D6AE;
+  --hud-bronze: #5a4630;
+  --hud-rubi: #C0262B;
+  --hud-aco: #9FB4CC;
+}
+.hud-t20-editor .window-content { padding: 0; background: #16120f; color: #E2D8C6; }
+.hud-t20-editor .corpo { display: grid; grid-template-columns: 240px 1fr; gap: 20px; padding: 18px; }
+.hud-t20-editor .palco { position: relative; width: 240px; height: 245px; cursor: grab; touch-action: none; outline: none; }
+.hud-t20-editor .palco:active { cursor: grabbing; }
+.hud-t20-editor .palco:focus-visible { outline: 2px solid var(--hud-ouro); outline-offset: 4px; }
+.hud-t20-editor .abertura { position: absolute; inset: 7% 6% 11% 6%; overflow: hidden; background: #1a1210; }
+.hud-t20-editor .moldura { position: absolute; inset: 0; width: 100%; height: 100%; border: none; pointer-events: none; }
+.hud-t20-editor .dica-palco { margin-top: 8px; font-size: 12.5px; color: #9C8A6A; text-align: center; }
+.hud-t20-editor .campos { min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.hud-t20-editor .campo label,
+.hud-t20-editor .campo .rot {
+  display: block;
+  margin-bottom: 6px;
+  font: 700 10.5px var(--hud-fonte-texto, sans-serif);
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--hud-aco);
+}
+.hud-t20-editor .arq { display: flex; gap: 6px; }
+.hud-t20-editor .arq input { flex: 1; min-width: 0; height: 32px; }
+.hud-t20-editor .btn {
+  flex: none;
+  width: auto;
+  height: 32px;
+  padding: 0 12px;
+  background: #221b15;
+  border: 1px solid #8a6a3c;
+  border-radius: 0;
+  color: var(--hud-ouro-2);
+  font: 700 12px "Cinzel", serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.hud-t20-editor .btn:hover { background: #2f251c; }
+.hud-t20-editor .btn.prim { background: #7a1616; border-color: var(--hud-rubi); color: #fff; }
+.hud-t20-editor .btn.prim:hover { background: #8f1b1b; }
+.hud-t20-editor .lnk {
+  width: auto;
+  height: auto;
+  padding: 4px 0 0;
+  border: none;
+  background: none;
+  color: #CDBB98;
+  font: 500 13px var(--hud-fonte-texto, sans-serif);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.hud-t20-editor .zoom { display: flex; align-items: center; gap: 6px; }
+.hud-t20-editor .zoom input[type=range] { flex: 1; accent-color: #B08A4A; }
+.hud-t20-editor .btn-ic {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--hud-bronze);
+  background: #221b15;
+  color: var(--hud-ouro-2);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+.hud-t20-editor .zoom-valor { width: 42px; text-align: right; font: 700 13px "Cinzel", serif; color: var(--hud-ouro-2); }
+.hud-t20-editor .previa { display: flex; align-items: center; gap: 10px; padding: 8px; border: 1px dashed #3a2d20; }
+.hud-t20-editor .retrato-previa { position: relative; flex: none; width: 150px; height: 152px; }
+.hud-t20-editor .previa small { font-size: 12.5px; color: #9C8A6A; line-height: 1.35; }
+.hud-t20-editor .rodape { display: flex; align-items: center; gap: 8px; padding: 12px 18px; border-top: 1px solid #3a2d20; }
+.hud-t20-editor .rodape .nota { flex: 1; font-size: 12.5px; color: #9C8A6A; }

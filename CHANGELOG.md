@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 — 2026-11-18
+- Retrato como no conceito: o painel fica baixo, justo em volta do status, e a moldura do retrato (150 × 152 px) vaza ~10 px em cima e embaixo. O painel sobe um pouco da borda da tela.
+- Sem nome e nível embaixo do retrato: eles foram para o tooltip do retrato, que também explica o clique (abre a ficha) e o botão direito.
+- A imagem cobre a moldura (sem faixas escuras). Nova janela "Retrato da HUD": botão direito no retrato ou engrenagem ao passar o mouse. Troca a imagem (seletor de arquivos ou caminho digitado), "Usar a imagem da ficha", arrastar para enquadrar, zoom de 100 a 300% (controle, roda do mouse, + e −), setas movem, "Centralizar", prévia em tamanho real. Salvo no ator em `flags.hud-t20.retrato` (dono e mestre).
+- Tooltips translúcidos no esquema do tooltip de melhorias: seção em caixa alta azul-aço com o total em dourado, uma linha por parcela com losango e explicação menor, parcela que não soma riscada com o motivo (ex.: atributo com armadura pesada).
+- Iniciativa clicável. Fora de combate rola o teste do sistema no chat. Em combate (mesmo antes de começar) rola e grava no combate do personagem, colocando o token no combate se ele ainda não estiver. Já rolada: o jogador recebe aviso e só o mestre rola de novo. O rodapé do tooltip diz o que o clique vai fazer.
+- Barra nativa: somem som, menu, travar e limpar. Fica só o seletor de página (▲ número ▼), apagado até passar o mouse.
+
 ## 0.1.2 — 2026-11-17
 - Corrigido: os atalhos ficavam por cima do cristal e dos losangos. O Foundry v13 desloca a `#hotbar` com `transform: translateX(-70px)`; dentro do painel esse transform agora é anulado.
 

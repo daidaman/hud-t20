@@ -1,0 +1,50 @@
+<div class="hud-t20-editor-corpo">
+  <div class="corpo">
+    <div>
+      <div class="palco" tabindex="0" aria-label="{{txt.palco}}">
+        <div class="abertura"><img class="hud-t20-enq" src="{{img}}" style="{{estilo}}" alt="" draggable="false"></div>
+        <img class="moldura" src="modules/hud-t20/assets/moldura-retrato.webp" alt="">
+      </div>
+      <div class="dica-palco">{{txt.dicaPalco}}</div>
+    </div>
+
+    <div class="campos">
+      <div class="campo">
+        <label for="{{@root.id}}-img">{{txt.imagem}}</label>
+        <div class="arq">
+          <input type="text" id="{{@root.id}}-img" name="img" value="{{caminho}}" placeholder="{{fichaImg}}" spellcheck="false">
+          <button type="button" class="btn" data-action="escolher">{{txt.escolher}}</button>
+        </div>
+        <button type="button" class="lnk" data-action="usarFicha">{{txt.usarFicha}}</button>
+      </div>
+
+      <div class="campo">
+        <label for="{{@root.id}}-zoom">{{txt.zoom}}</label>
+        <div class="zoom">
+          <button type="button" class="btn-ic" data-zoom="menos" aria-label="{{txt.menos}}">−</button>
+          <input type="range" id="{{@root.id}}-zoom" name="zoom" min="{{zoomMin}}" max="{{zoomMax}}" step="0.05" value="{{zoom}}">
+          <button type="button" class="btn-ic" data-zoom="mais" aria-label="{{txt.mais}}">+</button>
+          <output class="zoom-valor" for="{{@root.id}}-zoom">{{zoomTxt}}</output>
+        </div>
+        <button type="button" class="lnk" data-action="centralizar">{{txt.centralizar}}</button>
+      </div>
+
+      <div class="campo">
+        <span class="rot">{{txt.previa}}</span>
+        <div class="previa">
+          <div class="retrato-previa">
+            <div class="abertura"><img class="hud-t20-enq" src="{{img}}" style="{{estilo}}" alt="" draggable="false"></div>
+            <img class="moldura" src="modules/hud-t20/assets/moldura-retrato.webp" alt="">
+          </div>
+          <small>{{txt.previaDica}}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="rodape">
+    <span class="nota">{{txt.nota}}</span>
+    <button type="button" class="btn" data-action="cancelar">{{txt.cancelar}}</button>
+    <button type="button" class="btn prim" data-action="salvar">{{txt.salvar}}</button>
+  </footer>
+</div>

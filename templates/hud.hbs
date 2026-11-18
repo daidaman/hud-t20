@@ -1,20 +1,41 @@
 <div class="hud-conteudo">
 
-  <button type="button" class="hud-retrato" data-action="abrirFicha" aria-label="{{rotuloFicha}}" data-tooltip="{{rotuloFicha}}">
-    <span class="hud-retrato-img" style="background-image:url('{{ator.img}}')"></span>
+  {{!-- Retrato maior que o painel: ocupa a altura do status e vaza em cima e embaixo --}}
+  <div class="hud-retrato hud-tem-tip">
+    <button type="button" class="hud-retrato-abrir" data-action="abrirFicha" aria-label="{{retrato.rotulo}}"></button>
+    <div class="hud-retrato-abertura">
+      <img class="hud-t20-enq" src="{{retrato.img}}" style="{{retrato.estilo}}" alt="" draggable="false">
+    </div>
     <img class="hud-retrato-moldura" src="modules/hud-t20/assets/moldura-retrato.webp" alt="">
-    <span class="hud-retrato-nome">{{ator.nome}} · {{ator.nivelTxt}}</span>
-  </button>
+    {{#if retrato.podeEditar}}
+    <button type="button" class="hud-retrato-ajustar" data-action="ajustarRetrato" aria-label="{{retrato.rotuloAjustar}}">
+      <i class="fa-solid fa-gear" aria-hidden="true"></i>
+    </button>
+    {{/if}}
+    <div class="hud-tip" role="tooltip">
+      <div class="cab"><span class="sec">{{ator.nome}}</span><b>{{ator.nivelTxt}}</b></div>
+      <ul>
+        <li><b>{{retrato.dicaClique}}</b><span></span><small>{{retrato.dicaCliqueSub}}</small></li>
+        {{#if retrato.podeEditar}}
+        <li><b>{{retrato.dicaDireito}}</b><span></span><small>{{retrato.dicaDireitoSub}}</small></li>
+        {{/if}}
+      </ul>
+    </div>
+  </div>
 
   <div class="hud-status">
     {{#if condicoes.length}}
     <ul class="hud-condicoes">
       {{#each condicoes}}
-      <li class="hud-cond" tabindex="0" aria-label="{{nome}}">
+      <li class="hud-cond hud-tem-tip" tabindex="0" aria-label="{{nome}}">
         <img src="{{img}}" alt="">
         <div class="hud-tip" role="tooltip">
-          <div class="tt">{{nome}}</div>
-          {{#each linhas}}<div class="ln"><span>{{rot}}</span><span>{{val}}</span></div>{{/each}}
+          <div class="sec">{{secao}}</div>
+          <ul><li><b>{{nome}}</b><span></span>{{#if descricao}}<small>{{descricao}}</small>{{/if}}</li></ul>
+          <div class="sec sec-2">{{@root.rotuloMudancas}}</div>
+          <ul>
+            {{#each mudancas}}<li><b>{{rot}}</b><span class="n">{{val}}</span></li>{{else}}<li class="ext"><b>{{semMudancas}}</b><span></span></li>{{/each}}
+          </ul>
         </div>
       </li>
       {{/each}}
@@ -34,14 +55,28 @@
 
     <div class="hud-minis">
       {{#each stats}}
-      <div class="hud-mini" tabindex="0" aria-label="{{rotulo}}: {{valor}}">
+      {{#if clicavel}}
+      <button type="button" class="hud-mini hud-mini-clicavel hud-tem-tip" data-action="iniciativa" aria-label="{{rotulo}} {{valor}}. {{pe}}">
+        <svg class="dado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 2v20M3 7l18 10M21 7L3 17"/></svg>
+      {{else}}
+      <div class="hud-mini hud-tem-tip" tabindex="0" aria-label="{{rotulo}}: {{valor}}">
+      {{/if}}
         <span class="val"><img src="modules/hud-t20/assets/{{icone}}" alt="">{{valor}}</span>
         <div class="hud-tip" role="tooltip">
-          <div class="tt">{{rotulo}}</div>
-          {{#each linhas}}<div class="ln"><span>{{rot}}</span><span>{{val}}</span></div>{{/each}}
-          <div class="ln tot"><span>{{../rotuloTotal}}</span><span>{{valor}}</span></div>
+          <div class="cab"><span class="sec">{{rotulo}}</span><b>{{valor}}</b></div>
+          <ul>
+            {{#each linhas}}
+            <li class="{{#if ext}}ext{{/if}}"><b>{{rot}}</b><span class="n">{{val}}</span>{{#if sub}}<small>{{sub}}</small>{{/if}}</li>
+            {{/each}}
+          </ul>
+          {{#if pe}}
+          <div class="pe">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 2l9 5v10l-9 5-9-5V7z"/></svg>
+            <span>{{pe}}</span>
+          </div>
+          {{/if}}
         </div>
-      </div>
+      {{#if clicavel}}</button>{{else}}</div>{{/if}}
       {{/each}}
     </div>
   </div>
