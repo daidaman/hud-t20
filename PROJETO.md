@@ -65,7 +65,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 | Defesa | `attributes.defesa.value` | Sim: `base` (10), `atributo` (chave, ex. `des`), `outros`, `condi`, `pda`, `bonus[]`. Armadura e escudo vêm dos itens equipados (`system.armadura.value`); armadura pesada não soma o atributo. |
 | Deslocamento | `attributes.movement.walk.value` (unidade em `movement.unit`, "m") | Sim: `walk.base` + `walk.bonus[]`. Também `fly`, `swim`, `climb`, `burrow`. |
 | Iniciativa | `pericias.inic.value` | Sim: `atributo`, `treinado`, `condi`, `outros`, `bonus[]`; treino em `attributes.treino` (2/4/6). |
-| CD das magias | `attributes.cd` | **Não.** O sistema guarda só `10 + metade do nível`; o atributo de conjuração fica em `attributes.conjuracao` (ex. `int`) e é somado em outro ponto. **A confirmar com um conjurador de nível > 0 e uma magia.** |
+| CD das magias | **Calcular:** `attributes.cd` + `atributos[attributes.conjuracao].value` | Parcial. `attributes.cd` = 10 + metade do nível. Cada magia guarda a CD final em `item.system.resistencia.cd` = 10 + metade do nível + atributo + `resistencia.bonus` (bônus por magia). Confirmado: Maicon nível 4, Int 5 → `attributes.cd` 12, Teia CD 17. Magia sem resistência tem CD 0. Tooltip: "10 base + 2 metade do nível + 5 Int" e, se alguma magia tiver `resistencia.bonus`, uma linha "+N em algumas magias". |
 | Atributos | `atributos.<for/des/con/int/sab/car>.value` | `base`, `racial`, `bonus` |
 
 **Atalhos:** o sistema já tem um hook `hotbarDrop` que cria macro para `Item` e `ActiveEffect` (`createT20Macro`). O módulo **não precisa tratar o drop**, só restilizar a `#hotbar` nativa (`aside#hotbar > menu#action-bar > li.slot[data-slot]`, com `.full`/`.open` e `span.key`).
@@ -78,15 +78,15 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 
 **Rolagens no chat:** classe `RollT20`; `roll.options.type` = `attack` / `damage` (e `title`). As flags ficam em `flags.tormenta20` (`itemData` com `criticoM`/`criticoX`, `effects`, `onUseEffects`). Não há flag pronta de crítico: compara o d20 com `itemData.criticoM`. O cartão usa `div.tormenta20.chat-card.item-card`.
 
-**Combate:** o sistema já escuta `updateCombat` (re-render das fichas e efeitos de turno). A HUD usa `game.combat.combatant?.actor` para o cristal. Ainda não foi testado com combate ativo.
+**Condição aplicada (testado com Abalado):** vira um ActiveEffect com `isTemporary: true`, `statuses: ["abalado"]`, `duration.rounds: 999`, `description` vazia e as flags acima. Aparece em `actor.temporaryEffects` (é a fonte dos medalhões) e em `actor.statuses`. Já mexe nos números: Iniciativa foi de 7 para 5 (`inic.condi` = -2). **Dispara `createActiveEffect`/`deleteActiveEffect`, não `updateActor`**: a HUD tem de escutar os dois.
+
+**Combate (testado):** ao iniciar disparam `combatStart`, `combatTurnChange` e `updateCombat`; ao apagar, `deleteCombat`. **Atenção:** `game.combat` é o combate *exibido* no painel, não necessariamente o do personagem (no teste havia outro combate vazio aberto e `game.combat` apontou para ele). O cristal deve procurar em `game.combats` um combate iniciado cujo `combatant.actor` seja o ator da HUD.
 
 **Escala:** `core.uiConfig.uiScale` (1 no mundo de teste) e `fontScale`.
 
 ## Pendências (resolver nesta ordem)
 1. [x] **Nome e id:** `hud-t20`.
-2. [ ] **Fechar a inspeção** com um personagem de nível > 0 que tenha magia, armadura e uma condição no token:
-   - [ ] Confirmar a conta da CD (`attributes.cd` + atributo de conjuração + bônus?).
-   - [ ] Ver uma condição real no token e testar o cristal com um combate ativo.
+2. [x] **Inspeção no mundo de teste** (2026-11-17): CD, condição e combate confirmados. Falta só ver uma armadura equipada na Defesa, o que dá para conferir já com o código rodando.
 3. [ ] **De quem é a HUD.** Proposta, a confirmar: o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
 4. [ ] **Ação padrão e movimento** no turno: mostrar ou não? Ficou sem resposta.
 5. [ ] **Novo pergaminho** para o chat: marfim acinzentado, com fibras e manchas suaves, como no conceito. O atual ficou amarelo demais. O prompt está na conversa de 2026-11-17. Quando chegar, substituir `assets/pergaminho.webp`.
@@ -98,7 +98,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
   - `ApplicationV2` com `HandlebarsApplicationMixin`, sem moldura de janela.
   - Fica preso embaixo da tela, junto à barra nativa (`#hotbar`), que é reposicionada e restilizada por CSS em 2×5.
 - **Atualização:**
-  - Hooks `controlToken`, `updateActor`, `createActiveEffect`, `deleteActiveEffect`, `updateCombat` e `canvasReady`.
+  - Hooks `controlToken`, `updateActor`, `createActiveEffect`, `updateActiveEffect`, `deleteActiveEffect`, `createItem`/`updateItem`/`deleteItem` (armadura muda a Defesa), `updateCombat`, `combatStart`, `deleteCombat` e `canvasReady`.
   - Guardar os ids e chamar `Hooks.off` ao fechar.
   - A HUD só lê dados, então não precisa de socket.
 - **Settings:**
