@@ -1,7 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Alegreya+Sans:wght@400;500;700&display=swap");
 
 /* HUD de Tormenta 20 — metal escuro, filete dourado e rubi.
-   Tudo fica dentro de #hud-t20, que vai para #ui-bottom e herda a escala de interface do Foundry. */
+   Tudo fica dentro de #hud-t20, que vai para #ui-bottom e herda a escala de interface do Foundry.
+   O script mede o espaço livre (entre as barras laterais e a caixa de mensagem flutuante)
+   e aplica --hud-t20-x e --hud-t20-encaixe para centralizar e encolher o painel quando falta lugar. */
 
 #hud-t20 {
   --hud-ouro: #F3DDA0;
@@ -13,19 +15,23 @@
 
   position: relative;
   isolation: isolate;
+  flex: none;
+  width: max-content;
   align-self: center;
   margin: 0 auto 6px;
   zoom: var(--hud-t20-escala, 1);
+  transform: translateX(var(--hud-t20-x, 0px)) scale(var(--hud-t20-encaixe, 1));
+  transform-origin: center bottom;
   pointer-events: auto;
 
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 8px 16px 8px 8px;
+  gap: 12px;
+  padding: 6px 12px 6px 6px;
   box-sizing: border-box;
   border-style: solid;
-  border-width: 22px;
-  border-image: url("../assets/moldura-painel.webp") 50 / 22px stretch;
+  border-width: 18px;
+  border-image: url("../assets/moldura-painel.webp") 50 / 18px stretch;
   color: #F3E7CC;
   font-family: var(--hud-fonte-texto);
 }
@@ -33,10 +39,10 @@
 #hud-t20::before {
   content: "";
   position: absolute;
-  inset: -12px;
+  inset: -10px;
   z-index: -1;
-  background: url("../assets/fundo-painel.webp") center / 256px repeat;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, .6);
+  background: url("../assets/fundo-painel.webp") center / 220px repeat;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .6);
 }
 
 #hud-t20 .hud-conteudo { display: contents; }
@@ -54,25 +60,27 @@
 
 #hud-t20 :focus-visible { outline: 2px solid var(--hud-ouro); outline-offset: 2px; }
 
-/* ---------- Retrato: a moldura passa ~34 px acima do painel e fica ~16 px para dentro ---------- */
+/* ---------- Retrato: a moldura passa ~4 px acima do painel ---------- */
 #hud-t20 .hud-retrato {
   position: relative;
   flex: none;
-  width: 132px;
-  height: 134px;
-  /* 34 px acima da borda de fora do painel: borda (22) + padding de cima (8) + 34 */
+  width: 104px;
+  height: 106px;
+  /* borda (18) + padding de cima (6) + 4 */
   align-self: flex-start;
-  margin-top: -64px;
-  margin-left: 16px;
+  margin-top: -28px;
+  margin-left: 12px;
   cursor: pointer;
 }
+/* A imagem ocupa exatamente a abertura da moldura (medida na arte: 6% dos lados, 7% em cima,
+   11% embaixo) e aparece inteira (contain); o que sobrar fica com o fundo escuro. */
 #hud-t20 .hud-retrato-img {
   position: absolute;
-  inset: 12px;
-  background: radial-gradient(circle at 50% 35%, #6b4a3a 0%, #3a2620 45%, #1a1210 100%);
-  background-size: cover;
-  background-position: center top;
-  border-radius: 4px;
+  inset: 7% 6% 11% 6%;
+  background-color: #1a1210;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 #hud-t20 .hud-retrato-moldura {
   position: absolute;
@@ -86,14 +94,14 @@
 #hud-t20 .hud-retrato:hover .hud-retrato-moldura { filter: brightness(1.2) drop-shadow(0 0 8px rgba(243, 221, 160, .5)); }
 #hud-t20 .hud-retrato-nome {
   position: absolute;
-  left: -20px;
-  right: -20px;
-  bottom: -20px;
+  left: -16px;
+  right: -16px;
+  bottom: -16px;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font: 700 14px var(--hud-fonte-titulo);
+  font: 700 12px var(--hud-fonte-titulo);
   color: var(--hud-ouro);
   text-shadow: 0 1px 3px #000;
 }
@@ -103,26 +111,25 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: 320px;
-  align-self: flex-start;
-  padding-top: 2px;
+  gap: 6px;
+  width: 236px;
+  flex: none;
 }
 
 #hud-t20 .hud-condicoes {
   position: absolute;
-  left: 38px;
-  top: -62px;
+  left: 30px;
+  top: -50px;
   display: flex;
-  gap: 8px;
+  gap: 6px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 #hud-t20 .hud-cond {
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -131,21 +138,21 @@
   box-shadow: 0 0 0 2px #B08A4A, 0 2px 6px rgba(0, 0, 0, .7);
   cursor: help;
 }
-#hud-t20 .hud-cond > img { width: 22px; height: 22px; border: none; }
+#hud-t20 .hud-cond > img { width: 19px; height: 19px; border: none; }
 
-#hud-t20 .hud-recurso { display: flex; align-items: center; gap: 8px; }
-#hud-t20 .hud-recurso-rot { width: 30px; font: 700 16px var(--hud-fonte-titulo); color: var(--hud-ouro-2); }
+#hud-t20 .hud-recurso { display: flex; align-items: center; gap: 6px; }
+#hud-t20 .hud-recurso-rot { width: 24px; font: 700 13px var(--hud-fonte-titulo); color: var(--hud-ouro-2); }
 #hud-t20 .hud-trilho {
   position: relative;
   flex: 1;
-  height: 30px;
+  height: 24px;
   box-sizing: border-box;
   border-style: solid;
-  border-width: 0 18px;
-  border-image: url("../assets/trilho.webp") 0 40 fill / 0 18px stretch;
+  border-width: 0 14px;
+  border-image: url("../assets/trilho.webp") 0 40 fill / 0 14px stretch;
 }
-#hud-t20 .hud-trilho .vazio { position: absolute; left: -4px; right: -4px; top: 8px; bottom: 8px; background: #0d0b0a; z-index: 0; }
-#hud-t20 .hud-trilho .cheio { position: absolute; left: -4px; top: 8px; bottom: 8px; max-width: calc(100% + 8px); z-index: 1; transition: width .3s; }
+#hud-t20 .hud-trilho .vazio { position: absolute; left: -3px; right: -3px; top: 6px; bottom: 6px; background: #0d0b0a; z-index: 0; }
+#hud-t20 .hud-trilho .cheio { position: absolute; left: -3px; top: 6px; bottom: 6px; max-width: calc(100% + 6px); z-index: 1; transition: width .3s; }
 #hud-t20 .hud-trilho .cheio.pv { background: linear-gradient(180deg, #e04a3a, #9d1c1c 60%, #6e1010); }
 #hud-t20 .hud-trilho .cheio.pm { background: linear-gradient(180deg, #5b9bea, #1f4fa0 60%, #143670); }
 #hud-t20 .hud-trilho .txt {
@@ -156,20 +163,20 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  font: 700 15px var(--hud-fonte-texto);
+  font: 700 13px var(--hud-fonte-texto);
   color: #fff;
   text-shadow: 0 1px 2px #000, 0 0 4px #000;
 }
-#hud-t20 .hud-trilho .txt small { font-size: 12px; color: #FFE7A8; }
+#hud-t20 .hud-trilho .txt small { font-size: 11px; color: #FFE7A8; }
 
-#hud-t20 .hud-minis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 2px; }
+#hud-t20 .hud-minis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 1px; }
 #hud-t20 .hud-mini {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 38px;
-  padding: 5px 2px;
+  height: 30px;
+  padding: 3px 2px;
   box-sizing: border-box;
   background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(0, 0, 0, .25));
   border: 1px solid var(--hud-bronze);
@@ -178,23 +185,23 @@
 #hud-t20 .hud-mini .val {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   white-space: nowrap;
-  font: 700 19px/1 var(--hud-fonte-titulo);
+  font: 700 15px/1 var(--hud-fonte-titulo);
   color: #F6EEDC;
 }
-#hud-t20 .hud-mini .val img { width: 22px; height: 22px; flex: none; border: none; }
+#hud-t20 .hud-mini .val img { width: 17px; height: 17px; flex: none; border: none; }
 
 /* Tooltip com a conta: abre no mouse e no teclado */
 #hud-t20 .hud-tip {
   display: none;
   position: absolute;
-  bottom: calc(100% + 12px);
+  bottom: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
-  width: 250px;
+  width: 240px;
   z-index: 10;
-  padding: 10px 12px;
+  padding: 8px 10px;
   background: #17120e;
   border: 1px solid #8a6a3c;
   box-shadow: 0 6px 18px rgba(0, 0, 0, .7);
@@ -210,10 +217,10 @@
 #hud-t20 .hud-tip .ln.tot { border-top: 1px solid var(--hud-bronze); margin-top: 4px; padding-top: 5px; font-weight: 700; color: #F6EEDC; }
 
 /* ---------- Turno: losangos em arco sobre o cristal ---------- */
-#hud-t20 .hud-turno { display: flex; flex-direction: column; align-items: center; }
+#hud-t20 .hud-turno { display: flex; flex-direction: column; align-items: center; flex: none; }
 #hud-t20 .hud-acoes { display: flex; align-items: flex-end; margin-bottom: -2px; }
-#hud-t20 .hud-acao { position: relative; width: 38px; height: 38px; cursor: pointer; }
-#hud-t20 .hud-acao.meio { transform: translateY(-8px); }
+#hud-t20 .hud-acao { position: relative; width: 30px; height: 30px; cursor: pointer; }
+#hud-t20 .hud-acao.meio { transform: translateY(-6px); }
 #hud-t20 .hud-acao img { display: block; width: 100%; height: 100%; border: none; transition: filter .2s, opacity .2s; }
 #hud-t20 .hud-acao:not(:disabled):hover img { filter: brightness(1.2); }
 #hud-t20 .hud-acao:disabled { cursor: default; }
@@ -221,8 +228,8 @@
 #hud-t20 .hud-acao.gasta::after {
   content: "";
   position: absolute;
-  left: 6px;
-  right: 6px;
+  left: 5px;
+  right: 5px;
   top: 50%;
   height: 3px;
   margin-top: -1px;
@@ -231,42 +238,45 @@
   box-shadow: 0 0 3px #000;
 }
 
-#hud-t20 .hud-gema { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 70px; }
-#hud-t20 .hud-gema img { width: 46px; height: auto; border: none; transition: filter .3s; }
-#hud-t20 .hud-gema .leg { font: 700 11px var(--hud-fonte-titulo); letter-spacing: .04em; color: #9C8A6A; white-space: nowrap; }
+#hud-t20 .hud-gema { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 62px; }
+#hud-t20 .hud-gema img { width: 36px; height: auto; border: none; transition: filter .3s; }
+#hud-t20 .hud-gema .leg { font: 700 10px var(--hud-fonte-titulo); letter-spacing: .04em; color: #9C8A6A; white-space: nowrap; }
 #hud-t20 .hud-gema.vez img { animation: hud-t20-pulso 1.6s ease-in-out infinite; }
 #hud-t20 .hud-gema.vez .leg { color: var(--hud-ouro); }
 @keyframes hud-t20-pulso {
   0%, 100% { filter: drop-shadow(0 0 2px rgba(255, 60, 60, .4)) brightness(1); }
-  50% { filter: drop-shadow(0 0 14px rgba(255, 60, 60, .95)) brightness(1.3); }
+  50% { filter: drop-shadow(0 0 12px rgba(255, 60, 60, .95)) brightness(1.3); }
 }
 @media (prefers-reduced-motion: reduce) {
   #hud-t20 .hud-gema.vez img { animation: none; filter: drop-shadow(0 0 10px rgba(255, 60, 60, .9)) brightness(1.25); }
 }
 
 /* ---------- Atalhos: a barra nativa do Foundry, restilizada em 2 × 5 ---------- */
-#hud-t20 .hud-atalhos { display: flex; align-items: center; }
+#hud-t20 .hud-atalhos { display: flex; align-items: center; flex: none; }
 
 #hud-t20 #hotbar {
-  position: static;
+  position: relative;
   inset: auto;
+  flex: none;
   width: auto;
   height: auto;
   margin: 0;
   padding: 0;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: none;
   border: none;
   box-shadow: none;
 }
 
 #hud-t20 #hotbar #action-bar {
+  order: 1;
   display: grid;
-  grid-template-columns: repeat(5, 52px);
-  grid-auto-rows: 52px;
-  gap: 8px;
+  grid-template-columns: repeat(5, 42px);
+  grid-auto-rows: 42px;
+  gap: 5px;
+  flex: none;
   width: auto;
   height: auto;
   margin: 0;
@@ -278,8 +288,8 @@
 
 #hud-t20 #hotbar .slot {
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: 42px;
+  height: 42px;
   margin: 0;
   border: none;
   border-radius: 0;
@@ -290,9 +300,9 @@
 #hud-t20 #hotbar .slot img,
 #hud-t20 #hotbar .slot .slot-icon {
   position: absolute;
-  inset: 7px;
-  width: calc(100% - 14px);
-  height: calc(100% - 14px);
+  inset: 6px;
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
   object-fit: cover;
   border: none;
   border-radius: 2px;
@@ -300,26 +310,43 @@
 #hud-t20 #hotbar .slot:not(.full) { opacity: .45; }
 #hud-t20 #hotbar .slot.full:hover { filter: brightness(1.25); }
 #hud-t20 #hotbar .slot.active,
-#hud-t20 #hotbar .slot.dragover { box-shadow: 0 0 0 2px var(--hud-rubi), 0 0 14px rgba(220, 50, 50, .6); }
+#hud-t20 #hotbar .slot.dragover { box-shadow: 0 0 0 2px var(--hud-rubi), 0 0 12px rgba(220, 50, 50, .6); }
 #hud-t20 #hotbar .slot .key {
   position: absolute;
-  top: 3px;
-  left: 6px;
+  top: 2px;
+  left: 5px;
   z-index: 2;
-  font: 700 11px var(--hud-fonte-titulo);
+  font: 700 10px var(--hud-fonte-titulo);
   color: var(--hud-ouro-2);
   text-shadow: 0 1px 2px #000;
   background: none;
 }
 
-/* Controles laterais da barra (página, travar etc.) ficam discretos ao lado */
+/* Controles da barra nativa (som, menu, travar, limpar, página): uma coluna fina à direita,
+   apagada até passar o mouse, para não poluir os atalhos. */
 #hud-t20 #hotbar > :not(#action-bar) {
+  order: 2;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  width: auto;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  width: 18px;
+  margin: 0;
+  padding: 0;
   background: none;
   border: none;
+  font: 700 11px var(--hud-fonte-titulo);
   color: var(--hud-ouro-2);
-  font-family: var(--hud-fonte-titulo);
+  opacity: .45;
+  transition: opacity .2s;
 }
+#hud-t20 #hotbar > :not(#action-bar) :is(button, a, .control) {
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  font-size: 11px;
+  line-height: 18px;
+}
+#hud-t20 #hotbar:hover > :not(#action-bar),
+#hud-t20 #hotbar > :not(#action-bar):focus-within { opacity: 1; }

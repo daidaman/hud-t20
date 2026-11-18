@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 — 2026-11-17
+- HUD mais compacta: painel ~20% menor, barras de PV e PM de 320 para 236 px, atalhos de 52 para 42 px.
+- Retrato aparece inteiro, sem cortar as laterais: a imagem ocupa a abertura da moldura e usa `contain`. A moldura passa só ~4 px acima do painel.
+- Encaixe automático: a HUD se centraliza no espaço livre entre a esquerda da tela e a caixa de mensagem flutuante (ou a barra lateral) e encolhe até 60% se não couber. Reage a abrir, fechar e trocar a aba da barra lateral e ao redimensionar a janela.
+- Botões da barra nativa (som, menu, travar, limpar, página) agrupados numa coluna fina à direita dos atalhos, apagada até passar o mouse.
+
 ## 0.1.0 — 2026-11-17
 - Primeira versão do módulo: `module.json`, painel (`ApplicationV2`) preso embaixo da tela, dentro de `#ui-bottom`.
 - Retrato (abre a ficha), nome e nível; PV e PM em trilhos; Defesa, Deslocamento, Iniciativa e CD das magias com a conta no tooltip (mouse e teclado).

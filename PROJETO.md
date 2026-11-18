@@ -23,8 +23,8 @@ Os dois usam a mesma arte de `assets/`. Um módulo-base compartilhado só se jus
 Protótipo: canvas "HUD de Tormenta 20 — arte do ChatGPT" (https://claude.ai/artifact/P1phEYPuckoBQPQWaYtUsP), com as telas Full HD a 100% e notebook 1366×768 a 80%.
 
 Painel único, centralizado embaixo e sem ponteiras nas pontas. Da esquerda para a direita:
-1. **Retrato:** a moldura vaza o painel, passando uns 34 px acima da borda de cima, e fica uns 16 px para dentro da ponta esquerda (corrigido em 2026-11-17).
-   - O retrato fica inteiro dentro da moldura. Não há efeito de a cabeça sair da moldura.
+1. **Retrato:** a moldura passa só ~4 px acima da borda de cima do painel (ajustado no teste da 0.1.0, 2026-11-17; antes eram 34 px) e fica uns 12 px para dentro da ponta esquerda.
+   - O retrato fica inteiro dentro da moldura e não é cortado: a imagem ocupa a abertura da moldura (6% dos lados, 7% em cima, 11% embaixo) com `contain`; o que sobrar fica escuro.
    - Nome e nível embaixo.
 2. **Bloco de status:**
    - PV e PM no topo, em trilhos com o texto "atual / máximo".
@@ -36,7 +36,11 @@ Painel único, centralizado embaixo e sem ponteiras nas pontas. Da esquerda para
    - Padrão e movimento recarregam no início do turno do personagem; a reação, no início da rodada.
    - Fora de combate, os losangos somem.
    - Arte: `assets/acao-padrao.webp`, `acao-movimento.webp`, `acao-reacao.webp` (original em `arte-original/acoes.png`). O estado gasto é feito em CSS (cinza + risco vermelho).
-5. **Atalhos:** 10 slots em 2 fileiras de 5 (1–5 e 6–0), com o número no canto. Os vazios ficam apagados.
+5. **Atalhos:** 10 slots em 2 fileiras de 5 (1–5 e 6–0), com o número no canto. Os vazios ficam apagados. Os botões da barra nativa (som, menu, travar, limpar, página) ficam numa coluna fina à direita, apagada até passar o mouse.
+
+**Tamanho (0.1.1, 2026-11-17):** depois do primeiro teste, o painel ficou ~20% menor: barras de PV e PM com 236 px, atalhos de 42 px, losangos de 30 px, cristal de 36 px, retrato de 104 × 106 px.
+
+**Encaixe na tela (0.1.1):** a HUD mede o espaço livre de baixo, de `#ui-bottom` até a caixa de mensagem flutuante (`#chat-notifications`, que aparece quando a barra lateral está em outra aba que não o chat) ou a barra lateral. Ela se centraliza nesse espaço e encolhe até 60% se não couber (variáveis CSS `--hud-t20-x` e `--hud-t20-encaixe`). Recalcula com `ResizeObserver`, nos hooks `collapseSidebar` e `changeSidebarTab` e ao redimensionar a janela.
 
 **Chat (fica para o módulo do tema):** cartão com cabeçalho de metal, emblema redondo do autor, corpo de pergaminho e rodapé com um rubi, como no conceito do Gemini. A caixa de mensagem fica com a mesma moldura. Vale tanto para a barra lateral aberta quanto recolhida (mensagens flutuantes).
 
@@ -106,7 +110,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - Como vale qualquer uso de item (ficha, atalho ou HUD), o gasto é o mesmo de onde quer que o item seja usado.
 
 ## Pendências (resolver nesta ordem)
-0. [ ] **Testar a 0.1.0 no mundo de teste** com mestre e jogador (roteiro no fim deste arquivo) e corrigir o que aparecer, principalmente o encaixe da `#hotbar` do v13 dentro do painel.
+0. [ ] **Testar a 0.1.1 no mundo de teste** (abrir e fechar a barra lateral, trocar para Combate e Atores, tela de notebook) com mestre e jogador (roteiro no fim deste arquivo) e corrigir o que aparecer, principalmente o encaixe da `#hotbar` do v13 dentro do painel.
 1. [x] **Nome e id:** `hud-t20`.
 2. [x] **Inspeção no mundo de teste** (2026-11-17): CD, condição e combate confirmados. Falta só ver uma armadura equipada na Defesa, o que dá para conferir já com o código rodando.
 3. [ ] **De quem é a HUD.** Implementado na 0.1.0 como a proposta, falta confirmar no uso: o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
@@ -138,7 +142,8 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - [x] Arte das 12 peças (pergaminho a refazer).
 - [x] Protótipo interativo aprovado.
 - [x] Inspeção do sistema concluída (dados, condições, combate, tipo de execução).
-- [x] **0.1.0 (2026-11-17):** módulo com `module.json`, painel, tooltips, condições, cristal, ações do turno e atalhos. Conferido só em página de teste com dados falsos; **falta testar no mundo de teste**.
+- [x] **0.1.0 (2026-11-17):** módulo com `module.json`, painel, tooltips, condições, cristal, ações do turno e atalhos. Primeiro teste no mundo: funcionou, mas ficou grande, o retrato cortava as laterais e a HUD era espremida (e coberta pela caixa de mensagem) com a barra lateral larga.
+- [x] **0.1.1 (2026-11-17):** HUD menor, retrato inteiro e mais baixo, encaixe automático no espaço livre, botões da barra agrupados. Conferido em página de teste; **falta testar no mundo**.
 
 ## Decisões do código (0.1.0, 2026-11-17)
 - O painel é um `ApplicationV2` sem moldura inserido em `#ui-bottom`, então herda a escala de interface do Foundry; a escala extra usa `zoom`.

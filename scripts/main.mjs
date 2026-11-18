@@ -341,11 +341,60 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
     await super._onRender(context, options);
     this.element.style.setProperty("--hud-t20-escala", game.settings.get(MODULE_ID, "escala"));
     this.#puxarHotbar();
+    this.#vigiarEspaco();
+    this.encaixar();
   }
 
   _onClose(options) {
     super._onClose(options);
+    this.#observador?.disconnect();
+    this.#observador = null;
     this.#devolverHotbar();
+  }
+
+  /** Observa o que muda o espaço livre: janela, barra lateral e caixa de mensagem flutuante. */
+  #observador = null;
+
+  #vigiarEspaco() {
+    if (this.#observador) return;
+    this.#observador = new ResizeObserver(() => this.encaixar());
+    for (const sel of ["#ui-bottom", "#sidebar", "#chat-notifications"]) {
+      const el = document.querySelector(sel);
+      if (el) this.#observador.observe(el);
+    }
+  }
+
+  /**
+   * Centraliza o painel no espaço livre de baixo e encolhe se não couber.
+   * O espaço livre vai da esquerda de #ui-bottom até a borda da barra lateral
+   * ou, se a caixa de mensagem flutuante estiver aparecendo, até ela.
+   */
+  encaixar() {
+    const el = this.element;
+    const base = document.getElementById("ui-bottom");
+    if (!el?.isConnected || !base) return;
+    el.style.setProperty("--hud-t20-x", "0px");
+    el.style.setProperty("--hud-t20-encaixe", "1");
+
+    const area = base.getBoundingClientRect();
+    let esquerda = area.left + 8;
+    let direita = area.right - 8;
+    const caixaMsg = document.querySelector("#chat-notifications :is(.chat-form, form, textarea)")?.closest("#chat-notifications > *");
+    const rMsg = caixaMsg?.getBoundingClientRect();
+    if (rMsg && rMsg.width > 0 && rMsg.height > 0 && rMsg.left < direita && rMsg.bottom > window.innerHeight - 260) {
+      direita = Math.min(direita, rMsg.left - 8);
+    }
+
+    const painel = el.getBoundingClientRect();
+    const livre = Math.max(0, direita - esquerda);
+    // A margem de cima (retrato que vaza) não conta na largura; só a largura importa.
+    const encaixe = Math.max(0.6, Math.min(1, livre / painel.width));
+    const deslocVisual = (esquerda + direita) / 2 - (painel.left + painel.width / 2);
+    // Converte px de tela para px CSS do painel (escala de interface do Foundry × tamanho da HUD).
+    const escalaPai = base.offsetWidth ? area.width / base.offsetWidth : 1;
+    const zoom = Number(game.settings.get(MODULE_ID, "escala")) || 1;
+    el.style.setProperty("--hud-t20-x", `${Math.round(deslocVisual / (escalaPai * zoom))}px`);
+    el.style.setProperty("--hud-t20-encaixe", encaixe.toFixed(3));
   }
 
   /** Usa a barra nativa (teclas 1–0, páginas, arrastar da ficha) dentro do painel. */
@@ -500,6 +549,11 @@ Hooks.once("ready", () => {
     Hooks.on(nome, () => atualizar());
   }
   Hooks.on("combatTurnChange", recarregar);
+  // Abrir, fechar ou trocar a aba da barra lateral muda o espaço livre embaixo.
+  for (const nome of ["collapseSidebar", "changeSidebarTab"]) {
+    Hooks.on(nome, () => requestAnimationFrame(() => hud?.encaixar()));
+  }
+  window.addEventListener("resize", () => hud?.encaixar());
   Hooks.on("createChatMessage", gastarPorMensagem);
 
   atualizar();
