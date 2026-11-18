@@ -23,9 +23,8 @@ Os dois usam a mesma arte de `assets/`. Um módulo-base compartilhado só se jus
 Protótipo: canvas "HUD de Tormenta 20 — arte do ChatGPT" (https://claude.ai/artifact/P1phEYPuckoBQPQWaYtUsP), com as telas Full HD a 100% e notebook 1366×768 a 80%.
 
 Painel único, centralizado embaixo e sem ponteiras nas pontas. Da esquerda para a direita:
-1. **Retrato vazado:** moldura com a cabeça do personagem saindo por cima.
-   - Imagem com fundo transparente (token): efeito vazado.
-   - Retrato retangular: imagem normal dentro da moldura.
+1. **Retrato:** a moldura vaza o painel, passando uns 34 px acima da borda de cima, e fica uns 16 px para dentro da ponta esquerda (corrigido em 2026-11-17).
+   - O retrato fica inteiro dentro da moldura. Não há efeito de a cabeça sair da moldura.
    - Nome e nível embaixo.
 2. **Bloco de status:**
    - PV e PM no topo, em trilhos com o texto "atual / máximo".
@@ -113,7 +112,6 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
   - A HUD só lê dados, então não precisa de socket.
 - **Settings:**
   - Mostrar ou ocultar a HUD (`client`).
-  - Ativar ou desativar o efeito vazado (`client`).
   - Escala extra da HUD (`client`).
 - **Textos:** todo texto visível passa por `game.i18n.localize`.
 
