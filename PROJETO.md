@@ -129,10 +129,10 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 
 ## Pendências (resolver nesta ordem)
 00. [x] **Codar a 0.2.0** (2026-11-18). Ver "Iniciativa no sistema" abaixo.
-01. [ ] **Testar a 0.2.0 no mundo de teste** com mestre e jogador (roteiro da 0.2.0 no fim deste arquivo). Conferir principalmente o seletor de página da barra (a estrutura `#hotbar-page-controls` foi deduzida, não medida no mundo) e o clique na Iniciativa.
-0. [ ] **Testar a 0.1.2 no mundo de teste** (pode ser junto com o da 0.2.0) (abrir e fechar a barra lateral, trocar para Combate e Atores, tela de notebook) com mestre e jogador (roteiro no fim deste arquivo) e corrigir o que aparecer, principalmente o encaixe da `#hotbar` do v13 dentro do painel.
+01. [x] **Testar a 0.2.0/0.2.1 no mundo de teste** (2026-11-18): roteiro da 0.2.0 inteiro aprovado com mestre e jogador, inclusive o seletor de página da barra, a Iniciativa clicável e o clique no retrato.
+0. [ ] **Testar a HUD em tela de notebook** (1366×768). O resto do teste da 0.1.2 passou em 2026-11-18 (barra lateral aberta e fechada, abas Combate e Atores, atalhos no lugar); falta só o notebook.
 1. [x] **Nome e id:** `hud-t20`.
-2. [x] **Inspeção no mundo de teste** (2026-11-17): CD, condição e combate confirmados. Falta só ver uma armadura equipada na Defesa, o que dá para conferir já com o código rodando.
+2. [x] **Inspeção no mundo de teste** (2026-11-17): CD, condição e combate confirmados. Armadura pesada na Defesa conferida no teste da 0.2.0 (2026-11-18).
 3. [ ] **De quem é a HUD.** Implementado na 0.1.0 como a proposta, falta confirmar no uso: o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
 4. [x] **Ações do turno:** arte no protótipo e tipo de execução localizado (ver "Tipo de execução do item" acima).
 5. [x] **Novo pergaminho** (2026-11-17): bege mais neutro, com fibras e manchas suaves, sem emenda ao repetir. Já em `assets/pergaminho.webp` (512 px); original em `arte-original/pergaminho-v2.png`.
@@ -176,9 +176,9 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - [x] Inspeção do sistema concluída (dados, condições, combate, tipo de execução).
 - [x] **0.1.0 (2026-11-17):** módulo com `module.json`, painel, tooltips, condições, cristal, ações do turno e atalhos. Primeiro teste no mundo: funcionou, mas ficou grande, o retrato cortava as laterais e a HUD era espremida (e coberta pela caixa de mensagem) com a barra lateral larga.
 - [x] **0.1.1 (2026-11-17):** HUD menor, retrato inteiro e mais baixo, encaixe automático no espaço livre, botões da barra agrupados. Testado no mundo: o encaixe funcionou; os atalhos ficaram por cima do cristal.
-- [x] **0.1.2 (2026-11-17):** atalhos no lugar (anulado o `translateX(-70px)` do core na `#hotbar`). **Falta confirmar no mundo.**
-- [x] **0.2.0 (2026-11-18):** retrato maior que vaza e janela de enquadramento, tooltips translúcidos, Iniciativa clicável, barra só com o seletor de página. Conferido fora do Foundry (templates com dados falsos no navegador). **Falta testar no mundo.**
-- [x] **0.2.1 (2026-11-18):** clique no retrato voltou a abrir a ficha (botão do retrato tinha a altura fixa de botão do core). Lição: em botão posicionado com `inset`, sempre dar `width`/`height` explícitos, porque o core estiliza `<button>`.
+- [x] **0.1.2 (2026-11-17):** atalhos no lugar (anulado o `translateX(-70px)` do core na `#hotbar`). Confirmado no mundo em 2026-11-18.
+- [x] **0.2.0 (2026-11-18):** retrato maior que vaza e janela de enquadramento, tooltips translúcidos, Iniciativa clicável, barra só com o seletor de página. Testado no mundo em 2026-11-18: tudo certo.
+- [x] **0.2.1 (2026-11-18):** clique no retrato voltou a abrir a ficha (botão do retrato tinha a altura fixa de botão do core). Testado no mundo em 2026-11-18. Lição: em botão posicionado com `inset`, sempre dar `width`/`height` explícitos, porque o core estiliza `<button>`.
 
 ## Decisões do código (0.1.0, 2026-11-17)
 - O painel é um `ApplicationV2` sem moldura inserido em `#ui-bottom`, então herda a escala de interface do Foundry; a escala extra usa `zoom`.
