@@ -182,18 +182,37 @@ img.hud-t20-enq {
   flex: 1;
   height: 24px;
   box-sizing: border-box;
+  border: 0 solid transparent;
+  border-width: 0 14px;
+}
+/* 0.2.3: a moldura fica numa camada POR CIMA da cor (a borda de um elemento sempre fica atrás dos filhos).
+   Camadas: fundo (0) → cor (1) → extra (2) → moldura (3) → número (4). A cor passa 4 px por baixo das
+   pontas e 1 px em cima e embaixo, e a moldura esconde a sobra; a janela transparente do trilho.webp
+   começa exatamente na borda de dentro (14 px) e vai de 6 a 18 px na altura. */
+#hud-t20 .hud-trilho::after {
+  content: "";
+  position: absolute;
+  inset: 0 -14px;
+  z-index: 3;
+  pointer-events: none;
   border-style: solid;
   border-width: 0 14px;
   border-image: url("../assets/trilho.webp") 0 40 fill / 0 14px stretch;
 }
-#hud-t20 .hud-trilho .vazio { position: absolute; left: -3px; right: -3px; top: 6px; bottom: 6px; background: #0d0b0a; z-index: 0; }
-#hud-t20 .hud-trilho .cheio { position: absolute; left: -3px; top: 6px; bottom: 6px; max-width: calc(100% + 6px); z-index: 1; transition: width .3s; }
+#hud-t20 .hud-trilho .vazio { position: absolute; left: -4px; right: -4px; top: 5px; bottom: 5px; background: #0d0b0a; box-shadow: inset 0 2px 3px rgba(0, 0, 0, .8); z-index: 0; }
+#hud-t20 .hud-trilho .cheio,
+#hud-t20 .hud-trilho .extra { position: absolute; top: 5px; bottom: 5px; width: calc((100% + 8px) * var(--pct, 0) / 100); transition: width .3s; }
+#hud-t20 .hud-trilho .cheio { left: -4px; z-index: 1; box-shadow: inset 0 -2px 3px rgba(0, 0, 0, .35); }
 #hud-t20 .hud-trilho .cheio.pv { background: linear-gradient(180deg, #e04a3a, #9d1c1c 60%, #6e1010); }
 #hud-t20 .hud-trilho .cheio.pm { background: linear-gradient(180deg, #5b9bea, #1f4fa0 60%, #143670); }
+/* Extra (PV/PM temporários): da direita para a esquerda, mais escuro, com filete dourado na ponta. */
+#hud-t20 .hud-trilho .extra { right: -4px; z-index: 2; box-shadow: inset 0 -2px 3px rgba(0, 0, 0, .4), -1px 0 0 rgba(255, 231, 168, .55); }
+#hud-t20 .hud-trilho .extra.pv { background: linear-gradient(180deg, #8a2a2a, #5a0e14 60%, #3a070b); }
+#hud-t20 .hud-trilho .extra.pm { background: linear-gradient(180deg, #7a62d6, #3f2b98 60%, #281a66); }
 #hud-t20 .hud-trilho .txt {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -202,7 +221,7 @@ img.hud-t20-enq {
   color: #fff;
   text-shadow: 0 1px 2px #000, 0 0 4px #000;
 }
-#hud-t20 .hud-trilho .txt small { font-size: 11px; color: #FFE7A8; }
+#hud-t20 .hud-trilho .txt small { font-size: 11px; color: #FFE7A8; margin-left: 4px; }
 
 #hud-t20 .hud-minis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 1px; }
 #hud-t20 .hud-mini {

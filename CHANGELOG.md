@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3 — 2026-11-18
+- Barras de PV e PM encaixadas na moldura: a moldura agora fica por cima da cor (antes o vermelho e o azul passavam por cima da borda interna e, cheios, deixavam uma fresta escura na ponta direita).
+- PV e PM extras (temporários): barra mais escura que entra da direita para a esquerda, por cima da barra normal, com o tamanho do extra em relação ao máximo. Vinho no PV, roxo-azulado no PM, filete dourado na ponta. Sem extra, não aparece.
+- Mais espaço antes do "(+N)".
+
 ## 0.2.2 — 2026-11-18
 - Lado esquerdo: o retrato agora encosta na ponta do painel e vaza ~10 px, como em cima e embaixo. Some a faixa do painel (com a ponta da moldura e os rubis) que sobrava à esquerda dele. A HUD fica ~40 px mais estreita.
 - A imagem do retrato preenche a moldura até a barra de baixo, sem a faixa escura dos lados da gema (a abertura tinha sido medida no centro, onde a gema sobe). Vale também para a janela de enquadramento. Enquadramentos já salvos podem descer um pouquinho.

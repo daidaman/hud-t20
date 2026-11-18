@@ -47,7 +47,8 @@
       <span class="hud-recurso-rot">{{rotulo}}</span>
       <div class="hud-trilho" role="meter" aria-label="{{rotulo}}" aria-valuemin="0" aria-valuemax="{{max}}" aria-valuenow="{{value}}">
         <div class="vazio"></div>
-        <div class="cheio {{classe}}" style="width:{{pct}}%"></div>
+        <div class="cheio {{classe}}" style="--pct:{{pct}}"></div>
+        {{#if temp}}<div class="extra {{classe}}" style="--pct:{{tempPct}}"></div>{{/if}}
         <div class="txt">{{value}} / {{max}}{{#if temp}} <small>(+{{temp}})</small>{{/if}}</div>
       </div>
     </div>

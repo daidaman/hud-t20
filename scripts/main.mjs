@@ -369,8 +369,11 @@ function condicoesDoAtor(actor) {
 function recurso(rotulo, dados, classe) {
   const value = Number(dados?.value) || 0;
   const max = Number(dados?.max) || 0;
+  const temp = Math.max(Number(dados?.temp) || 0, 0);
   const pct = max > 0 ? Math.clamp(Math.round((value / max) * 100), 0, 100) : 0;
-  return { rotulo, value, max, pct, temp: Number(dados?.temp) || 0, classe };
+  // Extra (PV/PM temporários): barra mais escura da direita para a esquerda, proporcional ao máximo.
+  const tempPct = max > 0 ? Math.clamp(Math.round((temp / max) * 1000) / 10, 0, 100) : (temp > 0 ? 100 : 0);
+  return { rotulo, value, max, pct, temp, tempPct, classe };
 }
 
 /* -------------------------------------------- */
