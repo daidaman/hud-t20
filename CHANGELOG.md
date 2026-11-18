@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.1 — 2026-11-18
+- Corrigido: clicar no retrato não abria a ficha. O core do Foundry dá altura fixa a todo `<button>`, e o botão invisível do retrato virava uma faixa fina no topo. Agora ele tem largura e altura explícitas, e o próprio retrato também abre a ficha. A engrenagem continua abrindo o ajuste.
+
 ## 0.2.0 — 2026-11-18
 - Retrato como no conceito: o painel fica baixo, justo em volta do status, e a moldura do retrato (150 × 152 px) vaza ~10 px em cima e embaixo. O painel sobe um pouco da borda da tela.
 - Sem nome e nível embaixo do retrato: eles foram para o tooltip do retrato, que também explica o clique (abre a ficha) e o botão direito.
