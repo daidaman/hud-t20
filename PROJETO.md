@@ -32,7 +32,12 @@ Painel único, centralizado embaixo e sem ponteiras nas pontas. Da esquerda para
    - Abaixo, quatro caixas pequenas só com ícone e número: Defesa, Deslocamento, Iniciativa e CD das magias. Os valores não quebram linha.
    - Acima do bloco, as condições ativas em medalhões redondos, com o efeito no tooltip.
 3. **Cristal (gema):** separa o status dos atalhos e pulsa em vermelho com a legenda "Seu turno" quando é o turno do personagem no combate. Fora do turno, mostra "Aguardando". Para quem configura o sistema para reduzir animações, ele fica aceso sem pulsar.
-4. **Atalhos:** 10 slots em 2 fileiras de 5 (1–5 e 6–0), com o número no canto. Os vazios ficam apagados.
+4. **Ações do turno (decidido em 2026-11-17):** três losangos em arco sobre o cristal: ação padrão, movimento e reação.
+   - Aceso: disponível. Apagado e riscado: gasto. A ação completa apaga padrão e movimento.
+   - Padrão e movimento recarregam no início do turno do personagem; a reação, no início da rodada.
+   - Fora de combate, os losangos somem.
+   - Arte: pedida ao ChatGPT (`acoes.png`), com o estado gasto feito em CSS.
+5. **Atalhos:** 10 slots em 2 fileiras de 5 (1–5 e 6–0), com o número no canto. Os vazios ficam apagados.
 
 **Chat (fica para o módulo do tema):** cartão com cabeçalho de metal, emblema redondo do autor, corpo de pergaminho e rodapé com um rubi, como no conceito do Gemini. A caixa de mensagem fica com a mesma moldura. Vale tanto para a barra lateral aberta quanto recolhida (mensagens flutuantes).
 
@@ -52,6 +57,11 @@ Painel único, centralizado embaixo e sem ponteiras nas pontas. Da esquerda para
   - Exemplo: CD 18 = 10 base + 2 metade do nível + 4 Inteligência + 2 Foco em Magia.
   - O mesmo vale para Defesa, Deslocamento e Iniciativa, e o tooltip também abre pelo teclado.
 - **Condições:** vêm dos efeitos ativos do token.
+- **Ações do turno:**
+  - Gasto automático ao usar um atalho ou item da HUD, conforme o tipo de execução do item.
+  - Clique no losango gasta ou devolve manualmente.
+  - Mover o token no mapa não gasta movimento sozinho.
+  - O estado fica nas flags do combatente: o mestre vê e corrige; dono e mestre podem alterar.
 
 ## Inspeção do mundo de teste (2026-11-17)
 Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (character, nível 0, sem magias). Módulos ativos: bando-da-raposa 2.0.3, decreto-do-panteao 1.1.0, dice-calculator, dice-so-nice, vision-t20.
@@ -88,7 +98,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 1. [x] **Nome e id:** `hud-t20`.
 2. [x] **Inspeção no mundo de teste** (2026-11-17): CD, condição e combate confirmados. Falta só ver uma armadura equipada na Defesa, o que dá para conferir já com o código rodando.
 3. [ ] **De quem é a HUD.** Proposta, a confirmar: o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
-4. [ ] **Ação padrão e movimento** no turno: mostrar ou não? Ficou sem resposta.
+4. [ ] **Ações do turno:** receber a arte `acoes.png` e incluir no protótipo. Na inspeção, ver onde o T20 guarda o tipo de execução do item (padrão, movimento, completa, reação, livre).
 5. [ ] **Novo pergaminho** para o chat: marfim acinzentado, com fibras e manchas suaves, como no conceito. O atual ficou amarelo demais. O prompt está na conversa de 2026-11-17. Quando chegar, substituir `assets/pergaminho.webp`.
 6. [ ] **Combate:** como detectar o turno do personagem para o cristal (`game.combat`, hook `updateCombat`).
 
