@@ -10,14 +10,16 @@ Uma barra fixa na parte de baixo da tela do Foundry VTT v13 (build 351, o único
 
 ## Nome e id
 - **HUD: `hud-t20`** (decidido em 2026-11-17). O id nunca muda depois de instalado.
-- Tema: **`arton-ui`** (decidido em 2026-11-18), título "Interface de Arton". Repositório privado a criar: daidaman/arton-ui.
+- Tema: **dentro do próprio `hud-t20`** (decidido em 2026-11-18; substitui a ideia de um módulo `arton-ui` separado). O título pode virar "Arton: HUD e Tema"; o id continua `hud-t20`.
 
-## Estrutura (decidido em 2026-11-17)
-Os dois são módulos separados, porque um mestre pode querer um sem o outro:
-1. **HUD do personagem** (este repositório, vem primeiro): o painel de baixo.
-2. **Tema** (repositório próprio, depois): faz o reskin por CSS do chat, da barra lateral, dos controles de cena, da navegação de cenas e da lista de jogadores. Não troca lógica nenhuma.
+## Estrutura (revisada em 2026-11-18)
+Um módulo só, com duas partes:
+1. **HUD do personagem:** o painel de baixo (já pronto).
+2. **Tema da interface** (0.3.0): reskin por CSS do chat, da barra lateral, dos controles de cena, da navegação de cenas e da lista de jogadores. Não troca lógica nenhuma. CSS próprio em `styles/tema.css`, que só vale com a classe ligada no `body`.
 
-Os dois usam a mesma arte de `assets/`. Um módulo-base compartilhado só se justifica se 3 ou mais módulos repetirem o código.
+**Configuração (world, só o mestre muda):** "Visual do módulo" com duas opções: **Só a HUD** ou **HUD e tema da interface**. Não há opção "só o tema" (ninguém vai usar o tema sem a HUD). Trocar não precisa recarregar. A chave de cada jogador para mostrar ou esconder a HUD continua.
+
+Motivo da mudança: a arte de `assets/` é a mesma, e fica uma instalação, um ZIP e um repositório só.
 
 ## Visual aprovado (2026-11-17)
 Protótipo: canvas "HUD de Tormenta 20 — arte do ChatGPT" (https://claude.ai/artifact/P1phEYPuckoBQPQWaYtUsP), com as telas Full HD a 100% e notebook 1366×768 a 80%.
@@ -66,7 +68,7 @@ Protótipo: "HUD T20 — protótipo 0.2.0" (https://claude.ai/artifact/Sty883VVn
    - Já rolada: o jogador recebe aviso; só o mestre rola de novo.
 6. **Barra nativa:** some a coluna de som, menu, travar e limpar. Fica só o seletor de página (▲ número ▼), apagado até passar o mouse. Editar e remover atalho continua no botão direito.
 
-## Tema arton-ui (ficha, 2026-11-18)
+## Tema da interface (ficha, 2026-11-18; antes chamado arton-ui)
 - Só para a mesa de Tormenta 20 (pode estilizar os cartões do sistema `tormenta20`: perícia, item, ataque e dano).
 - Cartões do Decreto do Panteão e do Bando da Raposa ficam como estão: o tema só veste o cabeçalho de metal e o emblema do autor.
 - Reskin só por CSS de chat, barra lateral (abas na coluna vertical da direita, como no v13), controles de cena, navegação de cenas e lista de jogadores. Sem trocar lógica.
@@ -77,7 +79,7 @@ Protótipo: "HUD T20 — protótipo 0.2.0" (https://claude.ai/artifact/Sty883VVn
   - Corpo: pergaminho com borda de 1 px só nas laterais e sombra; sem fundo de pergaminho em volta das pontas da barra.
   - Rodapé: rubi separado da linha (`rodape-gema` centralizado, `rodape-linha` à esquerda e à direita, cortados de `chat-rodape.webp`), 18 px de altura, com o centro da linha exatamente na borda de baixo do cartão.
 - **Molduras rentes:** a `moldura-painel.webp` tem margem transparente fora da linha dourada (≈3 px dos lados e ≈5 px em cima e embaixo, em 14 px). O fundo vai num `::before` recuado 4 px 3 px e a moldura num `::after` por cima, para não sobrar fundo fora da linha. Vale para jogadores (largura pelo conteúdo), botões de cena, barra lateral, caixa de mensagem e barra de controles.
-- **Próximo passo:** o Daniel cria o repositório privado daidaman/arton-ui; o código começa numa conversa nova, a partir deste PROJETO.md e do canvas.
+- **Próximo passo:** codar a 0.3.0 (tema + configuração "Visual do módulo") numa conversa nova, a partir deste PROJETO.md e do canvas. Antes do CSS, inspecionar no mundo de teste os seletores reais do v13 (chat, `#sidebar`, `#scene-controls`, `#scene-navigation`, `#players`, `#chat-notifications`) e os cartões do sistema `tormenta20`.
 
 ## Funções aprovadas
 - **Clique no retrato:** abre a ficha completa do sistema (`actor.sheet.render(true)`).
