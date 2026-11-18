@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0 — 2026-11-18
+- Dois temas novos da HUD na configuração "Visual do módulo": **Tempestade Rubra** (carapaça rubra com garras, névoa e o olho da Tormenta no centro) e **Aventureiro do Reinado** (couro, fivelas de latão e a bússola no centro). As opções agora são: "Metal e rubi: só a HUD" (padrão), "Metal e rubi: HUD e tema da interface", "Tempestade Rubra (só a HUD)" e "Aventureiro do Reinado (só a HUD)". Troca na hora, sem recarregar. Quem já tinha escolhido uma opção na 0.3.0 continua igual.
+- Nos temas, a moldura é a arte inteira do conceito e cada peça vai na posição medida: retrato, barras de PV e PM (cor do miolo das barras da folha, cortada pelo valor), as 4 caixinhas (Defesa, Deslocamento, Iniciativa e CD, com escudo, bota, ampulheta e estrela), os 3 losangos das ações do turno e os 10 atalhos nas caixas desenhadas.
+- Os losangos soltos cobrem os desenhados na arte e continuam funcionando como antes (padrão = espada, movimento = bandeira, reação = explosão; gasto = cinza e riscado). Fora de combate, ficam apagados e sem clique, para os da arte não parecerem ações disponíveis.
+- O olho da tempestade e a bússola fazem o papel do cristal: no turno do personagem, pulsam (vermelho / dourado) com a legenda "Seu turno".
+- Aventureiro: coração e gota no começo das barras e caixinhas claras com número escuro. Tempestade: "PV" e "PM" escritos na barra e um brilho claro em volta do PV, para não sumir no vermelho.
+- Só as peças recebem o mouse; o céu e a névoa transparentes em volta deixam clicar no mapa.
+- CSS novo em `styles/hud-temas.css` (só vale com a classe `hud-t20-arte`). Arte em `assets/temas/tempestade/` e `assets/temas/aventureiro/`; scripts de recorte em `arte-original/temas/`.
+
 ## 0.3.0 — 2026-11-18
 - Tema da interface (parte 2 do módulo), no visual do protótipo "Arton UI" aprovado: cartão do chat com cabeçalho de metal, emblema redondo do autor (retrato do personagem ou inicial na cor do jogador), nome do jogador embaixo do nome do personagem, corpo de pergaminho e rodapé com rubi. Vale no chat da barra lateral e nas mensagens flutuantes.
 - Rolagens do core e cartões do sistema `tormenta20` no estilo do pergaminho (fórmula, total, crítico em verde, falha em vermelho). Os cartões do Decreto do Panteão e do Bando da Raposa ficam como estão: só ganham o cabeçalho e o emblema.

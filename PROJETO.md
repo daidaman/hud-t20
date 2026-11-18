@@ -10,6 +10,7 @@ Uma barra fixa na parte de baixo da tela do Foundry VTT v13 (build 351, o único
 
 ## Nome e id
 - **HUD: `hud-t20`** (decidido em 2026-11-17). O id nunca muda depois de instalado.
+- Temas da HUD (0.4.0): Tempestade Rubra e Aventureiro do Reinado, escolhidos no mesmo "Visual do módulo".
 - Tema: **dentro do próprio `hud-t20`** (decidido em 2026-11-18; substitui a ideia de um módulo `arton-ui` separado). O título pode virar "Arton: HUD e Tema"; o id continua `hud-t20`.
 
 ## Estrutura (revisada em 2026-11-18)
@@ -106,6 +107,7 @@ Ideia de dar à HUD outros visuais com cara de Tormenta 20, escolhidos no "Visua
   - Aventureiro: couro, fivelas de latão e bússola como cristal. Cuidado: é o mais genérico e o mais pesado.
   - Dos dois (e do Livro Básico): caixinhas claras com número escuro (as mais legíveis) e ícones de coração e gota nas barras.
 - **O que dá e o que não dá para ficar igual:** moldura, pontas, cristal, losangos, moldura do retrato e ícones são recortados do próprio conceito. As barras precisam do cheio e do vazio separados, e os números são texto. A tempestade do centro pode ter um giro ou pulso lento em CSS. Os atalhos mostram os ícones dos itens da ficha, não os do conceito.
+- [x] **0.4.0 codada (2026-11-18)**, falta testar no mundo (roteiro abaixo da tabela de medidas).
 - [x] Arte pedida ao ChatGPT e protótipo montado (2026-11-18): canvas "hud-t20 — temas Tempestade e Aventureiro" (https://claude.ai/artifact/1BhEQnLYj98yzFqEeEcmx1), pranchas `Tempestade.dc.html` e `Main.dc.html` (Aventureiro). O Daniel deu o ok para testar no mundo ("bora testar").
 
 ### Temas da HUD — arte e medidas (para codar a 0.4.0)
@@ -131,6 +133,27 @@ Como as molduras são uma imagem inteira (não 9 partes), o tema usa a parte de 
 - **Atenção ao que já foi aprovado:** na HUD, os 3 losangos são as **ações do turno** (padrão, movimento, reação), e as 4 caixinhas são Defesa, Deslocamento, Iniciativa e CD. No protótipo dos temas os losangos aparecem como Ataque/Magia/Cura ou Habilidade e a 3ª caixinha como condição, só como exemplo; no código vale o que já está aprovado. Os losangos desenhados na moldura não podem ficar "gastos" (cinza e riscados), então no código **cobrir os da moldura com os losangos soltos da folha** e aplicar o estado gasto neles. O olho da tempestade e a bússola fazem o papel do cristal ("Seu turno").
 - Barras: a cor sai do miolo das barras da folha (sem a moldura dourada dela, porque o trilho já está na moldura). No Aventureiro, os ícones de coração e gota vão no começo de cada barra.
 - Condições: continuam nos medalhões acima do painel.
+
+**Decisões do código da 0.4.0 (2026-11-18):**
+- Setting `visual` ganhou `tempestade` e `aventureiro` (as chaves `hud` e `tema` não mudaram). O tema da interface (`hud-t20-tema` no `body`) continua só com `tema`; os temas novos são "só a HUD". `visualDaHud()` devolve `classico`, `tempestade` ou `aventureiro`; `arte(nome)` dá o caminho da peça (clássico em `assets/`, temas em `assets/temas/<tema>/`). Trocar o visual chama `aplicarVisual()` e redesenha a HUD.
+- O painel ganha `data-visual` e, nos temas, a classe `hud-t20-arte`; o CSS dos temas fica em `styles/hud-temas.css`.
+- Faixa recortada da arte: Tempestade y 470–930, Aventureiro y 490–930 (1672 de largura), exibida a 50% (836 × 230 e 836 × 220). Posições no CSS = (px da arte − começo da faixa) ÷ 2.
+- Transparência da faixa: Aventureiro por GrabCut (`mascara-grabcut.py`); Tempestade por GrabCut + cor (o céu tem G ≈ 11–16 e R < 120; moldura e névoa passam disso) + polígono à mão nas garras da esquerda (`mascara-tempestade.py`). Peças da folha: `pecas-0.4.0.py`.
+- Losangos: padrão = espada, movimento = bandeira, reação = explosão (folha de cada tema). Fora de combate ficam como decoração apagada (`.hud-acoes.fora`), cobrindo os da arte.
+- Barras: o miolo da barra da folha (sem a moldura dourada) com `clip-path` pelo valor (não estica a textura); extra (PV/PM temporários) da direita, escurecido.
+- Cristal: nos temas a gema some; fica `.hud-gema .brilho` (círculo com `mix-blend-mode: screen`) sobre o olho/bússola, pulsando só no turno.
+- Conferido fora do Foundry com o template e o CSS reais (Playwright), em 1x e 2x, nos três visuais, em combate e fora.
+- Limite conhecido: a janela "Retrato da HUD" mostra a moldura clássica na prévia; nos temas a abertura tem outra proporção (Tempestade mais alta), então o enquadramento pode cortar um pouco diferente.
+
+## Roteiro de teste da 0.4.0 (mestre + jogador em aba anônima)
+1. Atualizar o módulo. Sem mexer em nada: tudo igual à 0.3.0.
+2. Mestre: "Visual do módulo" = "Tempestade Rubra (só a HUD)": a HUD troca na hora para os dois (sem recarregar) e o tema da interface sai. Conferir retrato, barras, caixinhas e atalhos dentro das caixas desenhadas.
+3. Passar o mouse nas 4 caixinhas e no retrato: tooltips como antes. Clicar na Iniciativa: rola como antes. Clicar no retrato: abre a ficha.
+4. Fora de combate: losangos apagados e sem clique. Iniciar combate: losangos acesos; usar uma magia de ação padrão gasta a espada; clicar num losango gasta ou devolve. No turno do personagem, o olho pulsa com "Seu turno".
+5. Arrastar item para um atalho, usar pela tecla e trocar de página (▲ 1 ▼ à direita dos atalhos).
+6. Clicar no céu/névoa em volta da HUD: o clique chega ao mapa (seleciona token, mede etc.).
+7. Repetir 2–6 com "Aventureiro do Reinado". Voltar para "Metal e rubi": a HUD clássica volta igual.
+8. Notebook (1366×768): a HUD encolhe para caber, como a clássica.
 
 ## Funções aprovadas
 - **Clique no retrato:** abre a ficha completa do sistema (`actor.sheet.render(true)`).
@@ -250,6 +273,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - [x] **0.2.3 (2026-11-18):** barras de PV/PM com a moldura numa camada por cima da cor (`.hud-trilho::after`; camadas fundo → cor → extra → moldura → número) e barra de extra (`attributes.pv.temp`/`pm.temp`) da direita para a esquerda, mais escura, proporcional ao máximo; mais espaço antes do "(+N)". Aprovado por prévia; conferido com o CSS real fora do Foundry. Conferido no mundo em 2026-11-18. Lição: a borda (`border-image`) de um elemento sempre fica atrás dos filhos; moldura que precisa cobrir o conteúdo vai num pseudo-elemento com `z-index`.
 - [x] **0.2.4 (2026-11-18):** cristal sem o "Aguardando": a legenda só aparece ("Seu turno") em combate, no turno do personagem; fora disso o cristal fica apagado e sem texto (o espaço da legenda continua reservado, para nada pular). Conferido no mundo em 2026-11-18.
 - [ ] **0.3.0 (2026-11-18):** tema da interface e configuração "Visual do módulo". Codada; falta o teste no mundo.
+- [ ] **0.4.0 (2026-11-18):** temas Tempestade Rubra e Aventureiro do Reinado no "Visual do módulo". Codada e conferida fora do Foundry; falta o teste no mundo.
 - [x] **0.2.5 (2026-11-18):** a HUD do jogador nunca some por falta de seleção. Jogador sem personagem atribuído fica no último personagem mostrado ou no primeiro dele (antes sumia ao trocar de ferramenta, porque a troca solta o token). Conferido no mundo em 2026-11-18.
 
 ## Decisões do código (0.1.0, 2026-11-17)
@@ -264,7 +288,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - Só há `lang/pt-BR.json`; ele também é registrado como `en` para não aparecerem chaves cruas num Foundry em inglês.
 
 ## Ideias futuras
-- Temas alternativos da HUD (Tempestade Rubra e Aventureiro), ver "Temas alternativos da HUD".
+- **Terceiro tema, "Mesa do grupo" (escolhido em 2026-11-18, ainda sem arte final):** no clima de capa de Heróis de Arton (alta fantasia heroica, luz dourada no centro contra sombras verde-azuladas). Conceito do ChatGPT escolhido: o 2º de 3 (retrato em quadro dourado, barras sobre couro e pele, escudo com sol no centro, rolo, mochila e machado antes dos 10 slots, losangos verde-azulados). Pedidos para a versão final: retrato, barras, caixinhas e slots vazios por dentro; sem os losangos desenhados (entram soltos); trecho entre o escudo e os slots mais compacto; fundo verde chapado; e folha de peças (miolo das barras, escudo, bota, ampulheta, estrela, coração, gota e 3 losangos). O sol do escudo faz o papel do cristal. Quando a arte chegar: recortar, medir, prévia e só depois o código.
 - Ícones próprios para condições e ações no mesmo estilo.
 
 ## Roteiro de teste da 0.1.0 (mestre + jogador em aba anônima)

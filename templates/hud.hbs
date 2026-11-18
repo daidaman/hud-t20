@@ -44,7 +44,7 @@
 
     {{#each recursos}}
     <div class="hud-recurso">
-      <span class="hud-recurso-rot">{{rotulo}}</span>
+      <span class="hud-recurso-rot">{{#if icone}}<img class="hud-recurso-ic" src="{{icone}}" alt="">{{/if}}<span class="hud-recurso-txt">{{rotulo}}</span></span>
       <div class="hud-trilho" role="meter" aria-label="{{rotulo}}" aria-valuemin="0" aria-valuemax="{{max}}" aria-valuenow="{{value}}">
         <div class="vazio"></div>
         <div class="cheio {{classe}}" style="--pct:{{pct}}"></div>
@@ -62,7 +62,7 @@
       {{else}}
       <div class="hud-mini hud-tem-tip" tabindex="0" aria-label="{{rotulo}}: {{valor}}">
       {{/if}}
-        <span class="val"><img src="modules/hud-t20/assets/{{icone}}" alt="">{{valor}}</span>
+        <span class="val"><img src="{{icone}}" alt="">{{valor}}</span>
         <div class="hud-tip" role="tooltip">
           <div class="cab"><span class="sec">{{rotulo}}</span><b>{{valor}}</b></div>
           <ul>
@@ -88,13 +88,21 @@
       {{#each acoes}}
       <button type="button" class="hud-acao {{#if meio}}meio{{/if}} {{#if gasta}}gasta{{/if}}" data-action="acao" data-acao="{{chave}}"
         aria-pressed="{{#if gasta}}true{{else}}false{{/if}}" aria-label="{{dica}}" data-tooltip="{{dica}}" {{#unless ../podeMarcar}}disabled{{/unless}}>
-        <img src="modules/hud-t20/assets/acao-{{chave}}.webp" alt="">
+        <img src="{{img}}" alt="">
       </button>
       {{/each}}
     </div>
     {{/if}}
+    {{#unless combate}}{{#if acoesDecorativas}}
+    {{!-- Temas (0.4.0): fora de combate, os losangos cobrem os desenhados na arte, apagados e sem clique --}}
+    <div class="hud-acoes fora" aria-hidden="true">
+      {{#each acoes}}<span class="hud-acao"><img src="{{img}}" alt=""></span>{{/each}}
+    </div>
+    {{/if}}{{/unless}}
     <div class="hud-gema {{#if vez}}vez{{/if}}" role="status">
-      <img src="modules/hud-t20/assets/gema.webp" alt="">
+      {{!-- Nos temas (0.4.0), o olho da tempestade e a bússola fazem o papel do cristal: só o brilho e a legenda --}}
+      <span class="brilho" aria-hidden="true"></span>
+      <img src="{{gema}}" alt="">
       <span class="leg">{{legendaGema}}</span>
     </div>
   </div>

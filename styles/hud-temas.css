@@ -1,0 +1,224 @@
+/* HUD de Tormenta 20 — temas alternativos da HUD (0.4.0): Tempestade Rubra e Aventureiro do Reinado.
+   Só valem com a classe .hud-t20-arte no #hud-t20; o tema vem de data-visual="tempestade" | "aventureiro"
+   (o script põe os dois a cada redesenho).
+
+   A moldura de cada tema é uma imagem inteira (não 9 partes), então o painel tem tamanho fixo: a faixa da HUD
+   recortada da arte (1672 px de largura) exibida a 50% (836 px), nítida em telas 2x. Cada peça vai por cima
+   na posição medida na arte (PROJETO.md, "Temas da HUD — arte e medidas"): px da arte − começo da faixa, ÷ 2.
+     Tempestade: faixa y 470–930 da arte → painel 836 × 230.
+     Aventureiro: faixa y 490–930 da arte → painel 836 × 220.
+   Os losangos desenhados na moldura ficam cobertos pelos losangos soltos da folha (que podem ficar "gastos"),
+   e o olho da tempestade / a bússola fazem o papel do cristal (brilho e legenda "Seu turno"). */
+
+#hud-t20.hud-t20-arte {
+  display: block;
+  width: 836px;
+  height: 230px;
+  gap: 0;
+  padding: 0;
+  margin: 0 auto 2px;
+  border: none;
+  border-image: none;
+  /* A faixa tem céu/névoa transparente em volta: só as peças recebem o mouse, o resto deixa clicar no mapa. */
+  pointer-events: none;
+}
+#hud-t20[data-visual="aventureiro"] { height: 220px; }
+
+#hud-t20.hud-t20-arte::before {
+  inset: 0;
+  box-shadow: none;
+  background: url("../assets/temas/tempestade/moldura.webp") 0 0 / 100% 100% no-repeat;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .55));
+}
+#hud-t20[data-visual="aventureiro"]::before { background-image: url("../assets/temas/aventureiro/moldura.webp"); }
+
+#hud-t20.hud-t20-arte :is(.hud-retrato, .hud-recurso, .hud-mini, .hud-cond, .hud-acao, .hud-atalhos) { pointer-events: auto; }
+
+/* ---------- Retrato: a moldura já está desenhada na arte ---------- */
+#hud-t20.hud-t20-arte .hud-retrato { position: absolute; margin: 0; }
+#hud-t20.hud-t20-arte .hud-retrato-moldura { display: none; }
+#hud-t20.hud-t20-arte .hud-retrato .hud-retrato-abertura { inset: 0; border-radius: 3px; }
+#hud-t20.hud-t20-arte .hud-retrato:hover .hud-retrato-abertura { box-shadow: inset 0 0 0 2px rgba(255, 214, 140, .55); }
+#hud-t20.hud-t20-arte .hud-retrato-ajustar { top: -4px; right: -4px; }
+#hud-t20[data-visual="tempestade"] .hud-retrato { left: 38px; top: 64px; width: 96px; height: 111px; }
+#hud-t20[data-visual="aventureiro"] .hud-retrato { left: 55px; top: 55px; width: 89px; height: 96px; }
+
+/* ---------- Status: cada peça em posição absoluta sobre a arte ---------- */
+#hud-t20.hud-t20-arte .hud-status {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  display: block;
+  pointer-events: none;
+}
+#hud-t20[data-visual="tempestade"] .hud-condicoes { left: 160px; top: 12px; }
+#hud-t20[data-visual="aventureiro"] .hud-condicoes { left: 170px; top: 2px; }
+
+/* Barras: a moldura (trilho) está na arte; a cor é o miolo da barra da folha, cortado (não esticado) pelo valor. */
+#hud-t20.hud-t20-arte .hud-recurso { position: absolute; display: block; gap: 0; }
+#hud-t20[data-visual="tempestade"] .hud-recurso:nth-of-type(1) { left: 158px; top: 72px; width: 176px; height: 17px; }
+#hud-t20[data-visual="tempestade"] .hud-recurso:nth-of-type(2) { left: 158px; top: 105px; width: 176px; height: 17px; }
+#hud-t20[data-visual="aventureiro"] .hud-recurso:nth-of-type(1) { left: 168px; top: 57px; width: 161px; height: 18px; }
+#hud-t20[data-visual="aventureiro"] .hud-recurso:nth-of-type(2) { left: 168px; top: 88px; width: 161px; height: 18px; }
+
+#hud-t20.hud-t20-arte .hud-trilho { position: absolute; inset: 0; height: auto; border: none; overflow: hidden; }
+#hud-t20[data-visual="tempestade"] .hud-trilho { border-radius: 9px; }
+#hud-t20[data-visual="aventureiro"] .hud-trilho { clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 50%, calc(100% - 7px) 100%, 7px 100%, 0 50%); }
+#hud-t20.hud-t20-arte .hud-trilho::after { display: none; }
+#hud-t20.hud-t20-arte .hud-trilho .vazio { inset: 0; background: rgba(10, 3, 5, .55); }
+#hud-t20.hud-t20-arte .hud-trilho :is(.cheio, .extra) {
+  inset: 0;
+  width: auto;
+  background-position: left center;
+  background-size: 100% 100%;
+  transition: clip-path .3s;
+}
+#hud-t20.hud-t20-arte .hud-trilho .cheio { clip-path: inset(0 calc(100% - var(--pct, 0) * 1%) 0 0); box-shadow: none; }
+#hud-t20.hud-t20-arte .hud-trilho .extra { clip-path: inset(0 0 0 calc(100% - var(--pct, 0) * 1%)); filter: brightness(.55) saturate(1.2); }
+#hud-t20[data-visual="tempestade"] .hud-trilho :is(.cheio, .extra).pv { background-image: url("../assets/temas/tempestade/barra-pv.webp"); }
+#hud-t20[data-visual="tempestade"] .hud-trilho :is(.cheio, .extra).pm { background-image: url("../assets/temas/tempestade/barra-pm.webp"); }
+#hud-t20[data-visual="aventureiro"] .hud-trilho :is(.cheio, .extra).pv { background-image: url("../assets/temas/aventureiro/barra-pv.webp"); }
+#hud-t20[data-visual="aventureiro"] .hud-trilho :is(.cheio, .extra).pm { background-image: url("../assets/temas/aventureiro/barra-pm.webp"); }
+/* Vermelho sobre vermelho apagava o PV no conceito: a barra ganha um contorno claro por dentro. */
+#hud-t20[data-visual="tempestade"] .hud-trilho .cheio { filter: drop-shadow(0 0 3px rgba(255, 90, 110, .65)); }
+
+#hud-t20.hud-t20-arte .hud-trilho .txt { justify-content: flex-end; padding-right: 9px; font: 700 12.5px/1 var(--hud-fonte-titulo); letter-spacing: .02em; }
+#hud-t20.hud-t20-arte .hud-trilho .txt small { font: 700 10.5px var(--hud-fonte-texto); }
+
+/* Rótulo PV/PM (Tempestade) ou coração e gota (Aventureiro), por cima da barra, à esquerda. */
+#hud-t20.hud-t20-arte .hud-recurso-rot {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  width: auto;
+  display: flex;
+  align-items: center;
+  font: 700 12px/1 var(--hud-fonte-titulo);
+  color: #FFE3E7;
+  text-shadow: 0 1px 2px #000, 0 0 4px #000;
+  pointer-events: none;
+}
+#hud-t20[data-visual="aventureiro"] .hud-recurso-rot { left: 1px; }
+#hud-t20[data-visual="aventureiro"] .hud-recurso-txt { display: none; }
+#hud-t20.hud-t20-arte .hud-recurso-ic { display: block; width: 19px; height: 19px; object-fit: contain; border: none; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .8)); }
+#hud-t20[data-visual="aventureiro"] .hud-recurso:nth-of-type(1) .hud-recurso-ic { width: 21px; height: 21px; }
+
+/* Caixinhas: ícone em cima, número embaixo, dentro das caixas desenhadas na arte. */
+#hud-t20.hud-t20-arte .hud-minis { position: absolute; inset: 0; display: block; margin: 0; }
+#hud-t20.hud-t20-arte :is(.hud-mini, button.hud-mini) {
+  position: absolute;
+  flex-direction: column;
+  gap: 1px;
+  width: 42px;
+  height: 31px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  box-shadow: none;
+}
+#hud-t20.hud-t20-arte .hud-mini .val { flex-direction: column; gap: 1px; font: 700 12.5px/1 var(--hud-fonte-titulo); }
+#hud-t20.hud-t20-arte .hud-mini .val img { width: 15px; height: 15px; object-fit: contain; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .6)); }
+#hud-t20.hud-t20-arte :is(.hud-mini, button.hud-mini):hover { background: rgba(255, 220, 150, .1); box-shadow: inset 0 0 0 1px rgba(255, 210, 120, .6); }
+#hud-t20.hud-t20-arte button.hud-mini .dado { right: 3px; top: 3px; width: 8px; height: 8px; }
+
+#hud-t20[data-visual="tempestade"] .hud-mini { top: 136px; }
+#hud-t20[data-visual="tempestade"] .hud-mini:nth-child(1) { left: 151px; }
+#hud-t20[data-visual="tempestade"] .hud-mini:nth-child(2) { left: 200px; }
+#hud-t20[data-visual="tempestade"] .hud-mini:nth-child(3) { left: 248px; }
+#hud-t20[data-visual="tempestade"] .hud-mini:nth-child(4) { left: 298px; }
+#hud-t20[data-visual="tempestade"] .hud-mini .val { color: #F6E7D2; text-shadow: 0 1px 2px #000; }
+#hud-t20[data-visual="tempestade"] :is(.hud-mini, button.hud-mini):hover { background: rgba(120, 10, 30, .5); box-shadow: inset 0 0 0 1px #ff4d6a, 0 0 10px rgba(255, 45, 79, .6); }
+
+/* Aventureiro: caixas claras com número escuro (as mais legíveis dos conceitos). */
+#hud-t20[data-visual="aventureiro"] :is(.hud-mini, button.hud-mini) { top: 122px; width: 37px; height: 33px; }
+#hud-t20[data-visual="aventureiro"] .hud-mini:nth-child(1) { left: 162px; }
+#hud-t20[data-visual="aventureiro"] .hud-mini:nth-child(2) { left: 210px; }
+#hud-t20[data-visual="aventureiro"] .hud-mini:nth-child(3) { left: 258px; }
+#hud-t20[data-visual="aventureiro"] .hud-mini:nth-child(4) { left: 305px; }
+#hud-t20[data-visual="aventureiro"] .hud-mini .val { color: #4A1A08; font-size: 12px; }
+#hud-t20[data-visual="aventureiro"] .hud-mini .val img { width: 16px; height: 16px; }
+#hud-t20[data-visual="aventureiro"] button.hud-mini .dado { color: #7a1414; opacity: .7; }
+#hud-t20[data-visual="aventureiro"] :is(.hud-mini, button.hud-mini):hover { background: rgba(255, 236, 190, .25); box-shadow: inset 0 0 0 1px #b8860b, 0 0 8px rgba(255, 210, 120, .7); }
+
+/* ---------- Turno: losangos soltos por cima dos desenhados; olho/bússola como cristal ---------- */
+#hud-t20.hud-t20-arte .hud-turno { position: absolute; inset: 0; display: block; pointer-events: none; }
+#hud-t20.hud-t20-arte .hud-acoes { position: absolute; inset: 0; display: block; margin: 0; z-index: 2; }
+#hud-t20.hud-t20-arte .hud-acao { position: absolute; transform: none; }
+#hud-t20.hud-t20-arte .hud-acao.meio { transform: none; }
+#hud-t20.hud-t20-arte .hud-acao img { filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .6)); }
+#hud-t20.hud-t20-arte .hud-acao:not(:disabled):hover img { filter: drop-shadow(0 0 8px rgba(255, 214, 110, .9)) brightness(1.15); }
+#hud-t20[data-visual="tempestade"] .hud-acao:not(:disabled):hover img { filter: drop-shadow(0 0 8px #ff2d4f) brightness(1.2); }
+/* Fora de combate: só decoração, apagados (não parecem ações disponíveis). */
+#hud-t20.hud-t20-arte .hud-acoes.fora .hud-acao { pointer-events: none; }
+#hud-t20.hud-t20-arte .hud-acoes.fora .hud-acao img { filter: grayscale(.7) brightness(.5) drop-shadow(0 2px 3px rgba(0, 0, 0, .6)); }
+#hud-t20.hud-t20-arte .hud-acao.gasta img { filter: grayscale(1) brightness(.4); opacity: 1; }
+#hud-t20.hud-t20-arte .hud-acao.gasta::after { left: 24%; right: 24%; height: 4px; margin-top: -2px; }
+
+/* Centros na arte: Tempestade (762, 700), (896, 700), (1030, 700); Aventureiro (740, 654), (845, 658), (950, 654). */
+#hud-t20[data-visual="tempestade"] .hud-acao { top: 78px; width: 74px; height: 74px; }
+#hud-t20[data-visual="tempestade"] .hud-acao:nth-child(1) { left: 344px; }
+#hud-t20[data-visual="tempestade"] .hud-acao:nth-child(2) { left: 411px; }
+#hud-t20[data-visual="tempestade"] .hud-acao:nth-child(3) { left: 478px; }
+#hud-t20[data-visual="aventureiro"] .hud-acao { top: 52px; width: 62px; height: 62px; }
+#hud-t20[data-visual="aventureiro"] .hud-acao:nth-child(1) { left: 339px; }
+#hud-t20[data-visual="aventureiro"] .hud-acao:nth-child(2) { left: 391.5px; top: 54px; }
+#hud-t20[data-visual="aventureiro"] .hud-acao:nth-child(3) { left: 444px; }
+
+#hud-t20.hud-t20-arte .hud-gema { position: absolute; inset: 0; width: auto; display: block; }
+#hud-t20.hud-t20-arte .hud-gema img { display: none; }
+#hud-t20.hud-t20-arte .hud-gema .brilho {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+#hud-t20[data-visual="tempestade"] .hud-gema .brilho {
+  left: 358px; top: 25px; width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(255, 70, 100, .75) 0%, rgba(220, 20, 50, .35) 45%, rgba(200, 16, 46, 0) 70%);
+}
+#hud-t20[data-visual="aventureiro"] .hud-gema .brilho {
+  left: 342px; top: 5px; width: 162px; height: 162px;
+  background: radial-gradient(circle, rgba(255, 236, 160, .8) 0%, rgba(255, 200, 90, .35) 45%, rgba(255, 190, 80, 0) 70%);
+}
+#hud-t20.hud-t20-arte .hud-gema.vez .brilho { animation: hud-t20-olho 1.8s ease-in-out infinite; }
+@keyframes hud-t20-olho {
+  0%, 100% { opacity: .25; transform: scale(.92); }
+  50% { opacity: .95; transform: scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #hud-t20.hud-t20-arte .hud-gema.vez .brilho { animation: none; opacity: .8; }
+}
+#hud-t20.hud-t20-arte .hud-gema .leg {
+  position: absolute;
+  z-index: 3;
+  transform: translateX(-50%);
+  font: 700 11px var(--hud-fonte-titulo);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+#hud-t20[data-visual="tempestade"] .hud-gema .leg { left: 448px; top: 160px; color: #FFE3E7; text-shadow: 0 0 6px #000, 0 0 10px #000; }
+#hud-t20[data-visual="aventureiro"] .hud-gema .leg { left: 422.5px; top: 120px; color: #FFF3D6; text-shadow: 0 1px 2px #3a1208, 0 0 6px #3a1208, 0 0 10px #3a1208; }
+
+/* ---------- Atalhos: a barra nativa dentro das caixas desenhadas ---------- */
+#hud-t20.hud-t20-arte .hud-atalhos { position: absolute; }
+#hud-t20[data-visual="tempestade"] .hud-atalhos { left: 573px; top: 69px; }
+#hud-t20[data-visual="aventureiro"] .hud-atalhos { left: 515px; top: 54px; }
+#hud-t20[data-visual="tempestade"] #hotbar #action-bar { grid-template-columns: repeat(5, 42px); grid-auto-rows: 43px; column-gap: 4.5px; row-gap: 8px; }
+#hud-t20[data-visual="aventureiro"] #hotbar #action-bar { grid-template-columns: repeat(5, 48px); grid-auto-rows: 49px; column-gap: 4px; row-gap: 4px; }
+#hud-t20.hud-t20-arte #hotbar .slot { width: auto; height: auto; background: none; border-radius: 4px; }
+#hud-t20.hud-t20-arte #hotbar .slot:not(.full) { opacity: 1; }
+#hud-t20.hud-t20-arte #hotbar .slot:not(.full) .key { opacity: .55; }
+#hud-t20.hud-t20-arte #hotbar .slot :is(img, .slot-icon) { inset: 5px; width: calc(100% - 10px); height: calc(100% - 10px); }
+#hud-t20[data-visual="aventureiro"] #hotbar .slot :is(img, .slot-icon) { inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); }
+#hud-t20.hud-t20-arte #hotbar .slot .key { top: 4px; left: 6px; }
+#hud-t20[data-visual="tempestade"] #hotbar .slot .key { color: #E7A7B1; }
+#hud-t20[data-visual="aventureiro"] #hotbar .slot .key { color: #E8C27A; }
+#hud-t20[data-visual="tempestade"] #hotbar .slot:hover { box-shadow: inset 0 0 0 2px #ff4d6a, 0 0 12px #ff2d4f; filter: none; }
+#hud-t20[data-visual="aventureiro"] #hotbar .slot:hover { box-shadow: inset 0 0 0 2px #ffd27a, 0 0 12px rgba(255, 210, 120, .7); filter: none; }
+#hud-t20.hud-t20-arte #hotbar :is(.slot.active, .slot.dragover) { box-shadow: inset 0 0 0 2px #fff0c0, 0 0 14px rgba(255, 220, 140, .8); }
+#hud-t20.hud-t20-arte #hotbar #hotbar-controls-right { margin-left: 2px; }
+#hud-t20.hud-t20-arte #hotbar #hotbar-page-controls :is(button, a, span, .page-number) { text-shadow: 0 1px 2px #000, 0 0 4px #000; }

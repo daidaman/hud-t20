@@ -16,6 +16,24 @@ const GASTO_POR_EXECUCAO = {
   reaction: ["reacao"]
 };
 
+/**
+ * Visual da HUD (0.4.0). "hud" e "tema" usam a arte de metal e rubi (o "tema" ainda veste a interface);
+ * "tempestade" e "aventureiro" trocam a moldura inteira da HUD pela arte do tema (styles/hud-temas.css).
+ */
+const ARTE_TEMAS = ["tempestade", "aventureiro"];
+const ICONES_STAT = { defesa: "ic-defesa", desloc: "ic-desloc", iniciativa: "ic-iniciativa", cd: "ic-cd" };
+
+/** Nome do visual em uso: "classico", "tempestade" ou "aventureiro". */
+function visualDaHud() {
+  const v = game.settings.get(MODULE_ID, "visual");
+  return ARTE_TEMAS.includes(v) ? v : "classico";
+}
+
+/** Caminho de uma peça de arte do visual em uso (o clássico fica direto em assets/). */
+function arte(nome, visual = visualDaHud()) {
+  return visual === "classico" ? `modules/${MODULE_ID}/assets/${nome}.webp` : `modules/${MODULE_ID}/assets/temas/${visual}/${nome}.webp`;
+}
+
 const t = (chave, dados) => (dados ? game.i18n.format(`HUDT20.${chave}`, dados) : game.i18n.localize(`HUDT20.${chave}`));
 const comSinal = (n) => (n > 0 ? `+${n}` : `${n}`);
 
@@ -256,7 +274,7 @@ function statDefesa(actor, rollData) {
 
   return {
     rotulo: t("Defesa"),
-    icone: "ic-defesa.webp",
+    icone: arte(ICONES_STAT.defesa),
     valor: String(def.value),
     linhas: fecharConta(linhas, def.value, { primeiraSemSinal: true })
   };
@@ -275,7 +293,7 @@ function statDeslocamento(actor, rollData) {
   const valor = andar.value ?? 0;
   return {
     rotulo: t("Deslocamento"),
-    icone: "ic-desloc.webp",
+    icone: arte(ICONES_STAT.desloc),
     valor: `${valor} ${unidade}`,
     linhas: fecharConta(linhas, valor, { formatar: fmt })
   };
@@ -297,7 +315,7 @@ function statIniciativa(actor, rollData, alvo) {
   const valor = inic.value ?? 0;
   return {
     rotulo: t("Iniciativa"),
-    icone: "ic-iniciativa.webp",
+    icone: arte(ICONES_STAT.iniciativa),
     valor: comSinal(valor),
     linhas: fecharConta(linhas, valor),
     clicavel: true,
@@ -318,7 +336,7 @@ function statCD(actor) {
   const magias = actor.itemTypes?.magia ?? [];
   const chave = sys.attributes?.conjuracao;
   if (!magias.length || !chave) {
-    return { rotulo: t("CD"), icone: "ic-cd.webp", valor: "—", linhas: [{ rot: t("SemMagias"), val: "", sub: "", ext: false }] };
+    return { rotulo: t("CD"), icone: arte(ICONES_STAT.cd), valor: "—", linhas: [{ rot: t("SemMagias"), val: "", sub: "", ext: false }] };
   }
   const meioNivel = Math.floor((sys.attributes.nivel?.value ?? 0) / 2);
   const atr = sys.atributos?.[chave]?.value ?? 0;
@@ -335,7 +353,7 @@ function statCD(actor) {
   );
   const extra = Math.max(0, ...magias.map((m) => Number(m.system.resistencia?.bonus) || 0));
   if (extra) linhas.push({ rot: t("BonusMagias"), val: `+${extra}`, sub: t("BonusMagiasDica"), ext: false });
-  return { rotulo: t("CD"), icone: "ic-cd.webp", valor: String(valor), linhas };
+  return { rotulo: t("CD"), icone: arte(ICONES_STAT.cd), valor: String(valor), linhas };
 }
 
 /** Nome legível para a chave de uma mudança de efeito (ex. system.pericias.inic.condi). */
@@ -381,14 +399,14 @@ function condicoesDoAtor(actor) {
     });
 }
 
-function recurso(rotulo, dados, classe) {
+function recurso(rotulo, dados, classe, icone = "") {
   const value = Number(dados?.value) || 0;
   const max = Number(dados?.max) || 0;
   const temp = Math.max(Number(dados?.temp) || 0, 0);
   const pct = max > 0 ? Math.clamp(Math.round((value / max) * 100), 0, 100) : 0;
   // Extra (PV/PM temporários): barra mais escura da direita para a esquerda, proporcional ao máximo.
   const tempPct = max > 0 ? Math.clamp(Math.round((temp / max) * 1000) / 10, 0, 100) : (temp > 0 ? 100 : 0);
-  return { rotulo, value, max, pct, temp, tempPct, classe };
+  return { rotulo, value, max, pct, temp, tempPct, classe, icone };
 }
 
 /* -------------------------------------------- */
@@ -429,8 +447,13 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
     const vez = !!emCombate && eDoAlvo(emCombate.combat.combatant, this.alvo);
 
     const retrato = retratoDoAtor(actor);
+    const visual = visualDaHud();
+    // Coração e gota no começo das barras só no Aventureiro (no Tempestade fica o texto PV/PM).
+    const iconeBarra = (n) => (visual === "aventureiro" ? arte(n, visual) : "");
 
     return {
+      visual,
+      gema: arte("gema", "classico"),
       ator: { nome: actor.name, nivelTxt: t("Nivel", { nivel }) },
       retrato: {
         ...retrato,
@@ -444,15 +467,19 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
         dicaDireitoSub: t("Retrato.DireitoSub")
       },
       rotuloMudancas: t("Mudancas"),
-      recursos: [recurso(t("PV"), sys.attributes?.pv, "pv"), recurso(t("PM"), sys.attributes?.pm, "pm")],
+      recursos: [
+        recurso(t("PV"), sys.attributes?.pv, "pv", iconeBarra("ic-coracao")),
+        recurso(t("PM"), sys.attributes?.pm, "pm", iconeBarra("ic-gota"))
+      ],
       stats: [statDefesa(actor, rollData), statDeslocamento(actor, rollData), statIniciativa(actor, rollData, this.alvo), statCD(actor)],
       condicoes: condicoesDoAtor(actor),
       combate: !!emCombate,
+      acoesDecorativas: visual !== "classico",
       podeMarcar: !!emCombate?.combatant.canUserModify(game.user, "update"),
       acoes: ACOES.map((chave) => {
         const acao = t(`Acao.${chave}`);
         const estado = g[chave] ? t("Acao.Gasta") : t("Acao.Disponivel");
-        return { chave, meio: chave === "movimento", gasta: g[chave], dica: t("Acao.Dica", { acao, estado }) };
+        return { chave, img: arte(`acao-${chave}`, visual), meio: chave === "movimento", gasta: g[chave], dica: t("Acao.Dica", { acao, estado }) };
       }),
       vez,
       legendaGema: t("Turno.Seu")
@@ -474,6 +501,9 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
   async _onRender(context, options) {
     await super._onRender(context, options);
     this.element.style.setProperty("--hud-t20-escala", game.settings.get(MODULE_ID, "escala"));
+    // Visual da HUD (0.4.0): o CSS de cada tema vale só com este atributo.
+    this.element.dataset.visual = context.visual;
+    this.element.classList.toggle("hud-t20-arte", context.visual !== "classico");
     // Botão direito no retrato abre o ajuste (o botão direito dos atalhos continua o nativo).
     this.element.querySelector(".hud-retrato")?.addEventListener("contextmenu", (event) => {
       event.preventDefault();
@@ -976,12 +1006,18 @@ Hooks.once("init", () => {
     scope: "world",
     config: true,
     type: String,
+    // As chaves "hud" e "tema" vêm da 0.3.0 e não mudam (mundos já configurados continuam iguais).
     choices: {
       hud: "HUDT20.Config.VisualHud",
-      tema: "HUDT20.Config.VisualTema"
+      tema: "HUDT20.Config.VisualTema",
+      tempestade: "HUDT20.Config.VisualTempestade",
+      aventureiro: "HUDT20.Config.VisualAventureiro"
     },
     default: "hud",
-    onChange: () => aplicarVisual()
+    onChange: () => {
+      aplicarVisual();
+      atualizar();
+    }
   });
   game.settings.register(MODULE_ID, "mostrar", {
     name: "HUDT20.Config.Mostrar",

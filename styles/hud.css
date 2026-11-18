@@ -176,6 +176,7 @@ img.hud-t20-enq {
 #hud-t20 .hud-cond > img { width: 19px; height: 19px; border: none; }
 
 #hud-t20 .hud-recurso { display: flex; align-items: center; gap: 6px; }
+#hud-t20 .hud-recurso-ic { display: none; }
 #hud-t20 .hud-recurso-rot { width: 24px; font: 700 13px var(--hud-fonte-titulo); color: var(--hud-ouro-2); }
 #hud-t20 .hud-trilho {
   position: relative;
@@ -350,6 +351,7 @@ img.hud-t20-enq {
 }
 
 #hud-t20 .hud-gema { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 62px; }
+#hud-t20 .hud-gema .brilho { display: none; } /* 0.4.0: só nos temas (styles/hud-temas.css) */
 #hud-t20 .hud-gema img { width: 36px; height: auto; border: none; transition: filter .3s; }
 #hud-t20 .hud-gema .leg { font: 700 10px var(--hud-fonte-titulo); letter-spacing: .04em; color: #9C8A6A; white-space: nowrap; }
 #hud-t20 .hud-gema.vez img { animation: hud-t20-pulso 1.6s ease-in-out infinite; }
