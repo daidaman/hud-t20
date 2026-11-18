@@ -36,7 +36,7 @@ Painel único, centralizado embaixo e sem ponteiras nas pontas. Da esquerda para
    - Aceso: disponível. Apagado e riscado: gasto. A ação completa apaga padrão e movimento.
    - Padrão e movimento recarregam no início do turno do personagem; a reação, no início da rodada.
    - Fora de combate, os losangos somem.
-   - Arte: pedida ao ChatGPT (`acoes.png`), com o estado gasto feito em CSS.
+   - Arte: `assets/acao-padrao.webp`, `acao-movimento.webp`, `acao-reacao.webp` (original em `arte-original/acoes.png`). O estado gasto é feito em CSS (cinza + risco vermelho).
 5. **Atalhos:** 10 slots em 2 fileiras de 5 (1–5 e 6–0), com o número no canto. Os vazios ficam apagados.
 
 **Chat (fica para o módulo do tema):** cartão com cabeçalho de metal, emblema redondo do autor, corpo de pergaminho e rodapé com um rubi, como no conceito do Gemini. A caixa de mensagem fica com a mesma moldura. Vale tanto para a barra lateral aberta quanto recolhida (mensagens flutuantes).
@@ -98,7 +98,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 1. [x] **Nome e id:** `hud-t20`.
 2. [x] **Inspeção no mundo de teste** (2026-11-17): CD, condição e combate confirmados. Falta só ver uma armadura equipada na Defesa, o que dá para conferir já com o código rodando.
 3. [ ] **De quem é a HUD.** Proposta, a confirmar: o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
-4. [ ] **Ações do turno:** receber a arte `acoes.png` e incluir no protótipo. Na inspeção, ver onde o T20 guarda o tipo de execução do item (padrão, movimento, completa, reação, livre).
+4. [ ] **Ações do turno:** arte recebida e no protótipo. Falta, na inspeção, ver onde o T20 guarda o tipo de execução do item (padrão, movimento, completa, reação, livre).
 5. [ ] **Novo pergaminho** para o chat: marfim acinzentado, com fibras e manchas suaves, como no conceito. O atual ficou amarelo demais. O prompt está na conversa de 2026-11-17. Quando chegar, substituir `assets/pergaminho.webp`.
 6. [ ] **Combate:** como detectar o turno do personagem para o cristal (`game.combat`, hook `updateCombat`).
 
