@@ -3,14 +3,14 @@
 Diário do projeto. Primeiro arquivo a ler numa conversa nova.
 
 ## Objetivo
-Uma barra fixa na parte de baixo da tela do Foundry VTT v13 (build 346) com o essencial do personagem para o combate de Tormenta 20 (sistema `tormenta20`), no visual "metal escuro, filete dourado e rubi", e um tema que deixa o chat e a interface nativa no mesmo estilo.
+Uma barra fixa na parte de baixo da tela do Foundry VTT v13 (build 351, o único disponível no servidor) com o essencial do personagem para o combate de Tormenta 20 (sistema `tormenta20`), no visual "metal escuro, filete dourado e rubi", e um tema que deixa o chat e a interface nativa no mesmo estilo.
 
 - **Mesa:** RPG dos Amiguinhos. Os testes são feitos no mundo de teste do limaserver e o envio é por FileZilla para `Data/modules/<id>/`.
 - **Uso:** privado, só para a mesa. As artes foram geradas por IA (ChatGPT) e não serão divulgadas.
 
 ## Nome e id
-- **A definir antes do primeiro código.** O id nunca muda depois de instalado.
-- Sugestões: `t20-hud` (HUD) e `t20-tema-rubi` (tema).
+- **HUD: `hud-t20`** (decidido em 2026-11-17). O id nunca muda depois de instalado.
+- Tema: id a definir quando o repositório dele for criado.
 
 ## Estrutura (decidido em 2026-11-17)
 Os dois são módulos separados, porque um mestre pode querer um sem o outro:
@@ -53,21 +53,47 @@ Painel único, centralizado embaixo e sem ponteiras nas pontas. Da esquerda para
   - O mesmo vale para Defesa, Deslocamento e Iniciativa, e o tooltip também abre pelo teclado.
 - **Condições:** vêm dos efeitos ativos do token.
 
+## Inspeção do mundo de teste (2026-11-17)
+Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (character, nível 0, sem magias). Módulos ativos: bando-da-raposa 2.0.3, decreto-do-panteao 1.1.0, dice-calculator, dice-so-nice, vision-t20.
+
+**Caminhos dos dados (`actor.system`):**
+| Dado | Caminho | Parcelas guardadas? |
+|---|---|---|
+| PV | `attributes.pv.value` / `.max` / `.temp` | — |
+| PM | `attributes.pm.value` / `.max` / `.temp` | — |
+| Nível | `attributes.nivel.value` (também `actor.nivel`) | — |
+| Defesa | `attributes.defesa.value` | Sim: `base` (10), `atributo` (chave, ex. `des`), `outros`, `condi`, `pda`, `bonus[]`. Armadura e escudo vêm dos itens equipados (`system.armadura.value`); armadura pesada não soma o atributo. |
+| Deslocamento | `attributes.movement.walk.value` (unidade em `movement.unit`, "m") | Sim: `walk.base` + `walk.bonus[]`. Também `fly`, `swim`, `climb`, `burrow`. |
+| Iniciativa | `pericias.inic.value` | Sim: `atributo`, `treinado`, `condi`, `outros`, `bonus[]`; treino em `attributes.treino` (2/4/6). |
+| CD das magias | `attributes.cd` | **Não.** O sistema guarda só `10 + metade do nível`; o atributo de conjuração fica em `attributes.conjuracao` (ex. `int`) e é somado em outro ponto. **A confirmar com um conjurador de nível > 0 e uma magia.** |
+| Atributos | `atributos.<for/des/con/int/sab/car>.value` | `base`, `racial`, `bonus` |
+
+**Atalhos:** o sistema já tem um hook `hotbarDrop` que cria macro para `Item` e `ActiveEffect` (`createT20Macro`). O módulo **não precisa tratar o drop**, só restilizar a `#hotbar` nativa (`aside#hotbar > menu#action-bar > li.slot[data-slot]`, com `.full`/`.open` e `span.key`).
+
+**Condições:**
+- Lista em `CONFIG.statusEffects` (38), com `id`, `name`, `img` em `systems/tormenta20/icons/conditions/<id>.svg`, `changes` e `flags.tormenta20` (`condition: true`, `category`, `stack`, `durationScene`). Origem: `CONFIG.T20.conditions`.
+- No ator, a condição é um ActiveEffect com `statuses` (ex. `["sangrando"]`) e `flags.tormenta20.condition`.
+- Efeitos de melhorias (Bando/Hayd, ex. "Macabro") também ficam em `actor.effects`, mas com `isSuppressed: true`. **A HUD mostra só efeitos ativos com `statuses` ou `flags.tormenta20.condition`**, para não encher a barra de encantos.
+- As condições não têm texto de descrição no sistema; o tooltip vai mostrar o nome e as mudanças (`changes`), a menos que a gente escreva os textos no `lang/`.
+
+**Rolagens no chat:** classe `RollT20`; `roll.options.type` = `attack` / `damage` (e `title`). As flags ficam em `flags.tormenta20` (`itemData` com `criticoM`/`criticoX`, `effects`, `onUseEffects`). Não há flag pronta de crítico: compara o d20 com `itemData.criticoM`. O cartão usa `div.tormenta20.chat-card.item-card`.
+
+**Combate:** o sistema já escuta `updateCombat` (re-render das fichas e efeitos de turno). A HUD usa `game.combat.combatant?.actor` para o cristal. Ainda não foi testado com combate ativo.
+
+**Escala:** `core.uiConfig.uiScale` (1 no mundo de teste) e `fontScale`.
+
 ## Pendências (resolver nesta ordem)
-1. [ ] **Nome e id** dos módulos.
-2. [ ] **Inspeção no mundo de teste**, antes de escrever a lógica, documentando aqui o que for encontrado:
-   - [ ] Caminhos dos dados no ator do `tormenta20`: PV, PM, Defesa, Deslocamento, Iniciativa e CD das magias.
-   - [ ] Se o sistema guarda as parcelas de Defesa e CD (para o tooltip) ou só o total. Se for só o total, o módulo recalcula pelas regras e mostra a diferença como "outros bônus".
-   - [ ] Se arrastar item ou magia para a barra já cria macro no T20. Se não criar, o módulo trata o drop.
-   - [ ] Como as condições aparecem (ActiveEffects e statuses) e onde ficam os ícones delas.
-   - [ ] Formato das rolagens no chat (`message.rolls` e flags do sistema), necessário para o tema.
+1. [x] **Nome e id:** `hud-t20`.
+2. [ ] **Fechar a inspeção** com um personagem de nível > 0 que tenha magia, armadura e uma condição no token:
+   - [ ] Confirmar a conta da CD (`attributes.cd` + atributo de conjuração + bônus?).
+   - [ ] Ver uma condição real no token e testar o cristal com um combate ativo.
 3. [ ] **De quem é a HUD.** Proposta, a confirmar: o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
 4. [ ] **Ação padrão e movimento** no turno: mostrar ou não? Ficou sem resposta.
 5. [ ] **Novo pergaminho** para o chat: marfim acinzentado, com fibras e manchas suaves, como no conceito. O atual ficou amarelo demais. O prompt está na conversa de 2026-11-17. Quando chegar, substituir `assets/pergaminho.webp`.
 6. [ ] **Combate:** como detectar o turno do personagem para o cristal (`game.combat`, hook `updateCombat`).
 
 ## Plano técnico (v13)
-- **Estrutura:** `module.json` (`compatibility` minimum 13, verified 13.346), `scripts/main.mjs`, `templates/hud.hbs`, `styles/hud.css`, `lang/pt-BR.json` e `assets/`.
+- **Estrutura:** `module.json` (`compatibility` minimum 13, verified 13.351), `scripts/main.mjs`, `templates/hud.hbs`, `styles/hud.css`, `lang/pt-BR.json` e `assets/`.
 - **Painel:**
   - `ApplicationV2` com `HandlebarsApplicationMixin`, sem moldura de janela.
   - Fica preso embaixo da tela, junto à barra nativa (`#hotbar`), que é reposicionada e restilizada por CSS em 2×5.
