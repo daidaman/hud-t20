@@ -1,9 +1,13 @@
 {
   "id": "hud-t20",
   "title": "HUD de Tormenta 20",
-  "description": "Barra fixa embaixo da tela com o essencial do personagem para o combate de Tormenta 20: retrato, PV e PM, Defesa, Deslocamento, Iniciativa, CD das magias, condições, ações do turno e atalhos.",
-  "version": "0.2.5",
-  "authors": [{ "name": "Daniel" }],
+  "description": "Barra fixa embaixo da tela com o essencial do personagem para o combate de Tormenta 20 (retrato, PV e PM, Defesa, Deslocamento, Iniciativa, CD das magias, condições, ações do turno e atalhos) e, se o mestre ligar, um tema de Arton para o chat e a interface.",
+  "version": "0.3.0",
+  "authors": [
+    {
+      "name": "Daniel"
+    }
+  ],
   "compatibility": {
     "minimum": "13",
     "verified": "13.351"
@@ -13,14 +17,29 @@
       {
         "id": "tormenta20",
         "type": "system",
-        "compatibility": { "minimum": "1.5.0" }
+        "compatibility": {
+          "minimum": "1.5.0"
+        }
       }
     ]
   },
-  "esmodules": ["scripts/main.mjs"],
-  "styles": ["styles/hud.css"],
+  "esmodules": [
+    "scripts/main.mjs"
+  ],
+  "styles": [
+    "styles/hud.css",
+    "styles/tema.css"
+  ],
   "languages": [
-    { "lang": "pt-BR", "name": "Português (Brasil)", "path": "lang/pt-BR.json" },
-    { "lang": "en", "name": "English", "path": "lang/pt-BR.json" }
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/pt-BR.json"
+    }
   ]
 }

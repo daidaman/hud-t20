@@ -1,0 +1,450 @@
+/* Tema da interface (0.3.0) — parte 2 do hud-t20.
+   Só vale com a classe "hud-t20-tema" no <body> (configuração "Visual do módulo" = HUD e tema).
+   Só CSS: não troca lógica nenhuma do Foundry. O script só acrescenta o emblema do autor e o nome
+   do jogador no cabeçalho das mensagens (escondidos quando o tema está desligado).
+   Medidas do protótipo aprovado "Arton UI — protótipo 0.1.0" (2026-11-18). */
+
+/* Peças que o script acrescenta: escondidas sem o tema. */
+.hud-t20-emblema,
+.hud-t20-jogador { display: none; }
+
+body.hud-t20-tema {
+  --arton-ouro: #F3DDA0;
+  --arton-ouro-2: #E8D6AE;
+  --arton-ouro-3: #bda67c;
+  --arton-bronze: #5a4630;
+  --arton-rubi: #C0262B;
+  --arton-tinta: #2b2118;
+  --arton-titulo: "Cinzel", "Signika", serif;
+  --arton-texto: "Alegreya Sans", "Signika", sans-serif;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Metal com moldura rente                                           */
+/*  A moldura-painel tem margem transparente fora da linha dourada:    */
+/*  o fundo vai num ::before recuado 4 px 3 px e a moldura num ::after */
+/*  por cima, para não sobrar fundo fora da linha.                     */
+/* ------------------------------------------------------------------ */
+body.hud-t20-tema #players,
+body.hud-t20-tema #scene-navigation li.scene,
+body.hud-t20-tema #sidebar-content,
+body.hud-t20-tema #chat-controls {
+  position: relative;
+  isolation: isolate;
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+body.hud-t20-tema #players::before,
+body.hud-t20-tema #scene-navigation li.scene::before,
+body.hud-t20-tema #sidebar-content::before,
+body.hud-t20-tema #chat-controls::before {
+  content: "";
+  position: absolute;
+  inset: 4px 3px;
+  z-index: -1;
+  background: url("../assets/fundo-painel.webp") center / 220px repeat;
+  border-radius: 0;
+}
+body.hud-t20-tema #players::after,
+body.hud-t20-tema #scene-navigation li.scene::after,
+body.hud-t20-tema #sidebar-content::after,
+body.hud-t20-tema #chat-controls::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-style: solid;
+  border-width: 14px;
+  border-image: url("../assets/moldura-painel.webp") 50 / 14px stretch;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Botões (controles de cena, abas da barra lateral, chat)           */
+/* ------------------------------------------------------------------ */
+body.hud-t20-tema .ui-control {
+  box-sizing: border-box;
+  border: 1px solid var(--arton-bronze);
+  border-radius: 6px;
+  color: var(--arton-ouro-2);
+  background: url("../assets/slot.webp") center / 100% 100% no-repeat,
+    radial-gradient(circle, #2c2620 0%, #120f0c 75%);
+  box-shadow: none;
+}
+body.hud-t20-tema .ui-control:hover {
+  color: var(--arton-ouro);
+  border-color: #a8875a;
+}
+body.hud-t20-tema .ui-control:focus-visible {
+  outline: 2px solid var(--arton-ouro);
+  outline-offset: 2px;
+}
+body.hud-t20-tema .ui-control.active,
+body.hud-t20-tema .ui-control[aria-pressed="true"] {
+  color: #fff;
+  border-color: var(--arton-rubi);
+  box-shadow: 0 0 0 1px var(--arton-rubi), 0 0 12px rgba(192, 38, 43, .6), inset 0 0 10px rgba(192, 38, 43, .45);
+}
+
+/* As cenas da navegação também são .ui-control, mas usam a moldura de metal. */
+body.hud-t20-tema #scene-navigation li.scene {
+  height: 38px;
+  box-sizing: border-box;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: 0;
+  font: 600 14px var(--arton-titulo);
+  letter-spacing: .02em;
+  color: #cdb98f;
+}
+body.hud-t20-tema #scene-navigation li.scene:hover { color: var(--arton-ouro); }
+body.hud-t20-tema #scene-navigation li.scene.view,
+body.hud-t20-tema #scene-navigation li.scene.active {
+  color: var(--arton-ouro);
+  box-shadow: inset 0 -2px 0 var(--arton-rubi);
+}
+body.hud-t20-tema #scene-navigation .scene-players {
+  position: absolute;
+  left: 50%;
+  bottom: -11px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+}
+body.hud-t20-tema #scene-navigation .scene-player {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  font: 700 9px/15px var(--arton-texto);
+  text-align: center;
+  color: #fff;
+  border: none;
+  box-shadow: 0 0 0 1.5px #1a1410;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Jogadores                                                          */
+/* ------------------------------------------------------------------ */
+body.hud-t20-tema #players {
+  width: max-content;
+  padding: 9px 14px 10px 12px;
+  font-family: var(--arton-texto);
+  color: var(--arton-ouro-2);
+}
+body.hud-t20-tema #players h3,
+body.hud-t20-tema #players-expand {
+  font: 700 14px var(--arton-titulo);
+  color: var(--arton-ouro);
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+body.hud-t20-tema #players .player {
+  font-size: 14px;
+  line-height: 1.55;
+  white-space: nowrap;
+  color: var(--arton-ouro-2);
+}
+body.hud-t20-tema #players .player:not(.active) { color: #8d7c60; }
+body.hud-t20-tema #players .player-active {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 0 0 1px #000;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Barra lateral e chat                                               */
+/* ------------------------------------------------------------------ */
+body.hud-t20-tema #sidebar-content { padding: 10px 8px 8px; }
+body.hud-t20-tema #sidebar-content > .tab { background: none; }
+
+/* Espaço para o emblema (que sai uns 8 px para a esquerda da mensagem) e para a ponta
+   do cabeçalho (14 px para a direita). */
+body.hud-t20-tema .chat-log {
+  padding: 6px 16px 4px 14px;
+}
+
+body.hud-t20-tema .chat-message {
+  position: relative;
+  margin: 0 14px 14px 0;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--arton-tinta);
+  font-family: var(--arton-texto);
+}
+
+/* Cabeçalho de metal: 36 px, 19 px mais largo que o corpo (5 à esquerda, 14 à direita). */
+body.hud-t20-tema .chat-message .message-header {
+  position: relative;
+  z-index: 2;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  height: 36px;
+  width: calc(100% + 19px);
+  margin: 0 0 0 -5px;
+  box-sizing: border-box;
+  padding: 3px 0 0 18px;
+  border-style: solid;
+  border-width: 0 30px;
+  border-image: url("../assets/chat-cabecalho.webp") 0 80 fill / 0 30px stretch;
+  background: none;
+}
+body.hud-t20-tema .chat-message .message-sender {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font: 700 12px/1.1 var(--arton-titulo);
+  color: var(--arton-ouro);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.hud-t20-tema .chat-message .message-sender img { display: none; }
+body.hud-t20-tema .hud-t20-jogador {
+  display: block;
+  font: 500 10.5px/1.2 var(--arton-texto);
+  color: var(--arton-ouro-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.hud-t20-tema .chat-message .message-metadata {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--arton-ouro-3);
+  white-space: nowrap;
+}
+body.hud-t20-tema .chat-message .message-metadata a,
+body.hud-t20-tema .chat-message .message-metadata button {
+  color: var(--arton-ouro-3);
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+body.hud-t20-tema .chat-message .message-metadata a:hover,
+body.hud-t20-tema .chat-message .message-metadata button:hover { color: var(--arton-ouro); }
+
+/* Emblema do autor: 46 × 47 px, 33 px para fora do começo da barra e 6 px acima. */
+body.hud-t20-tema .hud-t20-emblema {
+  display: block;
+  position: absolute;
+  left: -33px;
+  top: -6px;
+  width: 46px;
+  height: 47px;
+  pointer-events: none;
+}
+body.hud-t20-tema .hud-t20-emblema .hud-t20-emblema-moldura {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+body.hud-t20-tema .hud-t20-emblema .hud-t20-emblema-rosto {
+  position: absolute;
+  left: 3.5%;
+  top: 7%;
+  width: 93%;
+  height: 90%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hud-t20-cor, #555) center / cover no-repeat;
+  font: 700 16px var(--arton-titulo);
+  color: #fff;
+}
+
+/* Corpo de pergaminho: borda só nas laterais; sobe 5 px por baixo do cabeçalho. */
+body.hud-t20-tema .chat-message .message-content {
+  position: relative;
+  z-index: 1;
+  margin-top: -5px;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--arton-tinta);
+  background: url("../assets/pergaminho.webp") center / 256px repeat;
+  border: 1px solid #6b5536;
+  border-top: 0;
+  border-bottom: 0;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, .5);
+}
+body.hud-t20-tema .chat-message .message-content p { margin: 0 0 4px; }
+body.hud-t20-tema .chat-message .message-content p:last-child { margin-bottom: 0; }
+body.hud-t20-tema .chat-message .message-content a:not(.content-link):not(.inline-roll) { color: #8a1c1c; }
+body.hud-t20-tema .chat-message .message-content a:not(.content-link):not(.inline-roll):hover { color: #5e1010; }
+
+/* Rodapé: rubi separado da linha, 18 px, com o centro da linha na borda de baixo do cartão. */
+body.hud-t20-tema .chat-message::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  bottom: -9px;
+  height: 18px;
+  pointer-events: none;
+  background:
+    url("../assets/rodape-gema.webp") center / auto 18px no-repeat,
+    url("../assets/rodape-linha.webp") left center / calc(50% - 8px) 18px no-repeat,
+    url("../assets/rodape-linha.webp") right center / calc(50% - 8px) 18px no-repeat;
+}
+
+/* Sussurro: corpo azulado e etiqueta "Sussurro para…" (o script tira a etiqueta do cabeçalho). */
+body.hud-t20-tema .chat-message.whisper .message-content,
+body.hud-t20-tema .chat-message.blind .message-content {
+  background:
+    linear-gradient(rgba(120, 140, 170, .14), rgba(120, 140, 170, .14)),
+    url("../assets/pergaminho.webp") center / 256px repeat;
+}
+body.hud-t20-tema .chat-message .whisper-to {
+  display: inline-block;
+  margin: 0 0 5px;
+  padding: 1px 7px;
+  border-radius: 3px;
+  background: #2e3a4a;
+  color: #cfdbe9;
+  font-size: 11.5px;
+}
+body.hud-t20-tema .chat-message .flavor-text {
+  display: block;
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: #5f4c33;
+}
+
+/* Rolagens do core e do sistema. Os cartões do Decreto do Panteão e do Bando da Raposa
+   (.hud-t20-externo) ficam como estão: só ganham o cabeçalho e o emblema. */
+body.hud-t20-tema .chat-message:not(.hud-t20-externo) .dice-roll { margin-top: 6px; }
+body.hud-t20-tema .chat-message:not(.hud-t20-externo) .dice-flavor {
+  font-size: 12px;
+  color: #5f4c33;
+  margin-bottom: 2px;
+  border: none;
+}
+body.hud-t20-tema .chat-message:not(.hud-t20-externo) .dice-formula {
+  border: 1px solid #b49a6c;
+  border-radius: 4px 4px 0 0;
+  background: rgba(255, 250, 235, .45);
+  text-align: center;
+  font-size: 13px;
+  color: #3a2c1e;
+  padding: 2px 0;
+  margin: 0;
+  box-shadow: none;
+}
+body.hud-t20-tema .chat-message:not(.hud-t20-externo) .dice-tooltip {
+  color: var(--arton-tinta);
+}
+body.hud-t20-tema .chat-message:not(.hud-t20-externo) .dice-total {
+  border: 1px solid #b49a6c;
+  border-top: 0;
+  border-radius: 0 0 4px 4px;
+  background: rgba(255, 250, 235, .25);
+  text-align: center;
+  font: 700 22px/1.25 var(--arton-titulo);
+  color: var(--arton-tinta);
+  box-shadow: none;
+  margin: 0;
+}
+body.hud-t20-tema .chat-message:not(.hud-t20-externo) .dice-total.critical { color: #2b6a27; }
+body.hud-t20-tema .chat-message:not(.hud-t20-externo) .dice-total.fumble { color: #9a1a1a; }
+
+/* Cartão de item/perícia do sistema tormenta20 (div.tormenta20.chat-card.item-card). */
+body.hud-t20-tema .chat-message .tormenta20.chat-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px;
+  padding: 0;
+  border: none;
+  background: none;
+}
+body.hud-t20-tema .chat-message .tormenta20.chat-card .card-header img {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #6b5536;
+  border-radius: 4px;
+  background: #2a221a;
+}
+body.hud-t20-tema .chat-message .tormenta20.chat-card .card-header h3 {
+  margin: 0;
+  border: none;
+  font: 700 15px var(--arton-titulo);
+  color: #3a1a10;
+}
+body.hud-t20-tema .chat-message .tormenta20.chat-card .card-content {
+  font-size: 13px;
+  color: #4a3a28;
+}
+body.hud-t20-tema .chat-message .tormenta20.chat-card .card-footer {
+  font-size: 12px;
+  color: #5f4c33;
+  border-top: 1px solid rgba(107, 85, 54, .35);
+  padding-top: 4px;
+  margin-top: 4px;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Controles do chat e caixa de mensagem                              */
+/* ------------------------------------------------------------------ */
+body.hud-t20-tema #chat-controls {
+  padding: 8px 10px;
+  gap: 6px;
+}
+body.hud-t20-tema #chat-controls select {
+  height: 32px;
+  border: 1px solid var(--arton-bronze);
+  border-radius: 5px;
+  background: #1b1612;
+  color: var(--arton-ouro-2);
+  font: 500 13.5px var(--arton-texto);
+}
+
+/* Caixa de mensagem: pergaminho dentro da moldura de 12 px (vale com a barra aberta ou recolhida). */
+body.hud-t20-tema #chat-message {
+  box-sizing: border-box;
+  min-height: 88px;
+  padding: 0 4px;
+  border-style: solid;
+  border-width: 12px;
+  border-image: url("../assets/moldura-painel.webp") 50 / 12px stretch;
+  background: url("../assets/pergaminho.webp") center / 256px repeat;
+  background-clip: padding-box;
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
+  font: 400 14px var(--arton-texto);
+  color: var(--arton-tinta);
+  resize: none;
+}
+body.hud-t20-tema #chat-message::placeholder {
+  color: #6b5a44;
+  font-style: italic;
+}
+body.hud-t20-tema #chat-message:focus-visible {
+  box-shadow: 0 0 0 1px var(--arton-ouro);
+}
+
+/* Mensagens flutuantes (barra recolhida ou em outra aba): mesmo cartão. */
+body.hud-t20-tema #chat-notifications .chat-message { margin-left: 10px; }
+
+@media (prefers-reduced-motion: reduce) {
+  body.hud-t20-tema .ui-control { transition: none; }
+}

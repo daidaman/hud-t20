@@ -4,7 +4,11 @@
       "Mostrar": "Mostrar a HUD do personagem",
       "MostrarDica": "Liga ou desliga o painel de baixo só neste navegador.",
       "Escala": "Tamanho da HUD",
-      "EscalaDica": "Aumenta ou diminui o painel, além da escala de interface do Foundry. 1 é o tamanho normal."
+      "EscalaDica": "Aumenta ou diminui o painel, além da escala de interface do Foundry. 1 é o tamanho normal.",
+      "Visual": "Visual do módulo",
+      "VisualDica": "Vale para a mesa toda. \"HUD e tema da interface\" também veste o chat, a barra lateral, os controles de cena, as cenas e a lista de jogadores no estilo de Arton. Troca na hora, sem recarregar.",
+      "VisualHud": "Só a HUD",
+      "VisualTema": "HUD e tema da interface"
     },
     "Nivel": "Nv {nivel}",
     "Retrato": {

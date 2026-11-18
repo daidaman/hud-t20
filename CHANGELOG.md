@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 — 2026-11-18
+- Tema da interface (parte 2 do módulo), no visual do protótipo "Arton UI" aprovado: cartão do chat com cabeçalho de metal, emblema redondo do autor (retrato do personagem ou inicial na cor do jogador), nome do jogador embaixo do nome do personagem, corpo de pergaminho e rodapé com rubi. Vale no chat da barra lateral e nas mensagens flutuantes.
+- Rolagens do core e cartões do sistema `tormenta20` no estilo do pergaminho (fórmula, total, crítico em verde, falha em vermelho). Os cartões do Decreto do Panteão e do Bando da Raposa ficam como estão: só ganham o cabeçalho e o emblema.
+- Botões de metal com brilho rubi no ativo (controles de cena, abas da barra lateral, controles do chat); cenas da navegação, lista de jogadores, barra lateral e controles do chat com a moldura rente; caixa de mensagem de pergaminho na moldura.
+- Nova configuração "Visual do módulo" (mundo, só o mestre muda): "Só a HUD" (padrão) ou "HUD e tema da interface". Troca na hora, sem recarregar.
+- "Sussurro para…" e o texto de sabor saem do cabeçalho (que tem altura fixa) para o começo do corpo, quando o tema está ligado.
+- CSS novo em `styles/tema.css`, que só vale com a classe `hud-t20-tema` no `body`. Peças novas: `assets/rodape-gema.webp` e `assets/rodape-linha.webp` (recortes de `chat-rodape.webp`).
+
 ## 0.2.5 — 2026-11-18
 - Corrigido: a HUD do jogador sumia ao trocar de ferramenta nos controles de cena (a troca solta o token selecionado). Jogador sem personagem atribuído agora continua vendo o último personagem mostrado ou, no começo, o primeiro personagem dele. A HUD do jogador nunca some por falta de seleção. O mestre continua como antes: sem token selecionado, a HUD some.
 

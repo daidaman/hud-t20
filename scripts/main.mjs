@@ -903,10 +903,86 @@ async function recarregar(combat, prior, current) {
 }
 
 /* -------------------------------------------- */
+/*  Tema da interface (0.3.0)                   */
+/* -------------------------------------------- */
+
+/** Módulos cujos cartões ficam como estão: o tema só veste o cabeçalho e o emblema. */
+const MODULOS_EXTERNOS = ["decreto-do-panteao", "bando-da-raposa"];
+
+const temaLigado = () => game.settings.get(MODULE_ID, "visual") === "tema";
+
+/** Liga ou desliga o tema: só a classe no body (styles/tema.css). Não precisa recarregar. */
+function aplicarVisual() {
+  document.body.classList.toggle("hud-t20-tema", game.system.id === "tormenta20" && temaLigado());
+}
+
+/**
+ * Veste o cabeçalho da mensagem: emblema redondo do autor e o nome do jogador embaixo do nome.
+ * As peças entram sempre (o CSS esconde sem o tema), para o tema ligar e desligar sem redesenhar o chat.
+ * Só decoração: não mexe no conteúdo nem nos botões dos cartões.
+ */
+function vestirMensagem(message, html) {
+  const header = html.querySelector(".message-header");
+  if (!header || header.querySelector(".hud-t20-emblema")) return;
+
+  if (MODULOS_EXTERNOS.some((id) => message.flags?.[id])) html.classList.add("hud-t20-externo");
+
+  const autor = message.author;
+  const ator = message.speakerActor;
+  const nome = message.alias || ator?.name || autor?.name || "?";
+  let img = ator?.img || autor?.avatar || "";
+  if (img === CONST.DEFAULT_TOKEN || img.endsWith("mystery-man.svg")) img = "";
+
+  const emblema = document.createElement("div");
+  emblema.className = "hud-t20-emblema";
+  emblema.setAttribute("aria-hidden", "true");
+  const rosto = document.createElement("span");
+  rosto.className = "hud-t20-emblema-rosto";
+  rosto.style.setProperty("--hud-t20-cor", autor?.color?.css ?? String(autor?.color ?? "#555"));
+  if (img) rosto.style.backgroundImage = `url("${img}")`;
+  else rosto.textContent = nome.trim().charAt(0).toUpperCase();
+  const moldura = document.createElement("img");
+  moldura.className = "hud-t20-emblema-moldura";
+  moldura.src = `modules/${MODULE_ID}/assets/emblema.webp`;
+  moldura.alt = "";
+  emblema.append(rosto, moldura);
+  header.prepend(emblema);
+
+  // Nome do jogador embaixo do nome do personagem (só quando é diferente).
+  const remetente = header.querySelector(".message-sender");
+  if (remetente && autor && autor.name !== nome && !remetente.querySelector(".hud-t20-jogador")) {
+    const jogador = document.createElement("small");
+    jogador.className = "hud-t20-jogador";
+    jogador.textContent = autor.name;
+    remetente.append(jogador);
+  }
+
+  // O cabeçalho tem altura fixa: "Sussurro para…" e o texto de sabor vão para o começo do corpo.
+  if (temaLigado()) {
+    const conteudo = html.querySelector(".message-content");
+    const extras = [...header.querySelectorAll(":scope > .whisper-to, :scope > .flavor-text")];
+    if (conteudo && extras.length) conteudo.prepend(...extras);
+  }
+}
+
+/* -------------------------------------------- */
 /*  Hooks                                       */
 /* -------------------------------------------- */
 
 Hooks.once("init", () => {
+  game.settings.register(MODULE_ID, "visual", {
+    name: "HUDT20.Config.Visual",
+    hint: "HUDT20.Config.VisualDica",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      hud: "HUDT20.Config.VisualHud",
+      tema: "HUDT20.Config.VisualTema"
+    },
+    default: "hud",
+    onChange: () => aplicarVisual()
+  });
   game.settings.register(MODULE_ID, "mostrar", {
     name: "HUDT20.Config.Mostrar",
     hint: "HUDT20.Config.MostrarDica",
@@ -926,6 +1002,11 @@ Hooks.once("init", () => {
     default: 1,
     onChange: () => atualizar()
   });
+});
+
+Hooks.once("setup", () => aplicarVisual());
+Hooks.on("renderChatMessageHTML", (message, html) => {
+  if (game.system.id === "tormenta20") vestirMensagem(message, html);
 });
 
 Hooks.once("ready", () => {

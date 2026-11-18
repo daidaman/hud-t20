@@ -79,7 +79,34 @@ Protótipo: "HUD T20 — protótipo 0.2.0" (https://claude.ai/artifact/Sty883VVn
   - Corpo: pergaminho com borda de 1 px só nas laterais e sombra; sem fundo de pergaminho em volta das pontas da barra.
   - Rodapé: rubi separado da linha (`rodape-gema` centralizado, `rodape-linha` à esquerda e à direita, cortados de `chat-rodape.webp`), 18 px de altura, com o centro da linha exatamente na borda de baixo do cartão.
 - **Molduras rentes:** a `moldura-painel.webp` tem margem transparente fora da linha dourada (≈3 px dos lados e ≈5 px em cima e embaixo, em 14 px). O fundo vai num `::before` recuado 4 px 3 px e a moldura num `::after` por cima, para não sobrar fundo fora da linha. Vale para jogadores (largura pelo conteúdo), botões de cena, barra lateral, caixa de mensagem e barra de controles.
-- **Próximo passo:** codar a 0.3.0 (tema + configuração "Visual do módulo") numa conversa nova, a partir deste PROJETO.md e do canvas. Antes do CSS, inspecionar no mundo de teste os seletores reais do v13 (chat, `#sidebar`, `#scene-controls`, `#scene-navigation`, `#players`, `#chat-notifications`) e os cartões do sistema `tormenta20`.
+- **0.3.0 codada (2026-11-18)**, falta testar no mundo. A inspeção ao vivo não foi feita (o navegador embutido pede aprovação a cada ação no mundo de teste); só o esqueleto foi confirmado: `#ui-left-column-1` com `#scene-controls` e `#players`, `#ui-left-column-2` com `#scene-navigation`, `#ui-bottom` com `#hotbar`. O resto usa os seletores conhecidos do v13 e é conferido no roteiro abaixo.
+
+**Decisões do código da 0.3.0:**
+- Setting `visual` (world): `hud` (padrão, para nada mudar ao atualizar) ou `tema`. `aplicarVisual()` só liga a classe `hud-t20-tema` no `body` (no `setup` e no `onChange`).
+- Hook `renderChatMessageHTML`: acrescenta `.hud-t20-emblema` (rosto = `message.speakerActor.img`, senão avatar do autor, senão a inicial na cor do autor) e `small.hud-t20-jogador` (nome do autor, se diferente do nome mostrado). Entram sempre; o CSS esconde sem o tema. Com o tema ligado, `.whisper-to` e `.flavor-text` vão do cabeçalho para o começo de `.message-content`.
+- Mensagens com flags de `decreto-do-panteao` ou `bando-da-raposa` ganham `.hud-t20-externo`: o tema não estiliza as rolagens de dentro delas.
+- Seletores usados: `.ui-control` (todos os botões), `#scene-navigation li.scene` (`.view`/`.active`), `.scene-players .scene-player`, `#players .player` (`.active`) e `.player-active`, `#sidebar-content`, `.chat-log`, `.chat-message` (`.whisper`, `.blind`), `.message-header`, `.message-sender`, `.message-metadata`, `.message-content`, `.dice-flavor`, `.dice-formula`, `.dice-total` (`.critical`/`.fumble`), `.tormenta20.chat-card .card-header`, `#chat-controls`, `#chat-message`, `#chat-notifications`.
+- O emblema e o rodapé usam as medidas do canvas. A caixa de mensagem usa a moldura direto no `<textarea>` (`border-image` + `background-clip: padding-box`), porque `textarea` não aceita `::before`/`::after`.
+
+## Roteiro de teste da 0.3.0 (mestre + jogador em aba anônima)
+1. Atualizar o módulo. Sem mexer em nada: tudo igual à 0.2.5 (o padrão é "Só a HUD").
+2. Mestre: Configurações → hud-t20 → "Visual do módulo" = "HUD e tema da interface". O tema aparece na hora para o mestre e para o jogador, sem recarregar. Voltar para "Só a HUD" tira o tema.
+3. Chat: mensagem simples, teste de perícia, ataque com dano, sussurro (etiqueta "Sussurro para…" no corpo azulado) e uma mensagem do Decreto do Panteão e do Bando da Raposa (o conteúdo deles igual a antes, só cabeçalho e emblema novos). Conferir o emblema (retrato do personagem; mestre sem personagem: inicial na cor), o nome do jogador embaixo e o rubi do rodapé.
+4. Recolher a barra lateral: as mensagens flutuantes e a caixa de mensagem com o mesmo visual.
+5. Controles de cena, abas da barra lateral, navegação de cenas (cena vista com o traço rubi, bolinhas dos jogadores) e lista de jogadores com a moldura.
+6. Se algo não pegar o estilo, F12 → clicar com o botão direito no elemento → Inspecionar, e mandar print do HTML dele.
+
+## Temas alternativos da HUD (ideia, 2026-11-18)
+Ideia de dar à HUD outros visuais com cara de Tormenta 20, escolhidos no "Visual do módulo". Só conceitos por enquanto, nada de código.
+
+- **Uso do tema da interface:** o Daniel acha que a mesa vai acabar usando só a HUD do personagem. O tema da interface (0.3.0) fica como opção desligada por padrão; não investir mais nele até a mesa testar. Se só uma parte agradar, a aposta é o cartão do chat.
+- **Conceitos:** os mesmos prompts no Gemini e no ChatGPT; **o ChatGPT ganhou** com folga. Quatro direções pedidas: Tempestade Rubra, Livro Básico, Panteão (não gerada ainda) e Aventureiro do Reinado. Imagens em `referencias/conceito-gpt-*.png`.
+- **Escolhidas (2026-11-18): Tempestade Rubra e Aventureiro do Reinado**, as duas como opções. O Daniel quer reproduzir os conceitos o mais fiel possível.
+  - Tempestade Rubra: moldura de carapaça vermelha com espinhos, raios e névoa carmim, tempestade no cristal central. Cuidados de UX: vermelho sobre vermelho apaga a barra de PV; o círculo central é grande demais e compete com os números; os espinhos aumentam a área ocupada.
+  - Aventureiro: couro, fivelas de latão e bússola como cristal. Cuidado: é o mais genérico e o mais pesado.
+  - Dos dois (e do Livro Básico): caixinhas claras com número escuro (as mais legíveis) e ícones de coração e gota nas barras.
+- **O que dá e o que não dá para ficar igual:** moldura, pontas, cristal, losangos, moldura do retrato e ícones são recortados do próprio conceito. As barras precisam do cheio e do vazio separados, e os números são texto. A tempestade do centro pode ter um giro ou pulso lento em CSS. Os atalhos mostram os ícones dos itens da ficha, não os do conceito.
+- **Próximo passo (conversa nova):** o Daniel pede ao ChatGPT, para cada tema, (1) uma edição da própria imagem com barras, caixinhas, atalhos e retrato vazios e sem texto, e (2) uma folha de peças em fundo verde (#00FF00): barras de PV e PM cheias, coração e gota, os quatro ícones e os três losangos. Com isso, recortar as peças e montar o protótipo dos dois temas lado a lado com a HUD atual, antes de qualquer código.
 
 ## Funções aprovadas
 - **Clique no retrato:** abre a ficha completa do sistema (`actor.sheet.render(true)`).
@@ -198,6 +225,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - [x] **0.2.2 (2026-11-18):** ajustes do teste em tela de notebook, aprovados por prévia. O retrato cobre a ponta esquerda do painel (margem esquerda −34 px), e a imagem preenche a moldura até a barra de baixo (abertura 7% 6% 7,5% 6%; o 11% antigo era a altura da gema no centro). Conferido no mundo em 2026-11-18.
 - [x] **0.2.3 (2026-11-18):** barras de PV/PM com a moldura numa camada por cima da cor (`.hud-trilho::after`; camadas fundo → cor → extra → moldura → número) e barra de extra (`attributes.pv.temp`/`pm.temp`) da direita para a esquerda, mais escura, proporcional ao máximo; mais espaço antes do "(+N)". Aprovado por prévia; conferido com o CSS real fora do Foundry. Conferido no mundo em 2026-11-18. Lição: a borda (`border-image`) de um elemento sempre fica atrás dos filhos; moldura que precisa cobrir o conteúdo vai num pseudo-elemento com `z-index`.
 - [x] **0.2.4 (2026-11-18):** cristal sem o "Aguardando": a legenda só aparece ("Seu turno") em combate, no turno do personagem; fora disso o cristal fica apagado e sem texto (o espaço da legenda continua reservado, para nada pular). Conferido no mundo em 2026-11-18.
+- [ ] **0.3.0 (2026-11-18):** tema da interface e configuração "Visual do módulo". Codada; falta o teste no mundo.
 - [x] **0.2.5 (2026-11-18):** a HUD do jogador nunca some por falta de seleção. Jogador sem personagem atribuído fica no último personagem mostrado ou no primeiro dele (antes sumia ao trocar de ferramenta, porque a troca solta o token). Conferido no mundo em 2026-11-18.
 
 ## Decisões do código (0.1.0, 2026-11-17)
@@ -212,7 +240,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - Só há `lang/pt-BR.json`; ele também é registrado como `en` para não aparecerem chaves cruas num Foundry em inglês.
 
 ## Ideias futuras
-- Tema completo da interface (segundo módulo).
+- Temas alternativos da HUD (Tempestade Rubra e Aventureiro), ver "Temas alternativos da HUD".
 - Ícones próprios para condições e ações no mesmo estilo.
 
 ## Roteiro de teste da 0.1.0 (mestre + jogador em aba anônima)
