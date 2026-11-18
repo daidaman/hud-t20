@@ -53,9 +53,9 @@ Painel único, centralizado embaixo e sem ponteiras nas pontas. Da esquerda para
 ## Visual da 0.2.0 aprovado (2026-11-18)
 Protótipo: "HUD T20 — protótipo 0.2.0" (https://claude.ai/artifact/Sty883VVnmBoM7Pfqqor7s). Substitui o que for diferente acima.
 
-1. **Retrato como no conceito:** o painel fica baixo, justo em volta do status (padding vertical 2 px), e a moldura do retrato é maior que ele (150 × 152 px, `margin: -30px 0`): ocupa só a altura do status e vaza ~10 px em cima e embaixo. O painel sobe um pouco da borda da tela para o retrato não encostar.
+1. **Retrato como no conceito** (0.2.2: também vaza ~10 px na ponta esquerda, cobrindo a ponta do painel): o painel fica baixo, justo em volta do status (padding vertical 2 px), e a moldura do retrato é maior que ele (150 × 152 px, `margin: -30px 0`): ocupa só a altura do status e vaza ~10 px em cima e embaixo. O painel sobe um pouco da borda da tela para o retrato não encostar.
 2. **Sem nome e nível embaixo do retrato** (o jogador sabe o nome do personagem). Nome e nível vão para o tooltip do retrato, com "Clique: abre a ficha · Botão direito: troca a imagem e o enquadramento".
-3. **A imagem cobre a moldura** (`object-fit: cover`, sem faixas escuras). O corte se resolve com a personalização:
+3. **A imagem cobre a moldura** (`object-fit: cover`, sem faixas escuras; abertura 7% em cima, 6% dos lados e 7,5% embaixo desde a 0.2.2). O corte se resolve com a personalização:
    - Botão direito no retrato, ou engrenagem que aparece ao passar o mouse → janela "Retrato da HUD — <nome>" (ApplicationV2).
    - Trocar a imagem (FilePicker), "Usar a imagem da ficha", arrastar para enquadrar, zoom 100–300% (controle, roda do mouse, + e −), setas movem, "Centralizar", prévia em tamanho real, Cancelar/Salvar.
    - Guardar no ator: `flags.hud-t20.retrato = { img, x, y, zoom }` (x e y em %, usados em `object-position` e `transform-origin`; `transform: scale(zoom)`). Sem `img`, usa `actor.img`. Dono e mestre podem mudar.
@@ -179,6 +179,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - [x] **0.1.2 (2026-11-17):** atalhos no lugar (anulado o `translateX(-70px)` do core na `#hotbar`). Confirmado no mundo em 2026-11-18.
 - [x] **0.2.0 (2026-11-18):** retrato maior que vaza e janela de enquadramento, tooltips translúcidos, Iniciativa clicável, barra só com o seletor de página. Testado no mundo em 2026-11-18: tudo certo.
 - [x] **0.2.1 (2026-11-18):** clique no retrato voltou a abrir a ficha (botão do retrato tinha a altura fixa de botão do core). Testado no mundo em 2026-11-18. Lição: em botão posicionado com `inset`, sempre dar `width`/`height` explícitos, porque o core estiliza `<button>`.
+- [x] **0.2.2 (2026-11-18):** ajustes do teste em tela de notebook, aprovados por prévia. O retrato cobre a ponta esquerda do painel (margem esquerda −34 px), e a imagem preenche a moldura até a barra de baixo (abertura 7% 6% 7,5% 6%; o 11% antigo era a altura da gema no centro). **Falta conferir no mundo.**
 
 ## Decisões do código (0.1.0, 2026-11-17)
 - O painel é um `ApplicationV2` sem moldura inserido em `#ui-bottom`, então herda a escala de interface do Foundry; a escala extra usa `zoom`.

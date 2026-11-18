@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2 — 2026-11-18
+- Lado esquerdo: o retrato agora encosta na ponta do painel e vaza ~10 px, como em cima e embaixo. Some a faixa do painel (com a ponta da moldura e os rubis) que sobrava à esquerda dele. A HUD fica ~40 px mais estreita.
+- A imagem do retrato preenche a moldura até a barra de baixo, sem a faixa escura dos lados da gema (a abertura tinha sido medida no centro, onde a gema sobe). Vale também para a janela de enquadramento. Enquadramentos já salvos podem descer um pouquinho.
+
 ## 0.2.1 — 2026-11-18
 - Corrigido: clicar no retrato não abria a ficha. O core do Foundry dá altura fixa a todo `<button>`, e o botão invisível do retrato virava uma faixa fina no topo. Agora ele tem largura e altura explícitas, e o próprio retrato também abre a ficha. A engrenagem continua abrindo o ajuste.
 

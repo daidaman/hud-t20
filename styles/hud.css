@@ -63,7 +63,8 @@
 
 /* ---------- Retrato (0.2.0): maior que o painel ----------
    Ocupa só a altura do status (152 − 2 × 30 = 92 px) e vaza ~10 px em cima e embaixo da moldura do painel.
-   A imagem cobre a abertura da moldura (6% dos lados, 7% em cima, 11% embaixo); o enquadramento
+   A imagem cobre a abertura da moldura (6% dos lados, 7% em cima, 7,5% embaixo: vai até a barra de baixo
+   e passa por trás da gema, que sobe até 11% só no centro); o enquadramento
    vem de flags.hud-t20.retrato (--px, --py em % e --pz = zoom). */
 #hud-t20 .hud-retrato {
   position: relative;
@@ -71,7 +72,8 @@
   width: 150px;
   height: 152px;
   align-self: center;
-  margin: -30px 0 -30px 6px;
+  /* Esquerda (0.2.2): -(borda 18 + padding 6 + 10 que vaza) = a moldura cobre a ponta do painel. */
+  margin: -30px 0 -30px -34px;
 }
 #hud-t20 .hud-retrato { cursor: pointer; }
 /* Tamanho explícito: o core do Foundry dá altura fixa a todo <button>, e só "inset: 0"
@@ -89,7 +91,7 @@
 .hud-t20-retrato-abertura,
 #hud-t20 .hud-retrato-abertura {
   position: absolute;
-  inset: 7% 6% 11% 6%;
+  inset: 7% 6% 7.5% 6%;
   overflow: hidden;
   background: #1a1210;
 }
@@ -489,7 +491,7 @@ img.hud-t20-enq {
 .hud-t20-editor .palco { position: relative; width: 240px; height: 245px; cursor: grab; touch-action: none; outline: none; }
 .hud-t20-editor .palco:active { cursor: grabbing; }
 .hud-t20-editor .palco:focus-visible { outline: 2px solid var(--hud-ouro); outline-offset: 4px; }
-.hud-t20-editor .abertura { position: absolute; inset: 7% 6% 11% 6%; overflow: hidden; background: #1a1210; }
+.hud-t20-editor .abertura { position: absolute; inset: 7% 6% 7.5% 6%; overflow: hidden; background: #1a1210; }
 .hud-t20-editor .moldura { position: absolute; inset: 0; width: 100%; height: 100%; border: none; pointer-events: none; }
 .hud-t20-editor .dica-palco { margin-top: 8px; font-size: 12.5px; color: #9C8A6A; text-align: center; }
 .hud-t20-editor .campos { min-width: 0; display: flex; flex-direction: column; gap: 14px; }
