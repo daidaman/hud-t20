@@ -50,6 +50,22 @@ Painel único, centralizado embaixo e sem ponteiras nas pontas. Da esquerda para
 - A HUD respeita a escala de interface do Foundry.
 - Tudo foi gerado em alta resolução e é exibido reduzido, o que serve para telas 2x.
 
+## Visual da 0.2.0 aprovado (2026-11-18)
+Protótipo: "HUD T20 — protótipo 0.2.0" (https://claude.ai/artifact/Sty883VVnmBoM7Pfqqor7s). Substitui o que for diferente acima.
+
+1. **Retrato como no conceito:** o painel fica baixo, justo em volta do status (padding vertical 2 px), e a moldura do retrato é maior que ele (150 × 152 px, `margin: -30px 0`): ocupa só a altura do status e vaza ~10 px em cima e embaixo. O painel sobe um pouco da borda da tela para o retrato não encostar.
+2. **Sem nome e nível embaixo do retrato** (o jogador sabe o nome do personagem). Nome e nível vão para o tooltip do retrato, com "Clique: abre a ficha · Botão direito: troca a imagem e o enquadramento".
+3. **A imagem cobre a moldura** (`object-fit: cover`, sem faixas escuras). O corte se resolve com a personalização:
+   - Botão direito no retrato, ou engrenagem que aparece ao passar o mouse → janela "Retrato da HUD — <nome>" (ApplicationV2).
+   - Trocar a imagem (FilePicker), "Usar a imagem da ficha", arrastar para enquadrar, zoom 100–300% (controle, roda do mouse, + e −), setas movem, "Centralizar", prévia em tamanho real, Cancelar/Salvar.
+   - Guardar no ator: `flags.hud-t20.retrato = { img, x, y, zoom }` (x e y em %, usados em `object-position` e `transform-origin`; `transform: scale(zoom)`). Sem `img`, usa `actor.img`. Dono e mestre podem mudar.
+4. **Tooltips translúcidos, no esquema do tooltip de melhorias/encantos:** fundo `rgba(20,17,16,.8)` com `backdrop-filter: blur(7px)`, borda dourada fraca; título da seção pequeno, em caixa alta e azul-aço (`#9FB4CC`) com o total em dourado à direita; uma linha por parcela com losango, nome em negrito, valor à direita e explicação menor embaixo; parcela que não soma fica riscada e apagada, com o motivo.
+5. **Iniciativa clicável** (o tooltip continua no mouse; o rodapé dele diz o que o clique faz):
+   - Fora de combate: rola um teste de Iniciativa no chat.
+   - Em combate, sem iniciativa: rola e grava no combate (se o token não estiver no combate, adiciona).
+   - Já rolada: o jogador recebe aviso; só o mestre rola de novo.
+6. **Barra nativa:** some a coluna de som, menu, travar e limpar. Fica só o seletor de página (▲ número ▼), apagado até passar o mouse. Editar e remover atalho continua no botão direito.
+
 ## Funções aprovadas
 - **Clique no retrato:** abre a ficha completa do sistema (`actor.sheet.render(true)`).
 - **Atalhos:**
@@ -112,6 +128,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - Como vale qualquer uso de item (ficha, atalho ou HUD), o gasto é o mesmo de onde quer que o item seja usado.
 
 ## Pendências (resolver nesta ordem)
+00. [ ] **Codar a 0.2.0** conforme "Visual da 0.2.0 aprovado". Antes, conferir no código-fonte do sistema 1.5.015 como rolar o teste de Iniciativa fora de combate (método do ator para perícia `inic`) e se o sistema sobrescreve `Combat.rollInitiative`.
 0. [ ] **Testar a 0.1.2 no mundo de teste** (abrir e fechar a barra lateral, trocar para Combate e Atores, tela de notebook) com mestre e jogador (roteiro no fim deste arquivo) e corrigir o que aparecer, principalmente o encaixe da `#hotbar` do v13 dentro do painel.
 1. [x] **Nome e id:** `hud-t20`.
 2. [x] **Inspeção no mundo de teste** (2026-11-17): CD, condição e combate confirmados. Falta só ver uma armadura equipada na Defesa, o que dá para conferir já com o código rodando.
