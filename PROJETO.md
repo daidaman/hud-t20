@@ -10,7 +10,7 @@ Uma barra fixa na parte de baixo da tela do Foundry VTT v13 (build 351, o único
 
 ## Nome e id
 - **HUD: `hud-t20`** (decidido em 2026-11-17). O id nunca muda depois de instalado.
-- Tema: id a definir quando o repositório dele for criado.
+- Tema: **`arton-ui`** (decidido em 2026-11-18), título "Interface de Arton". Repositório privado a criar: daidaman/arton-ui.
 
 ## Estrutura (decidido em 2026-11-17)
 Os dois são módulos separados, porque um mestre pode querer um sem o outro:
@@ -65,6 +65,12 @@ Protótipo: "HUD T20 — protótipo 0.2.0" (https://claude.ai/artifact/Sty883VVn
    - Em combate, sem iniciativa: rola e grava no combate (se o token não estiver no combate, adiciona).
    - Já rolada: o jogador recebe aviso; só o mestre rola de novo.
 6. **Barra nativa:** some a coluna de som, menu, travar e limpar. Fica só o seletor de página (▲ número ▼), apagado até passar o mouse. Editar e remover atalho continua no botão direito.
+
+## Tema arton-ui (ficha, 2026-11-18)
+- Só para a mesa de Tormenta 20 (pode estilizar os cartões do sistema `tormenta20`: perícia, item, ataque e dano).
+- Cartões do Decreto do Panteão e do Bando da Raposa ficam como estão: o tema só veste o cabeçalho de metal e o emblema do autor.
+- Reskin só por CSS de chat, barra lateral (abas na coluna vertical da direita, como no v13), controles de cena, navegação de cenas e lista de jogadores. Sem trocar lógica.
+- Protótipo em andamento: canvas "Arton UI — protótipo 0.1.0" (https://claude.ai/artifact/A1BBBSjiYrvLU1G32g6MdG), com a barra lateral aberta e recolhida (mensagens flutuantes), em Full HD a 100%. **Aguardando aprovação.**
 
 ## Funções aprovadas
 - **Clique no retrato:** abre a ficha completa do sistema (`actor.sheet.render(true)`).
@@ -183,7 +189,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - [x] **0.2.2 (2026-11-18):** ajustes do teste em tela de notebook, aprovados por prévia. O retrato cobre a ponta esquerda do painel (margem esquerda −34 px), e a imagem preenche a moldura até a barra de baixo (abertura 7% 6% 7,5% 6%; o 11% antigo era a altura da gema no centro). Conferido no mundo em 2026-11-18.
 - [x] **0.2.3 (2026-11-18):** barras de PV/PM com a moldura numa camada por cima da cor (`.hud-trilho::after`; camadas fundo → cor → extra → moldura → número) e barra de extra (`attributes.pv.temp`/`pm.temp`) da direita para a esquerda, mais escura, proporcional ao máximo; mais espaço antes do "(+N)". Aprovado por prévia; conferido com o CSS real fora do Foundry. Conferido no mundo em 2026-11-18. Lição: a borda (`border-image`) de um elemento sempre fica atrás dos filhos; moldura que precisa cobrir o conteúdo vai num pseudo-elemento com `z-index`.
 - [x] **0.2.4 (2026-11-18):** cristal sem o "Aguardando": a legenda só aparece ("Seu turno") em combate, no turno do personagem; fora disso o cristal fica apagado e sem texto (o espaço da legenda continua reservado, para nada pular). Conferido no mundo em 2026-11-18.
-- [x] **0.2.5 (2026-11-18):** a HUD do jogador nunca some por falta de seleção. Jogador sem personagem atribuído fica no último personagem mostrado ou no primeiro dele (antes sumia ao trocar de ferramenta, porque a troca solta o token). **Falta conferir no mundo.**
+- [x] **0.2.5 (2026-11-18):** a HUD do jogador nunca some por falta de seleção. Jogador sem personagem atribuído fica no último personagem mostrado ou no primeiro dele (antes sumia ao trocar de ferramenta, porque a troca solta o token). Conferido no mundo em 2026-11-18.
 
 ## Decisões do código (0.1.0, 2026-11-17)
 - O painel é um `ApplicationV2` sem moldura inserido em `#ui-bottom`, então herda a escala de interface do Foundry; a escala extra usa `zoom`.
