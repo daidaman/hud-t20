@@ -106,7 +106,31 @@ Ideia de dar à HUD outros visuais com cara de Tormenta 20, escolhidos no "Visua
   - Aventureiro: couro, fivelas de latão e bússola como cristal. Cuidado: é o mais genérico e o mais pesado.
   - Dos dois (e do Livro Básico): caixinhas claras com número escuro (as mais legíveis) e ícones de coração e gota nas barras.
 - **O que dá e o que não dá para ficar igual:** moldura, pontas, cristal, losangos, moldura do retrato e ícones são recortados do próprio conceito. As barras precisam do cheio e do vazio separados, e os números são texto. A tempestade do centro pode ter um giro ou pulso lento em CSS. Os atalhos mostram os ícones dos itens da ficha, não os do conceito.
-- **Próximo passo (conversa nova):** o Daniel pede ao ChatGPT, para cada tema, (1) uma edição da própria imagem com barras, caixinhas, atalhos e retrato vazios e sem texto, e (2) uma folha de peças em fundo verde (#00FF00): barras de PV e PM cheias, coração e gota, os quatro ícones e os três losangos. Com isso, recortar as peças e montar o protótipo dos dois temas lado a lado com a HUD atual, antes de qualquer código.
+- [x] Arte pedida ao ChatGPT e protótipo montado (2026-11-18): canvas "hud-t20 — temas Tempestade e Aventureiro" (https://claude.ai/artifact/1BhEQnLYj98yzFqEeEcmx1), pranchas `Tempestade.dc.html` e `Main.dc.html` (Aventureiro). O Daniel deu o ok para testar no mundo ("bora testar").
+
+### Temas da HUD — arte e medidas (para codar a 0.4.0)
+Arte em `arte-original/temas/` (todas 1672 × 941, menos as folhas de peças):
+- `tempestade-moldura.png`: céu rubro em cima e a HUD de carapaça embaixo, já com os 3 losangos desenhados (espada, fogo, cruz) no olho da tempestade.
+- `tempestade-pecas-verde.png`: folha em verde com barras de PV e PM de cristal, coração, gota, escudo, bota alada, ampulheta, estrela e 3 losangos (espada, explosão, bandeira). **Esta folha tem visual de gema polida e acabou servindo melhor como peças soltas; no protótipo foi usada no primeiro Aventureiro, depois trocado.**
+- `aventureiro-moldura.png`: mapa de Arton em cima e a HUD de couro, fivelas e bússola embaixo, com os 3 losangos desenhados (espada, explosão, bandeira).
+- `aventureiro-pecas-verde.png` (1448 × 1086): barras de PV e PM, coração, gota, escudo, bota, ampulheta, estrela e 3 losangos soltos, no mesmo estilo da moldura do Aventureiro.
+- `recorte-*.py`: os scripts de recorte do verde (chave por `g - max(r,b)`, transparente acima de 90, sólido abaixo de 40, com despill). Trocar o caminho de entrada para o arquivo desta pasta.
+
+Como as molduras são uma imagem inteira (não 9 partes), o tema usa a parte de baixo como fundo do painel em proporção fixa, e cada peça vai por cima em posição medida. Medidas na imagem de 1672 × 941 (x, y em px):
+
+| Peça | Tempestade | Aventureiro |
+|---|---|---|
+| Faixa da HUD | y ≈ 480–910 | y ≈ 500–910 |
+| Retrato (abertura) | 74–270 × 596–822 | 108–290 × 598–795 |
+| Barra PV (dentro do trilho) | 314–668 × 613–647 | 334–658 × 604–640 |
+| Barra PM | 314–668 × 680–714 | 334–658 × 666–702 |
+| 4 caixinhas | y 742–804; x 300, 397, 495, 594 (≈ 85 de largura) | y 732–800; x 324, 420, 515, 610 (76 de largura, fundo claro) |
+| Losangos | centros ≈ (762, 700), (896, 700), (1030, 700) | centros ≈ (740, 654), (845, 658), (950, 654) |
+| Atalhos 2 × 5 | 1147–1603 × 609–795 | 1030–1542 × 598–802 |
+
+- **Atenção ao que já foi aprovado:** na HUD, os 3 losangos são as **ações do turno** (padrão, movimento, reação), e as 4 caixinhas são Defesa, Deslocamento, Iniciativa e CD. No protótipo dos temas os losangos aparecem como Ataque/Magia/Cura ou Habilidade e a 3ª caixinha como condição, só como exemplo; no código vale o que já está aprovado. Os losangos desenhados na moldura não podem ficar "gastos" (cinza e riscados), então no código **cobrir os da moldura com os losangos soltos da folha** e aplicar o estado gasto neles. O olho da tempestade e a bússola fazem o papel do cristal ("Seu turno").
+- Barras: a cor sai do miolo das barras da folha (sem a moldura dourada dela, porque o trilho já está na moldura). No Aventureiro, os ícones de coração e gota vão no começo de cada barra.
+- Condições: continuam nos medalhões acima do painel.
 
 ## Funções aprovadas
 - **Clique no retrato:** abre a ficha completa do sistema (`actor.sheet.render(true)`).
