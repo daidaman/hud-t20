@@ -354,6 +354,7 @@ img.hud-t20-enq {
 #hud-t20 .hud-gema .leg { font: 700 10px var(--hud-fonte-titulo); letter-spacing: .04em; color: #9C8A6A; white-space: nowrap; }
 #hud-t20 .hud-gema.vez img { animation: hud-t20-pulso 1.6s ease-in-out infinite; }
 #hud-t20 .hud-gema.vez .leg { color: var(--hud-ouro); }
+#hud-t20 .hud-gema:not(.vez) .leg { visibility: hidden; } /* 0.2.4: legenda só no turno do personagem; o espaço fica reservado para nada pular */
 @keyframes hud-t20-pulso {
   0%, 100% { filter: drop-shadow(0 0 2px rgba(255, 60, 60, .4)) brightness(1); }
   50% { filter: drop-shadow(0 0 12px rgba(255, 60, 60, .95)) brightness(1.3); }

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.4 — 2026-11-18
+- Cristal: saiu a legenda "Aguardando". O texto "Seu turno" só aparece em combate, no turno do personagem; no turno dos outros e fora de combate, o cristal fica apagado e sem texto.
+
 ## 0.2.3 — 2026-11-18
 - Barras de PV e PM encaixadas na moldura: a moldura agora fica por cima da cor (antes o vermelho e o azul passavam por cima da borda interna e, cheios, deixavam uma fresta escura na ponta direita).
 - PV e PM extras (temporários): barra mais escura que entra da direita para a esquerda, por cima da barra normal, com o tamanho do extra em relação ao máximo. Vinho no PV, roxo-azulado no PM, filete dourado na ponta. Sem extra, não aparece.

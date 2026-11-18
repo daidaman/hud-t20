@@ -440,7 +440,7 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
         return { chave, meio: chave === "movimento", gasta: g[chave], dica: t("Acao.Dica", { acao, estado }) };
       }),
       vez,
-      legendaGema: vez ? t("Turno.Seu") : t("Turno.Aguardando")
+      legendaGema: t("Turno.Seu")
     };
   }
 

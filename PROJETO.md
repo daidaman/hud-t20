@@ -30,7 +30,7 @@ Painel único, centralizado embaixo e sem ponteiras nas pontas. Da esquerda para
    - PV e PM no topo, em trilhos com o texto "atual / máximo".
    - Abaixo, quatro caixas pequenas só com ícone e número: Defesa, Deslocamento, Iniciativa e CD das magias. Os valores não quebram linha.
    - Acima do bloco, as condições ativas em medalhões redondos, com o efeito no tooltip.
-3. **Cristal (gema):** separa o status dos atalhos e pulsa em vermelho com a legenda "Seu turno" quando é o turno do personagem no combate. Fora do turno, mostra "Aguardando". Para quem configura o sistema para reduzir animações, ele fica aceso sem pulsar.
+3. **Cristal (gema):** separa o status dos atalhos e pulsa em vermelho com a legenda "Seu turno" quando é o turno do personagem no combate. Fora do turno e fora de combate, fica apagado e sem legenda (0.2.4; antes mostrava "Aguardando"). Para quem configura o sistema para reduzir animações, ele fica aceso sem pulsar.
 4. **Ações do turno (decidido em 2026-11-17):** três losangos em arco sobre o cristal: ação padrão, movimento e reação.
    - Aceso: disponível. Apagado e riscado: gasto. A ação completa apaga padrão e movimento.
    - Padrão e movimento recarregam no início do turno do personagem; a reação, no início da rodada.
@@ -130,10 +130,11 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 ## Pendências (resolver nesta ordem)
 00. [x] **Codar a 0.2.0** (2026-11-18). Ver "Iniciativa no sistema" abaixo.
 01. [x] **Testar a 0.2.0/0.2.1 no mundo de teste** (2026-11-18): roteiro da 0.2.0 inteiro aprovado com mestre e jogador, inclusive o seletor de página da barra, a Iniciativa clicável e o clique no retrato.
-0. [ ] **Testar a HUD em tela de notebook** (1366×768). O resto do teste da 0.1.2 passou em 2026-11-18 (barra lateral aberta e fechada, abas Combate e Atores, atalhos no lugar); falta só o notebook.
+0. [x] **Testar a HUD em tela de notebook** (1366×768): aprovado em 2026-11-18.
+0a. [x] **Legenda do cristal (pedido em 2026-11-18, feito na 0.2.4):** tirar o "Aguardando". A legenda só aparece como "Seu turno", em combate e no turno do personagem; fora do turno e fora de combate, sem texto nenhum (o cristal continua como separador, apagado).
 1. [x] **Nome e id:** `hud-t20`.
 2. [x] **Inspeção no mundo de teste** (2026-11-17): CD, condição e combate confirmados. Armadura pesada na Defesa conferida no teste da 0.2.0 (2026-11-18).
-3. [ ] **De quem é a HUD.** Implementado na 0.1.0 como a proposta, falta confirmar no uso: o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
+3. [x] **De quem é a HUD** (confirmado em 2026-11-18 com um usuário só jogador, que vê só a própria HUD): o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
 4. [x] **Ações do turno:** arte no protótipo e tipo de execução localizado (ver "Tipo de execução do item" acima).
 5. [x] **Novo pergaminho** (2026-11-17): bege mais neutro, com fibras e manchas suaves, sem emenda ao repetir. Já em `assets/pergaminho.webp` (512 px); original em `arte-original/pergaminho-v2.png`.
 6. [x] **Combate:** procurar em `game.combats` um combate iniciado com o ator da HUD (ver "Combate" acima) e escutar `combatStart`, `combatTurnChange`, `updateCombat` e `deleteCombat`.
@@ -181,6 +182,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - [x] **0.2.1 (2026-11-18):** clique no retrato voltou a abrir a ficha (botão do retrato tinha a altura fixa de botão do core). Testado no mundo em 2026-11-18. Lição: em botão posicionado com `inset`, sempre dar `width`/`height` explícitos, porque o core estiliza `<button>`.
 - [x] **0.2.2 (2026-11-18):** ajustes do teste em tela de notebook, aprovados por prévia. O retrato cobre a ponta esquerda do painel (margem esquerda −34 px), e a imagem preenche a moldura até a barra de baixo (abertura 7% 6% 7,5% 6%; o 11% antigo era a altura da gema no centro). **Falta conferir no mundo.**
 - [x] **0.2.3 (2026-11-18):** barras de PV/PM com a moldura numa camada por cima da cor (`.hud-trilho::after`; camadas fundo → cor → extra → moldura → número) e barra de extra (`attributes.pv.temp`/`pm.temp`) da direita para a esquerda, mais escura, proporcional ao máximo; mais espaço antes do "(+N)". Aprovado por prévia; conferido com o CSS real fora do Foundry. **Falta conferir no mundo.** Lição: a borda (`border-image`) de um elemento sempre fica atrás dos filhos; moldura que precisa cobrir o conteúdo vai num pseudo-elemento com `z-index`.
+- [x] **0.2.4 (2026-11-18):** cristal sem o "Aguardando": a legenda só aparece ("Seu turno") em combate, no turno do personagem; fora disso o cristal fica apagado e sem texto (o espaço da legenda continua reservado, para nada pular). **Falta conferir no mundo, junto com a 0.2.2 e a 0.2.3.**
 
 ## Decisões do código (0.1.0, 2026-11-17)
 - O painel é um `ApplicationV2` sem moldura inserido em `#ui-bottom`, então herda a escala de interface do Foundry; a escala extra usa `zoom`.
