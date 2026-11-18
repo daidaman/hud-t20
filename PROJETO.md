@@ -70,7 +70,14 @@ Protótipo: "HUD T20 — protótipo 0.2.0" (https://claude.ai/artifact/Sty883VVn
 - Só para a mesa de Tormenta 20 (pode estilizar os cartões do sistema `tormenta20`: perícia, item, ataque e dano).
 - Cartões do Decreto do Panteão e do Bando da Raposa ficam como estão: o tema só veste o cabeçalho de metal e o emblema do autor.
 - Reskin só por CSS de chat, barra lateral (abas na coluna vertical da direita, como no v13), controles de cena, navegação de cenas e lista de jogadores. Sem trocar lógica.
-- Protótipo em andamento: canvas "Arton UI — protótipo 0.1.0" (https://claude.ai/artifact/A1BBBSjiYrvLU1G32g6MdG), com a barra lateral aberta e recolhida (mensagens flutuantes), em Full HD a 100%. **Aguardando aprovação.**
+- Protótipo em andamento: canvas "Arton UI — protótipo 0.1.0" (https://claude.ai/artifact/A1BBBSjiYrvLU1G32g6MdG), com a barra lateral aberta e recolhida (mensagens flutuantes), em Full HD a 100%, mais uma tela só do cartão (100% e 200%). **Aprovado em 2026-11-18.** O CSS final está nos arquivos `project/*.dc.html` do canvas (ler com read_file antes de codar).
+- **Cartão do chat (medidas aprovadas, ajustadas à mão pelo Daniel):**
+  - Cabeçalho: `chat-cabecalho.webp` em `border-image` 0 80 fill / 0 30px, altura 36 px, 19 px mais largo que o corpo (5 px para a esquerda, 14 px para a direita), por cima do corpo (o corpo sobe 5 px por baixo dele). Nome em Cinzel 12 px dourado, jogador embaixo em Alegreya Sans 10,5 px, 3 px abaixo do centro da barra; hora à direita.
+  - Emblema: `emblema.webp` 46 × 47 px, a 33 px para fora do começo da barra e 6 px acima; retrato/inicial no círculo de dentro (left 3,5%, top 7%, 93% × 90%).
+  - Corpo: pergaminho com borda de 1 px só nas laterais e sombra; sem fundo de pergaminho em volta das pontas da barra.
+  - Rodapé: rubi separado da linha (`rodape-gema` centralizado, `rodape-linha` à esquerda e à direita, cortados de `chat-rodape.webp`), 18 px de altura, com o centro da linha exatamente na borda de baixo do cartão.
+- **Molduras rentes:** a `moldura-painel.webp` tem margem transparente fora da linha dourada (≈3 px dos lados e ≈5 px em cima e embaixo, em 14 px). O fundo vai num `::before` recuado 4 px 3 px e a moldura num `::after` por cima, para não sobrar fundo fora da linha. Vale para jogadores (largura pelo conteúdo), botões de cena, barra lateral, caixa de mensagem e barra de controles.
+- **Próximo passo:** o Daniel cria o repositório privado daidaman/arton-ui; o código começa numa conversa nova, a partir deste PROJETO.md e do canvas.
 
 ## Funções aprovadas
 - **Clique no retrato:** abre a ficha completa do sistema (`actor.sheet.render(true)`).
