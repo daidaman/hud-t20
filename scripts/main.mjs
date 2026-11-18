@@ -25,7 +25,8 @@ const comSinal = (n) => (n > 0 ? `+${n}` : `${n}`);
 
 /**
  * De quem é a HUD (proposta da pendência 3):
- * jogador → o próprio personagem (ou, sem personagem, o token dele selecionado);
+ * jogador → o próprio personagem (ou, sem personagem atribuído, o token dele selecionado;
+ *   sem seleção, o último mostrado ou o primeiro personagem dele: nunca some);
  * mestre → o token selecionado; sem seleção, a HUD some.
  * @returns {{actor: Actor, token: TokenDocument|null}|null}
  */
@@ -39,9 +40,23 @@ function alvoDaHud() {
     const token = controlado?.actor === proprio ? controlado.document : null;
     return { actor: proprio, token };
   }
-  if (controlado?.actor?.isOwner) return { actor: controlado.actor, token: controlado.document };
-  return null;
+  // Jogador sem personagem atribuído: o token dele selecionado; sem seleção (trocar de
+  // ferramenta solta o token), continua no último mostrado ou, no começo, no primeiro
+  // personagem dele. A HUD do jogador nunca some por falta de seleção (0.2.5).
+  if (controlado?.actor?.isOwner) {
+    ultimoAtorJogador = controlado.actor.id;
+    return { actor: controlado.actor, token: controlado.document };
+  }
+  const ultimo = game.actors.get(ultimoAtorJogador);
+  const reserva = ultimo?.isOwner ? ultimo : game.actors.find((a) => a.type === "character" && a.isOwner);
+  if (!reserva) return null;
+  ultimoAtorJogador = reserva.id;
+  const token = reserva.getActiveTokens(false, true).find((tk) => tk.parent === canvas?.scene) ?? null;
+  return { actor: reserva, token };
 }
+
+/** Último personagem mostrado para o jogador sem personagem atribuído. */
+let ultimoAtorJogador = null;
 
 /** O combatente pertence a este personagem? Token sintético compara pelo token; o resto, pelo ator. */
 function eDoAlvo(combatant, alvo) {

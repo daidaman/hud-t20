@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.5 — 2026-11-18
+- Corrigido: a HUD do jogador sumia ao trocar de ferramenta nos controles de cena (a troca solta o token selecionado). Jogador sem personagem atribuído agora continua vendo o último personagem mostrado ou, no começo, o primeiro personagem dele. A HUD do jogador nunca some por falta de seleção. O mestre continua como antes: sem token selecionado, a HUD some.
+
 ## 0.2.4 — 2026-11-18
 - Cristal: saiu a legenda "Aguardando". O texto "Seu turno" só aparece em combate, no turno do personagem; no turno dos outros e fora de combate, o cristal fica apagado e sem texto.
 
