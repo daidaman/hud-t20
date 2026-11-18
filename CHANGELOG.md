@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.2 — 2026-11-17
+- Corrigido: os atalhos ficavam por cima do cristal e dos losangos. O Foundry v13 desloca a `#hotbar` com `transform: translateX(-70px)`; dentro do painel esse transform agora é anulado.
+
 ## 0.1.1 — 2026-11-17
 - HUD mais compacta: painel ~20% menor, barras de PV e PM de 320 para 236 px, atalhos de 52 para 42 px.
 - Retrato aparece inteiro, sem cortar as laterais: a imagem ocupa a abertura da moldura e usa `contain`. A moldura passa só ~4 px acima do painel.

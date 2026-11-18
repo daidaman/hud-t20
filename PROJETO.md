@@ -81,6 +81,8 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 | CD das magias | **Calcular:** `attributes.cd` + `atributos[attributes.conjuracao].value` | Parcial. `attributes.cd` = 10 + metade do nível. Cada magia guarda a CD final em `item.system.resistencia.cd` = 10 + metade do nível + atributo + `resistencia.bonus` (bônus por magia). Confirmado: Maicon nível 4, Int 5 → `attributes.cd` 12, Teia CD 17. Magia sem resistência tem CD 0. Tooltip: "10 base + 2 metade do nível + 5 Int" e, se alguma magia tiver `resistencia.bonus`, uma linha "+N em algumas magias". |
 | Atributos | `atributos.<for/des/con/int/sab/car>.value` | `base`, `racial`, `bonus` |
 
+**Barra nativa no v13 (medido no mundo em 2026-11-17, 0.1.1):** `aside#hotbar.faded-ui.flexrow` com `#hotbar-controls-left` (botões `mute` e `menu`), `menu#action-bar` (`li.slot.full|open` com `img.slot-icon` e `span.key`) e `#hotbar-controls-right` (página, travar, limpar). O core aplica `transform: translateX(-70px)` na `#hotbar`; a HUD anula isso.
+
 **Atalhos:** o sistema já tem um hook `hotbarDrop` que cria macro para `Item` e `ActiveEffect` (`createT20Macro`). O módulo **não precisa tratar o drop**, só restilizar a `#hotbar` nativa (`aside#hotbar > menu#action-bar > li.slot[data-slot]`, com `.full`/`.open` e `span.key`).
 
 **Condições:**
@@ -110,7 +112,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - Como vale qualquer uso de item (ficha, atalho ou HUD), o gasto é o mesmo de onde quer que o item seja usado.
 
 ## Pendências (resolver nesta ordem)
-0. [ ] **Testar a 0.1.1 no mundo de teste** (abrir e fechar a barra lateral, trocar para Combate e Atores, tela de notebook) com mestre e jogador (roteiro no fim deste arquivo) e corrigir o que aparecer, principalmente o encaixe da `#hotbar` do v13 dentro do painel.
+0. [ ] **Testar a 0.1.2 no mundo de teste** (abrir e fechar a barra lateral, trocar para Combate e Atores, tela de notebook) com mestre e jogador (roteiro no fim deste arquivo) e corrigir o que aparecer, principalmente o encaixe da `#hotbar` do v13 dentro do painel.
 1. [x] **Nome e id:** `hud-t20`.
 2. [x] **Inspeção no mundo de teste** (2026-11-17): CD, condição e combate confirmados. Falta só ver uma armadura equipada na Defesa, o que dá para conferir já com o código rodando.
 3. [ ] **De quem é a HUD.** Implementado na 0.1.0 como a proposta, falta confirmar no uso: o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
@@ -143,7 +145,8 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - [x] Protótipo interativo aprovado.
 - [x] Inspeção do sistema concluída (dados, condições, combate, tipo de execução).
 - [x] **0.1.0 (2026-11-17):** módulo com `module.json`, painel, tooltips, condições, cristal, ações do turno e atalhos. Primeiro teste no mundo: funcionou, mas ficou grande, o retrato cortava as laterais e a HUD era espremida (e coberta pela caixa de mensagem) com a barra lateral larga.
-- [x] **0.1.1 (2026-11-17):** HUD menor, retrato inteiro e mais baixo, encaixe automático no espaço livre, botões da barra agrupados. Conferido em página de teste; **falta testar no mundo**.
+- [x] **0.1.1 (2026-11-17):** HUD menor, retrato inteiro e mais baixo, encaixe automático no espaço livre, botões da barra agrupados. Testado no mundo: o encaixe funcionou; os atalhos ficaram por cima do cristal.
+- [x] **0.1.2 (2026-11-17):** atalhos no lugar (anulado o `translateX(-70px)` do core na `#hotbar`). **Falta confirmar no mundo.**
 
 ## Decisões do código (0.1.0, 2026-11-17)
 - O painel é um `ApplicationV2` sem moldura inserido em `#ui-bottom`, então herda a escala de interface do Foundry; a escala extra usa `zoom`.

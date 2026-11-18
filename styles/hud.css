@@ -257,6 +257,10 @@
 #hud-t20 #hotbar {
   position: relative;
   inset: auto;
+  /* O v13 desloca a #hotbar com transform: translateX(-70px) para compensar os botões da esquerda;
+     dentro do painel isso jogava os atalhos por cima do cristal (visto no teste da 0.1.1). */
+  transform: none;
+  translate: none;
   flex: none;
   width: auto;
   height: auto;

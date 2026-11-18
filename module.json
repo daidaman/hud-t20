@@ -2,7 +2,7 @@
   "id": "hud-t20",
   "title": "HUD de Tormenta 20",
   "description": "Barra fixa embaixo da tela com o essencial do personagem para o combate de Tormenta 20: retrato, PV e PM, Defesa, Deslocamento, Iniciativa, CD das magias, condições, ações do turno e atalhos.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "authors": [{ "name": "Daniel" }],
   "compatibility": {
     "minimum": "13",
