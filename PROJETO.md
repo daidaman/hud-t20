@@ -93,13 +93,25 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 
 **Escala:** `core.uiConfig.uiScale` (1 no mundo de teste) e `fontScale`.
 
+**Tipo de execução do item (2026-11-17, lido no código-fonte do sistema 1.5.015):**
+- Fica em `item.system.ativacao.execucao`. Valores (`CONFIG.T20.abilityActivationTypes`): `passive`, `action` (padrão), `move`, `full` (completa), `reaction`, `free`, `minute`, `hour`, `day`, `special`. Pode vir vazio (`""`).
+- Nos compêndios do sistema: magias quase sempre `action` (às vezes `full`, `reaction`, `move`); poderes variam e muitos vêm vazios; **armas vêm sempre vazias** e equipamentos também.
+- Custo em PM: `item.system.ativacao.custo`.
+- O sistema não dispara hook próprio ao usar item. `item.roll()` (também chamado pelas macros da barra, via `game.tormenta20.rollItemMacro`) termina em `displayCard`, que cria a mensagem com `flags.tormenta20.itemData` = `item.system` inteiro (inclui `ativacao.execucao`) e `speaker` do ator. Se o jogador cancelar a janela de uso, não sai mensagem.
+- **Regra de gasto automático:** hook `createChatMessage`, só no cliente que criou a mensagem (`message.author.id === game.user.id`), com `flags.tormenta20.itemData` presente e o ator do `speaker` num combate iniciado:
+  - `action` → padrão; `move` → movimento; `full` → padrão e movimento; `reaction` → reação.
+  - Vazio com rolagem de ataque (`itemData.rolls` com `type: "ataque"`, caso das armas) → padrão.
+  - `free`, `passive`, vazio sem ataque, `minute`/`hour`/`day`/`special` → não gasta.
+  - Se a ação já estava gasta, só avisa (não bloqueia o uso).
+- Como vale qualquer uso de item (ficha, atalho ou HUD), o gasto é o mesmo de onde quer que o item seja usado.
+
 ## Pendências (resolver nesta ordem)
 1. [x] **Nome e id:** `hud-t20`.
 2. [x] **Inspeção no mundo de teste** (2026-11-17): CD, condição e combate confirmados. Falta só ver uma armadura equipada na Defesa, o que dá para conferir já com o código rodando.
 3. [ ] **De quem é a HUD.** Proposta, a confirmar: o jogador vê sempre o próprio personagem; o mestre vê o token selecionado e, sem seleção, a HUD some.
-4. [ ] **Ações do turno:** arte recebida e no protótipo. Falta, na inspeção, ver onde o T20 guarda o tipo de execução do item (padrão, movimento, completa, reação, livre).
-5. [ ] **Novo pergaminho** para o chat: marfim acinzentado, com fibras e manchas suaves, como no conceito. O atual ficou amarelo demais. O prompt está na conversa de 2026-11-17. Quando chegar, substituir `assets/pergaminho.webp`.
-6. [ ] **Combate:** como detectar o turno do personagem para o cristal (`game.combat`, hook `updateCombat`).
+4. [x] **Ações do turno:** arte no protótipo e tipo de execução localizado (ver "Tipo de execução do item" acima).
+5. [x] **Novo pergaminho** (2026-11-17): bege mais neutro, com fibras e manchas suaves, sem emenda ao repetir. Já em `assets/pergaminho.webp` (512 px); original em `arte-original/pergaminho-v2.png`.
+6. [x] **Combate:** procurar em `game.combats` um combate iniciado com o ator da HUD (ver "Combate" acima) e escutar `combatStart`, `combatTurnChange`, `updateCombat` e `deleteCombat`.
 
 ## Plano técnico (v13)
 - **Estrutura:** `module.json` (`compatibility` minimum 13, verified 13.351), `scripts/main.mjs`, `templates/hud.hbs`, `styles/hud.css`, `lang/pt-BR.json` e `assets/`.
@@ -124,6 +136,7 @@ Ambiente: Foundry 13.351, sistema `tormenta20` 1.5.015, ator de teste "Maicon" (
 - [x] Conceito e direção visual.
 - [x] Arte das 12 peças (pergaminho a refazer).
 - [x] Protótipo interativo aprovado.
+- [x] Inspeção do sistema concluída (dados, condições, combate, tipo de execução).
 
 ## Ideias futuras
 - Tema completo da interface (segundo módulo).
