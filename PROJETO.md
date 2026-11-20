@@ -155,6 +155,40 @@ Como as molduras são uma imagem inteira (não 9 partes), o tema usa a parte de 
 7. Repetir 2–6 com "Aventureiro do Reinado". Voltar para "Metal e rubi": a HUD clássica volta igual.
 8. Notebook (1366×768): a HUD encolhe para caber, como a clássica.
 
+## Temas de cristal por personagem (0.5.0, aprovado em protótipo 2026-11-19)
+Nova família de temas da HUD, um por personagem da mesa, todos no mesmo molde (a HUD do dragão alado gerada no ChatGPT). Protótipo aprovado: https://claude.ai/artifact/SAG8ia5DnHCgSD6Y8SP9ab (cópia em `arte-original/temas-cristal/prototipo.html`).
+
+**Decisão do Daniel:** retrato **em cristal** (modo "vidro"): a foto do personagem com a camada de cristal por cima (`opacity .38`, `mix-blend-mode: screen`), as linhas das facetas (`opacity .75`, `screen`) e um brilho que passa a cada ~6 s. Com 0 PV o retrato fica cinza e o brilho para.
+
+| Chave | Nome | Personagem | Símbolo |
+|---|---|---|---|
+| `cristal-dragao` | Dragão Alado | herói (base) | dragão, pedra turquesa |
+| `cristal-forja` | Forja Rubra | anão de armadura | engrenagem com núcleo branco, gemas verdes |
+| `cristal-fenix` | Chama da Fênix | elfo da fênix | fênix, brasa e lava |
+| `cristal-ossario` | Ossário | demônio esquelético | crânio com chifres, asas negras |
+| `cristal-corsario` | Corsário da Raposa | pirata | raposa, madeira e cordas |
+| `cristal-ursal` | Ursal | clérigo Ursal | urso, mármore e estrelas |
+| `cristal-tempestade` | Tempestade Rubra (cristal) | — | horror rubro; não confundir com o tema `tempestade` da 0.4.0 |
+
+**Arte:**
+- Folhas originais em verde: `arte-original/temas-cristal/<tema>-folha-verde.png` (2172 × 724). Scripts: `recorte-cut.py` (chave verde; Forja e Ursal usam chave que preserva as esmeraldas; o brilho dourado atrás dos losangos é "desmisturado" do verde pelo canal vermelho), `recorte-slots.py` e `recorte-classify.py` (acham as aberturas escuras da moldura).
+- Recortes prontos em `assets/temas/cristal-<tema>/`: `moldura.webp` (moldura inteira já com os losangos vazios), `barra-pv.webp`, `barra-pm.webp`, `acao-padrao.webp` (espada), `acao-movimento.webp` (estrela), `acao-reacao.webp` (redemoinho), `cristal.webp`, `facetas.webp`, `mascara-retrato.png` (alfa da abertura do retrato, para `mask-image`).
+- Medidas em `assets/temas/cristal-medidas.json`, **em % da moldura** (x, y, largura, altura): retrato (caixa da máscara), barras PV/PM (miolo escuro do trilho), 4 caixinhas, aberturas dos 3 losangos (o losango solto vai centrado na abertura, com o tamanho de `losango_tamanho` em % da moldura) e os 10 atalhos (linha de cima 1–5, de baixo 6–0).
+- Como as medidas são em %, a moldura pode ser exibida em qualquer largura (a original tem ~1640 px; a HUD deve ficar perto de 820–1100 px).
+
+**Cuidados vistos no protótipo:**
+- Corsário: o cristal e as facetas vieram com moldura própria; no protótipo foram ampliados 128% dentro da máscara para esconder a borda.
+- Ursal: as barras vieram com pontas decoradas, que somem com a barra baixa (o `clip-path` corta da direita). As franjas têm um leve tom verde nas pontas.
+- Tempestade (cristal): PM roxo. **Decidir:** cor do PM por tema ou azul fixo em todos.
+- Forja: um pedacinho solto da arte aparece na ponta direita da moldura; limpar no recorte.
+- Proporção ~3,2 : 1: a HUD fica alta. Testar em 1366×768.
+- O escudo central é só decoração (o "Seu turno" pode usar um brilho sobre ele, como o olho da Tempestade da 0.4.0).
+
+**Para codar (0.5.0):** seguir o padrão da 0.4.0 (`visual` ganha as 7 chaves, `arte(nome)` aponta para `assets/temas/<chave>/`, CSS em `styles/hud-temas.css` ou num `hud-cristal.css`). A diferença: aqui a moldura é a peça inteira (sem faixa a recortar) e as posições vêm do JSON em %. Talvez valha **escolher o tema por personagem** (flag no ator) além do setting do mundo, já que cada tema foi feito para um personagem.
+
+## Próximo passo (conversa nova)
+- [ ] Codar a 0.5.0 com os 7 temas de cristal (seção acima). Antes, decidir: PM azul fixo ou por tema; tema por personagem (flag no ator) ou só no setting do mundo.
+
 ## Funções aprovadas
 - **Clique no retrato:** abre a ficha completa do sistema (`actor.sheet.render(true)`).
 - **Atalhos:**
