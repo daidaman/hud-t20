@@ -57,6 +57,10 @@ for nome, arq in [("pv", "liquido-pv.png"), ("pm", "liquido-pm.png"), ("pv-temp"
         im = im.crop((0, im.height // 4, im.width, im.height * 3 // 4))
     im = im.resize((round(im.width * 128 / im.height), 128), Image.LANCZOS)
     a = np.asarray(im).astype(np.float32)
+    if np.abs(a[:, 0] - a[:, -1]).mean() < 1.0:  # já repete sem emenda (temporários): não mexe
+        im.save(f"{liq}/{nome}.webp", "WEBP", lossless=True, method=6)
+        print(nome, a.shape[1], "x 128 (já sem emenda)")
+        continue
     n = a.shape[1] // 8
     t = np.linspace(0, 1, n)[None, :, None]
     corpo = a[:, : a.shape[1] - n].copy()

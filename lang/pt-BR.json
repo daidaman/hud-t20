@@ -6,19 +6,20 @@
       "Escala": "Tamanho da HUD",
       "EscalaDica": "Aumenta ou diminui o painel, além da escala de interface do Foundry. 1 é o tamanho normal.",
       "Visual": "Visual da mesa",
-      "VisualDica": "O padrão de todos, escolhido pelo mestre; troca na hora, sem recarregar. \"Metal e rubi\" é a HUD de sempre; com \"e tema da interface\", também veste o chat, a barra lateral, os controles de cena, as cenas e a lista de jogadores. Os outros trocam só a moldura e as peças da HUD. Cada jogador pode trocar o seu em \"Meu visual\", e cada personagem pode ter um visual próprio (botão direito no retrato da HUD).",
+      "VisualDica": "O padrão de todos, escolhido pelo mestre; troca na hora, sem recarregar. \"Sem HUD\" deixa a barra padrão do Foundry. Cada jogador pode trocar o seu em \"Meu visual\", e cada personagem pode ter um visual próprio (botão direito no retrato da HUD).",
       "VisualHud": "Metal e rubi: só a HUD",
       "VisualTema": "Metal e rubi: HUD e tema da interface",
       "VisualTempestade": "Tempestade Rubra (só a HUD)",
       "VisualAventureiro": "Aventureiro do Reinado (só a HUD)",
       "VisualMeu": "Meu visual",
-      "VisualMeuDica": "Só neste computador: troca o visual que você vê (HUD e, se escolher, o tema da interface), no lugar do visual da mesa. Um personagem com visual próprio (botão direito no retrato) continua com o dele.",
+      "VisualMeuDica": "Só neste computador: o tema da HUD que você vê, no lugar do visual da mesa. \"Sem HUD\" deixa a barra padrão do Foundry. Um personagem com visual próprio (botão direito no retrato) continua com o dele.",
       "VisualMeuMesa": "Seguir a mesa",
       "RetratoCristal": "Retrato em cristal",
       "RetratoCristalDica": "Só neste computador e só nos temas de cristal: como o retrato aparece dentro da moldura.",
       "RetratoVidro": "Com cristal (vidro e reflexo)",
       "RetratoSuave": "Cristal suave (mais leve, sem reflexo)",
-      "RetratoNenhum": "Sem cristal (só a foto)"
+      "RetratoNenhum": "Sem cristal (só a foto)",
+      "VisualNenhum": "Sem HUD (barra padrão do Foundry)"
     },
     "Nivel": "Nv {nivel}",
     "Retrato": {
@@ -106,13 +107,13 @@
       "JaGasta": "{acao} de {nome} já foi gasta neste turno."
     },
     "Cristal": {
-      "cristal-dragao": "Cristal: Dragão Alado (só a HUD)",
-      "cristal-forja": "Cristal: Forja Mecânica (só a HUD)",
-      "cristal-fenix": "Cristal: Chama da Fênix (só a HUD)",
-      "cristal-ossario": "Cristal: Ossário (só a HUD)",
-      "cristal-corsario": "Cristal: Corsário da Raposa (só a HUD)",
-      "cristal-ursal": "Cristal: Ursal (só a HUD)",
-      "cristal-tempestade": "Cristal: Tempestade Rubra (só a HUD)"
+      "cristal-dragao": "Cristal: Dragão Alado",
+      "cristal-forja": "Cristal: Forja Mecânica",
+      "cristal-fenix": "Cristal: Chama da Fênix",
+      "cristal-ossario": "Cristal: Ossário",
+      "cristal-corsario": "Cristal: Corsário da Raposa",
+      "cristal-ursal": "Cristal: Ursal",
+      "cristal-tempestade": "Cristal: Tempestade Rubra"
     },
     "Abrev": {
       "Defesa": "DEF",

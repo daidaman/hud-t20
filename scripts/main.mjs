@@ -35,11 +35,12 @@ let MEDIDAS_CRISTAL = {};
  * 0.5.0: o personagem pode ter um visual próprio (flags.hud-t20.visual); sem ele, vale o do mundo.
  */
 function visualDaHud(actor = null) {
+  // 0.7.0: só os temas de cristal ou "nenhum" (sem HUD: fica a barra padrão do Foundry). Valores antigos
+  // (metal e rubi, tema da interface, Tempestade, Aventureiro) contam como não escolhidos.
   const proprio = actor?.getFlag(MODULE_ID, "visual");
-  if (proprio === "hud") return "classico";
-  if (ARTE_TEMAS.includes(proprio)) return proprio;
+  if (eCristal(proprio)) return proprio;
   const v = visualEscolhido();
-  return ARTE_TEMAS.includes(v) ? v : "classico";
+  return eCristal(v) ? v : "nenhum";
 }
 
 /**
@@ -53,7 +54,7 @@ function visualEscolhido() {
   } catch {
     /* ainda não registrado */
   }
-  return meu || game.settings.get(MODULE_ID, "visual");
+  return (meu === "nenhum" || eCristal(meu)) ? meu : game.settings.get(MODULE_ID, "visual");
 }
 
 /** Efeito do retrato nos temas de cristal, escolhido por cada jogador: "vidro" (padrão), "suave" ou "nenhum". */
@@ -862,9 +863,10 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
 const limitar = (v, a, b) => Math.min(b, Math.max(a, v));
 
 /** Visuais que um personagem pode ter (0.5.0). "hud" = metal e rubi; o tema da interface é só da mesa. */
-const OPCOES_VISUAL = ["hud", ...ARTE_TEMAS];
+const OPCOES_VISUAL = [...TEMAS_CRISTAL]; // 0.7.0: só os cristais
 
 function rotuloVisual(chave) {
+  if (chave === "nenhum") return t("Config.VisualNenhum");
   if (chave === "hud" || chave === "tema") return t(chave === "hud" ? "Editor.VisualClassico" : "Config.VisualTema");
   if (eCristal(chave)) return t(`Cristal.${chave}`).replace(/ \(só a HUD\)$/, "");
   const nomes = { tempestade: "Config.VisualTempestade", aventureiro: "Config.VisualAventureiro" };
@@ -1115,7 +1117,9 @@ let hud = null;
 
 const atualizar = foundry.utils.debounce(() => {
   if (!hud) return;
-  const alvo = game.settings.get(MODULE_ID, "mostrar") ? alvoDaHud() : null;
+  let alvo = game.settings.get(MODULE_ID, "mostrar") ? alvoDaHud() : null;
+  // 0.7.0: "Sem HUD" (do jogador ou da mesa, sem visual próprio do personagem) = barra padrão do Foundry.
+  if (alvo && visualDaHud(alvo.actor) === "nenhum") alvo = null;
   hud.alvo = alvo;
   if (!alvo) {
     if (hud.rendered) hud.close({ animate: false });
@@ -1262,15 +1266,12 @@ Hooks.once("init", () => {
     scope: "world",
     config: true,
     type: String,
-    // As chaves "hud" e "tema" vêm da 0.3.0 e não mudam (mundos já configurados continuam iguais).
+    // 0.7.0: só "Sem HUD" e os temas de cristal (os visuais antigos saíram; valor antigo guardado = sem HUD).
     choices: {
-      hud: "HUDT20.Config.VisualHud",
-      tema: "HUDT20.Config.VisualTema",
-      tempestade: "HUDT20.Config.VisualTempestade",
-      aventureiro: "HUDT20.Config.VisualAventureiro",
+      nenhum: "HUDT20.Config.VisualNenhum",
       ...Object.fromEntries(TEMAS_CRISTAL.map((k) => [k, `HUDT20.Cristal.${k}`]))
     },
-    default: "hud",
+    default: "nenhum",
     onChange: () => {
       aplicarVisual();
       atualizar();
@@ -1285,10 +1286,7 @@ Hooks.once("init", () => {
     type: String,
     choices: {
       "": "HUDT20.Config.VisualMeuMesa",
-      hud: "HUDT20.Config.VisualHud",
-      tema: "HUDT20.Config.VisualTema",
-      tempestade: "HUDT20.Config.VisualTempestade",
-      aventureiro: "HUDT20.Config.VisualAventureiro",
+      nenhum: "HUDT20.Config.VisualNenhum",
       ...Object.fromEntries(TEMAS_CRISTAL.map((k) => [k, `HUDT20.Cristal.${k}`]))
     },
     default: "",

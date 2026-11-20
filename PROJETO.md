@@ -199,6 +199,11 @@ Nova família de temas da HUD, um por personagem da mesa, todos no mesmo molde (
 - Condições: medalhões acima da cabeça do símbolo, à esquerda das barras. **5 por fileira** (pedido em 2026-11-20): `.hud-condicoes` presa por baixo, `flex-wrap: wrap-reverse`, `max-width` de 5 medalhões; a 6ª em diante sobe, com 6 px entre fileiras; `z-index` acima das peças. Vale para todos os visuais.
 - Conferido fora do Foundry com o template e o CSS reais (Playwright), nos 7 temas, em combate (seu turno), fora de combate e com 0 PV. Prévia: https://claude.ai/artifact/NjWYwkj8BEYLre4MGHXhrB
 
+## 0.7.0 (2026-11-20): só cristais
+- Settings: `visual` (mundo) = `nenhum` (padrão) ou `cristal-*`; `visualMeu` (cliente) = "" (seguir a mesa), `nenhum` ou `cristal-*`; flag do personagem só `cristal-*`. `visualDaHud()` devolve "nenhum" quando não há cristal escolhido, e `atualizar()` fecha a HUD (barra padrão do Foundry). Valores antigos (`hud`, `tema`, `tempestade`, `aventureiro`) contam como não escolhidos. O código e o CSS dos visuais antigos continuam no repositório, mas sem como escolher.
+- Máscara das ondas: a parte lisa sobrepõe 4 px a onda (antes ficava uma fresta). Temporários: textura sem tratamento (webp sem perda).
+- Forja: folha refeita pelo ChatGPT (caixa dos atalhos mais baixa), em `v2/forja-folha-verde.png`.
+
 ## Reformulação dos temas de cristal (0.6.0, feita em 2026-11-20)
 **Como ficou no código (0.6.0):** losangos = os da própria moldura (sem peça solta por cima, que ficava achatada), com os ícones do módulo (`ic-defesa`, `ic-iniciativa`, `ic-desloc`, iguais em todos os temas) e o número; sem ações do turno e sem gemas no escudo (sem resposta do grupo sobre usar o controle de ações: fica para depois, se fizer falta). Recorte: `recorte-v2.py` → `medir-v2.py` → `montar-v2.py` (gera `assets/temas/cristal-<tema>/`, `assets/temas/liquido/` e `cristal-medidas.json` v2). Grupos de atalhos: `metadeAtalhos` + `ui.hotbar.page` (grupo 0–9), `data-metade` no `#hud-t20` mostra 1–5 ou 6–0; nomes em `game.user` flag `gruposAtalhos`. Barras: a ponta é uma onda (máscara SVG 16 × 26 px em `repeat-y`, `mask-position` animado; a largura do líquido é `--pct` + meia onda), também no temporário; `#animarBarras` parte do valor anterior (por ator) e liga o `.rastro` no dano. Prévia: https://claude.ai/artifact/NjWYwkj8BEYLre4MGHXhrB
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.0 — 2026-11-20
+- **Só os temas de cristal:** "Visual da mesa" agora tem "Sem HUD (barra padrão do Foundry)" — o padrão — e os 7 cristais; "Meu visual" tem "Seguir a mesa", "Sem HUD" e os cristais; o visual por personagem (botão direito no retrato) só os cristais. Saíram Metal e rubi (só a HUD), Metal e rubi + tema da interface, Tempestade Rubra e Aventureiro do Reinado. Mundo ou jogador que estava num visual antigo fica sem HUD até escolher um cristal.
+- Corrigido: risco fino dentro do PV/PM extra (fresta entre as duas camadas da máscara da onda; e as texturas dourada e ciano ganhavam uma emenda no tratamento — agora ficam como vieram, sem perda).
+- Forja Mecânica: arte nova da moldura, com a caixa dos atalhos mais baixa (sem o espaço vazio em cima da placa).
+
 ## 0.6.5 — 2026-11-20
 - O temporário cobre por inteiro a barra normal por baixo: o brilho da ponta do líquido normal não aparece mais como uma divisória dentro do dourado/ciano. (No T20 o dano e o gasto saem primeiro do temporário, então o normal costuma estar cheio e o temporário por cima.)
 
