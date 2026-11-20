@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.3 — 2026-11-20
+- Ondulação da ponta das barras mais lenta (cerca de 2× mais calma; com PV baixo continua um pouco mais rápida).
+
 ## 0.6.2 — 2026-11-20
 - Barras de líquido sem corte seco: a ponta do PV, do PM e dos temporários ondula sem parar, como a superfície do líquido nos orbes do Diablo (mais rápida com PV baixo). O líquido passa por cima do começo do temporário, sem fresta.
 
