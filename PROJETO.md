@@ -199,6 +199,13 @@ Nova família de temas da HUD, um por personagem da mesa, todos no mesmo molde (
 - Condições: medalhões acima da cabeça do símbolo, à esquerda das barras. **5 por fileira** (pedido em 2026-11-20): `.hud-condicoes` presa por baixo, `flex-wrap: wrap-reverse`, `max-width` de 5 medalhões; a 6ª em diante sobe, com 6 px entre fileiras; `z-index` acima das peças. Vale para todos os visuais.
 - Conferido fora do Foundry com o template e o CSS reais (Playwright), nos 7 temas, em combate (seu turno), fora de combate e com 0 PV. Prévia: https://claude.ai/artifact/NjWYwkj8BEYLre4MGHXhrB
 
+## Reformulação dos temas de cristal (ideias de 2026-11-20, ainda sem arte)
+- **Losangos com os números principais:** meio (maior) = Defesa, esquerda = Iniciativa (clique rola), direita = Deslocamento. CD vai para o tooltip da barra de PM (só para quem conjura). As ações do turno saem dos temas de cristal, a não ser que o grupo use (aí: 3 gemas pequenas no escudo, acesas só em combate). **Pendente:** o grupo usa o controle de ações?
+- **Sem as 4 caixinhas:** barras de PV e PM ~60% mais altas.
+- **Atalhos: 1 fileira de 5 com placa de nome em cima** (◀ nome ▶). O nome é do grupo de atalhos ("Ataques", "Magias"…), editável pelo jogador com um clique e salvo por jogador; vazio = "Atalhos 1, 2…". Cada página do Foundry (10) vira 2 grupos de 5. Substitui o "▲ 1 ▼".
+- **Barras de líquido (estilo orbes do Diablo, na horizontal):** textura sem emenda deslizando em loop, borda direita ondulando como superfície, bolhas (mais no PV baixo), dano escorrendo com rastro claro que some, cura enchendo aos poucos, vidro com reflexo por cima; parado com "reduzir animações". **PV/PM temporários:** uma camada de líquido própria (PV temp dourado, PM temp ciano claro) por cima da barra, entrando da ponta direita do líquido principal, com a mesma superfície ondulada.
+- Prompts do ChatGPT: folha nova por tema (moldura sem caixinhas, barras altas, 1 × 5 atalhos com placa e setas, losangos vazios + 3 losangos de status soltos) e, uma vez só, 4 texturas de líquido 1024 × 128 sem emenda (vermelho, azul, dourado, ciano claro). Testar primeiro só no Dragão.
+
 ## Roteiro de teste da 0.5.0 (mestre + jogador em aba anônima)
 1. Atualizar o módulo. Sem mexer em nada: tudo igual à 0.4.0.
 2. Mestre: "Visual do módulo" = "Cristal: Dragão Alado": a HUD de todos troca na hora. Conferir retrato em vidro (reflexo passando), barras, caixinhas, losangos e atalhos dentro das caixas da arte.
