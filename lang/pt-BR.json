@@ -5,12 +5,15 @@
       "MostrarDica": "Liga ou desliga o painel de baixo só neste navegador.",
       "Escala": "Tamanho da HUD",
       "EscalaDica": "Aumenta ou diminui o painel, além da escala de interface do Foundry. 1 é o tamanho normal.",
-      "Visual": "Visual do módulo",
-      "VisualDica": "Vale para a mesa toda e troca na hora, sem recarregar. \"Metal e rubi\" é a HUD de sempre; com \"e tema da interface\", também veste o chat, a barra lateral, os controles de cena, as cenas e a lista de jogadores. Os outros trocam só a moldura e as peças da HUD. Cada personagem pode ter um visual próprio (botão direito no retrato da HUD), que vale no lugar deste.",
+      "Visual": "Visual da mesa",
+      "VisualDica": "O padrão de todos, escolhido pelo mestre; troca na hora, sem recarregar. \"Metal e rubi\" é a HUD de sempre; com \"e tema da interface\", também veste o chat, a barra lateral, os controles de cena, as cenas e a lista de jogadores. Os outros trocam só a moldura e as peças da HUD. Cada jogador pode trocar o seu em \"Meu visual\", e cada personagem pode ter um visual próprio (botão direito no retrato da HUD).",
       "VisualHud": "Metal e rubi: só a HUD",
       "VisualTema": "Metal e rubi: HUD e tema da interface",
       "VisualTempestade": "Tempestade Rubra (só a HUD)",
-      "VisualAventureiro": "Aventureiro do Reinado (só a HUD)"
+      "VisualAventureiro": "Aventureiro do Reinado (só a HUD)",
+      "VisualMeu": "Meu visual",
+      "VisualMeuDica": "Só neste computador: troca o visual que você vê (HUD e, se escolher, o tema da interface), no lugar do visual da mesa. Um personagem com visual próprio (botão direito no retrato) continua com o dele.",
+      "VisualMeuMesa": "Seguir a mesa"
     },
     "Nivel": "Nv {nivel}",
     "Retrato": {

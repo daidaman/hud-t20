@@ -38,8 +38,22 @@ function visualDaHud(actor = null) {
   const proprio = actor?.getFlag(MODULE_ID, "visual");
   if (proprio === "hud") return "classico";
   if (ARTE_TEMAS.includes(proprio)) return proprio;
-  const v = game.settings.get(MODULE_ID, "visual");
+  const v = visualEscolhido();
   return ARTE_TEMAS.includes(v) ? v : "classico";
+}
+
+/**
+ * Visual escolhido neste computador: o do próprio jogador ("Meu visual", 0.5.0) ou, se ele não escolheu, o da mesa.
+ * Ordem na HUD: visual do personagem > meu visual > visual da mesa. O tema da interface ("tema") segue esta escolha.
+ */
+function visualEscolhido() {
+  let meu = "";
+  try {
+    meu = game.settings.get(MODULE_ID, "visualMeu");
+  } catch {
+    /* ainda não registrado */
+  }
+  return meu || game.settings.get(MODULE_ID, "visual");
 }
 
 /** Visual do personagem mostrado agora (as funções dos tooltips usam para achar os ícones). */
@@ -781,7 +795,7 @@ class EditorRetrato extends HandlebarsApplicationMixin(ApplicationV2) {
       zoomTxt: `${Math.round(this.rasc.zoom * 100)}%`,
       estilo: this.#estilo(),
       opcoesVisual: [
-        { valor: "", rotulo: t("Editor.VisualMesa", { nome: rotuloVisual(game.settings.get(MODULE_ID, "visual")) }) },
+        { valor: "", rotulo: t("Editor.VisualMesa", { nome: rotuloVisual(visualEscolhido()) }) },
         ...OPCOES_VISUAL.map((valor) => ({ valor, rotulo: rotuloVisual(valor) }))
       ].map((o) => ({ ...o, sel: o.valor === this.rasc.visual })),
       txt: {
@@ -1053,7 +1067,7 @@ async function recarregar(combat, prior, current) {
 /** Módulos cujos cartões ficam como estão: o tema só veste o cabeçalho e o emblema. */
 const MODULOS_EXTERNOS = ["decreto-do-panteao", "bando-da-raposa"];
 
-const temaLigado = () => game.settings.get(MODULE_ID, "visual") === "tema";
+const temaLigado = () => visualEscolhido() === "tema";
 
 /** Liga ou desliga o tema: só a classe no body (styles/tema.css). Não precisa recarregar. */
 function aplicarVisual() {
@@ -1129,6 +1143,27 @@ Hooks.once("init", () => {
       ...Object.fromEntries(TEMAS_CRISTAL.map((k) => [k, `HUDT20.Cristal.${k}`]))
     },
     default: "hud",
+    onChange: () => {
+      aplicarVisual();
+      atualizar();
+    }
+  });
+  // 0.5.0: cada jogador pode escolher o próprio visual (inclusive "só a HUD" × "HUD e tema da interface").
+  game.settings.register(MODULE_ID, "visualMeu", {
+    name: "HUDT20.Config.VisualMeu",
+    hint: "HUDT20.Config.VisualMeuDica",
+    scope: "client",
+    config: true,
+    type: String,
+    choices: {
+      "": "HUDT20.Config.VisualMeuMesa",
+      hud: "HUDT20.Config.VisualHud",
+      tema: "HUDT20.Config.VisualTema",
+      tempestade: "HUDT20.Config.VisualTempestade",
+      aventureiro: "HUDT20.Config.VisualAventureiro",
+      ...Object.fromEntries(TEMAS_CRISTAL.map((k) => [k, `HUDT20.Cristal.${k}`]))
+    },
+    default: "",
     onChange: () => {
       aplicarVisual();
       atualizar();
