@@ -4,6 +4,7 @@
 - Sete temas de cristal, um por personagem da mesa, no "Visual do módulo": **Dragão Alado**, **Forja Mecânica**, **Chama da Fênix**, **Ossário**, **Corsário da Raposa**, **Ursal** e **Tempestade Rubra (cristal)**.
 - **Tema por personagem:** botão direito no retrato da HUD → "Visual da HUD deste personagem". Vale para todos que veem a HUD daquele personagem; "Seguir a mesa" volta ao visual do mundo. O dono e o mestre podem mudar. A janela mostra a prévia do retrato no tema escolhido.
 - **Meu visual (cada jogador):** nova opção em Configurações → HUD de Tormenta 20, só para quem a escolhe. O jogador troca o próprio visual, inclusive "só a HUD" × "HUD e tema da interface"; "Seguir a mesa" (padrão) usa o do mestre, que agora se chama "Visual da mesa". Ordem: visual do personagem > meu visual > visual da mesa.
+- **Retrato em cristal (cada jogador):** logo abaixo de "Meu visual", escolhe como o retrato aparece nos temas de cristal: com cristal (vidro e reflexo, padrão), cristal suave (mais leve, sem reflexo) ou sem cristal (só a foto).
 - Retrato em cristal (vidro): a foto com a camada de cristal, as facetas e um reflexo que passa a cada ~6 s. Com 0 PV, a foto fica cinza e o reflexo para.
 - PM azul em todos os temas (a barra roxa da Tempestade foi recolorida).
 - Caixinhas com número e sigla (DEF, DESL, INI, CD); os tooltips continuam iguais. Nos temas de cristal não há o "Seu turno" (o escudo do centro é só decoração).

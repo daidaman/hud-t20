@@ -13,7 +13,12 @@
       "VisualAventureiro": "Aventureiro do Reinado (só a HUD)",
       "VisualMeu": "Meu visual",
       "VisualMeuDica": "Só neste computador: troca o visual que você vê (HUD e, se escolher, o tema da interface), no lugar do visual da mesa. Um personagem com visual próprio (botão direito no retrato) continua com o dele.",
-      "VisualMeuMesa": "Seguir a mesa"
+      "VisualMeuMesa": "Seguir a mesa",
+      "RetratoCristal": "Retrato em cristal",
+      "RetratoCristalDica": "Só neste computador e só nos temas de cristal: como o retrato aparece dentro da moldura.",
+      "RetratoVidro": "Com cristal (vidro e reflexo)",
+      "RetratoSuave": "Cristal suave (mais leve, sem reflexo)",
+      "RetratoNenhum": "Sem cristal (só a foto)"
     },
     "Nivel": "Nv {nivel}",
     "Retrato": {

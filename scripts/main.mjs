@@ -56,6 +56,16 @@ function visualEscolhido() {
   return meu || game.settings.get(MODULE_ID, "visual");
 }
 
+/** Efeito do retrato nos temas de cristal, escolhido por cada jogador: "vidro" (padrão), "suave" ou "nenhum". */
+function efeitoRetrato() {
+  try {
+    const v = game.settings.get(MODULE_ID, "retratoCristal");
+    return ["vidro", "suave", "nenhum"].includes(v) ? v : "vidro";
+  } catch {
+    return "vidro";
+  }
+}
+
 /** Visual do personagem mostrado agora (as funções dos tooltips usam para achar os ícones). */
 let visualEmUso = "classico";
 
@@ -526,7 +536,8 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
       gema: arte("gema", "classico"),
       ator: { nome: actor.name, nivelTxt: t("Nivel", { nivel }) },
       // 0.5.0: retrato em cristal (modo vidro): camada de cristal, facetas e um reflexo por cima da foto.
-      cristal: cristal ? { vidro: arte("cristal", visual), facetas: arte("facetas", visual) } : null,
+      // Cada jogador escolhe o efeito em "Retrato em cristal": vidro, suave ou só a foto (sem as camadas).
+      cristal: cristal && efeitoRetrato() !== "nenhum" ? { vidro: arte("cristal", visual), facetas: arte("facetas", visual) } : null,
       retrato: {
         ...retrato,
         caido: cristal && (Number(sys.attributes?.pv?.value) || 0) <= 0,
@@ -580,6 +591,7 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
     // 0.5.0: temas de cristal, posições do JSON em variáveis CSS (as antigas saem ao trocar de tema).
     const cristal = eCristal(context.visual);
     this.element.classList.toggle("hud-t20-cristal", cristal);
+    this.element.dataset.retrato = cristal ? efeitoRetrato() : "";
     for (const nome of [...this.element.style]) if (nome.startsWith("--cr-")) this.element.style.removeProperty(nome);
     if (cristal) for (const [nome, valor] of Object.entries(varsCristal(context.visual))) this.element.style.setProperty(nome, valor);
     // Botão direito no retrato abre o ajuste (o botão direito dos atalhos continua o nativo).
@@ -862,6 +874,7 @@ class EditorRetrato extends HandlebarsApplicationMixin(ApplicationV2) {
     const mascara = `url("modules/${MODULE_ID}/assets/temas/${visual}/mascara-retrato.png")`;
     abertura.style.maskImage = mascara;
     abertura.style.webkitMaskImage = mascara;
+    previa.dataset.retrato = efeitoRetrato();
     previa.querySelector(".hud-vidro")?.setAttribute("src", arte("cristal", visual));
     previa.querySelector(".hud-facetas")?.setAttribute("src", arte("facetas", visual));
   }
@@ -1168,6 +1181,21 @@ Hooks.once("init", () => {
       aplicarVisual();
       atualizar();
     }
+  });
+  // 0.5.0: o cristal do retrato não é obrigatório; cada jogador escolhe.
+  game.settings.register(MODULE_ID, "retratoCristal", {
+    name: "HUDT20.Config.RetratoCristal",
+    hint: "HUDT20.Config.RetratoCristalDica",
+    scope: "client",
+    config: true,
+    type: String,
+    choices: {
+      vidro: "HUDT20.Config.RetratoVidro",
+      suave: "HUDT20.Config.RetratoSuave",
+      nenhum: "HUDT20.Config.RetratoNenhum"
+    },
+    default: "vidro",
+    onChange: () => atualizar()
   });
   game.settings.register(MODULE_ID, "mostrar", {
     name: "HUDT20.Config.Mostrar",

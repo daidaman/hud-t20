@@ -199,3 +199,12 @@
 .hud-t20-editor .retrato-previa.cristal .hud-vidro { opacity: .38; }
 .hud-t20-editor .retrato-previa.cristal .hud-facetas { opacity: .75; }
 .hud-t20-editor .retrato-previa.cristal[data-visual="cristal-corsario"] :is(.hud-vidro, .hud-facetas) { inset: -14%; width: 128%; height: 128%; }
+
+/* ---------- "Retrato em cristal" (escolha de cada jogador, 0.5.0) ----------
+   vidro = padrão acima; suave = camadas mais leves e sem reflexo; nenhum = o script nem põe as camadas (só a foto). */
+#hud-t20.hud-t20-cristal[data-retrato="suave"] .hud-retrato .hud-vidro,
+.hud-t20-editor .retrato-previa.cristal[data-retrato="suave"] .hud-vidro { opacity: .16; }
+#hud-t20.hud-t20-cristal[data-retrato="suave"] .hud-retrato .hud-facetas,
+.hud-t20-editor .retrato-previa.cristal[data-retrato="suave"] .hud-facetas { opacity: .32; }
+#hud-t20.hud-t20-cristal[data-retrato="suave"] .hud-retrato .hud-reflexo { display: none; }
+.hud-t20-editor .retrato-previa.cristal[data-retrato="nenhum"] :is(.hud-vidro, .hud-facetas) { display: none; }
