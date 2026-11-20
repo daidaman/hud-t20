@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.5 — 2026-11-20
+- O temporário cobre por inteiro a barra normal por baixo: o brilho da ponta do líquido normal não aparece mais como uma divisória dentro do dourado/ciano. (No T20 o dano e o gasto saem primeiro do temporário, então o normal costuma estar cheio e o temporário por cima.)
+
 ## 0.6.4 — 2026-11-20
 - PV e PM temporários: entram pela direita e crescem para a esquerda (somem da esquerda para a direita), por cima do líquido normal, com a onda na ponta da esquerda.
 
