@@ -116,16 +116,36 @@
   background-size: 240px 100%;
   animation: hud-t20-liquido 16s linear infinite;
 }
+/* A ponta do líquido não é um corte seco: uma onda (máscara SVG de 16 × 26 px) sobe sem parar na borda,
+   como a superfície do líquido nos orbes do Diablo. O líquido tem a largura do valor + meia onda. */
 #hud-t20.hud-t20-cristal .hud-trilho .cheio {
-  clip-path: inset(0 calc(100% - var(--pct) * 1%) 0 0);
-  transition: clip-path .8s cubic-bezier(.3, .7, .3, 1);
+  right: auto;
+  width: calc(var(--pct) * 1% + 8px);
+  clip-path: none;
+  -webkit-mask: linear-gradient(#000, #000) left top / calc(100% - 16px) 100% no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='26' viewBox='0 0 16 26'%3E%3Cpath d='M0 0H8Q15 6.5 8 13Q1 19.5 8 26H0Z'/%3E%3C/svg%3E") right top / 16px 26px repeat-y;
+  mask: linear-gradient(#000, #000) left top / calc(100% - 16px) 100% no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='26' viewBox='0 0 16 26'%3E%3Cpath d='M0 0H8Q15 6.5 8 13Q1 19.5 8 26H0Z'/%3E%3C/svg%3E") right top / 16px 26px repeat-y;
+  animation: hud-t20-liquido 16s linear infinite, hud-t20-borda 1.5s linear infinite;
+  transition: width .8s cubic-bezier(.3, .7, .3, 1);
+}
+#hud-t20.hud-t20-cristal .hud-trilho .cheio:is([style^="--pct:0;"], [style="--pct:0"]) { display: none; }
+@keyframes hud-t20-borda {
+  from { -webkit-mask-position: left top, right 0; mask-position: left top, right 0; }
+  to { -webkit-mask-position: left top, right -26px; mask-position: left top, right -26px; }
 }
 #hud-t20.hud-t20-cristal .hud-trilho .cheio.pv { background-image: url("../assets/temas/liquido/pv.webp"); filter: brightness(1.35) saturate(1.15); }
 #hud-t20.hud-t20-cristal .hud-trilho .cheio.pm { background-image: url("../assets/temas/liquido/pm.webp"); animation-duration: 20s; }
 /* Temporário: logo depois do fim do líquido (ou encostado na direita, se passar do máximo). */
+#hud-t20.hud-t20-cristal .hud-trilho .cheio { z-index: 1; } /* a onda do líquido passa por cima do temporário */
 #hud-t20.hud-t20-cristal .hud-trilho .extra {
-  z-index: 1;
-  clip-path: inset(0 calc(100% - var(--fim) * 1%) 0 calc(var(--ini) * 1%));
+  z-index: 0;
+  /* Temporário: começa embaixo da onda do líquido e termina com a mesma onda na ponta. */
+  right: auto;
+  left: calc(var(--ini) * 1% - 8px);
+  width: calc((var(--fim) - var(--ini)) * 1% + 16px);
+  clip-path: none;
+  -webkit-mask: linear-gradient(#000, #000) left top / calc(100% - 16px) 100% no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='26' viewBox='0 0 16 26'%3E%3Cpath d='M0 0H8Q15 6.5 8 13Q1 19.5 8 26H0Z'/%3E%3C/svg%3E") right top / 16px 26px repeat-y;
+  mask: linear-gradient(#000, #000) left top / calc(100% - 16px) 100% no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='26' viewBox='0 0 16 26'%3E%3Cpath d='M0 0H8Q15 6.5 8 13Q1 19.5 8 26H0Z'/%3E%3C/svg%3E") right top / 16px 26px repeat-y;
+  animation: hud-t20-liquido 16s linear infinite, hud-t20-borda 1.8s linear infinite reverse;
   background-size: 320px 100%;
   opacity: .92;
   box-shadow: none;
@@ -149,7 +169,7 @@
 }
 @keyframes hud-t20-bolhas { to { background-position: 6px -31px, 13px -32px; } }
 #hud-t20.hud-t20-cristal .hud-trilho.baixo .bolhas { animation-duration: 1.6s; opacity: .8; }
-#hud-t20.hud-t20-cristal .hud-trilho.baixo .cheio { animation: hud-t20-liquido 6s linear infinite, hud-t20-alerta 1.4s ease-in-out infinite; }
+#hud-t20.hud-t20-cristal .hud-trilho.baixo .cheio { animation: hud-t20-liquido 6s linear infinite, hud-t20-borda .9s linear infinite, hud-t20-alerta 1.4s ease-in-out infinite; }
 @keyframes hud-t20-alerta { 50% { filter: brightness(1.35) saturate(1.2); } }
 
 /* Superfície: a ponta do líquido ondula como num frasco. */
@@ -158,7 +178,7 @@
   z-index: 2;
   top: -10%;
   bottom: -10%;
-  left: calc(var(--pct) * 1% - 5px);
+  left: calc(var(--pct) * 1% - 3px);
   width: 10px;
   background: radial-gradient(ellipse 45% 50% at 50% 50%, rgba(255, 255, 255, .75), rgba(255, 255, 255, .18) 55%, transparent 75%);
   mix-blend-mode: screen;

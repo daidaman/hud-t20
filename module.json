@@ -2,7 +2,7 @@
   "id": "hud-t20",
   "title": "HUD de Tormenta 20",
   "description": "Barra fixa embaixo da tela com o essencial do personagem para o combate de Tormenta 20 (retrato, PV e PM, Defesa, Deslocamento, Iniciativa, CD das magias, condições, ações do turno e atalhos) em dez visuais (metal e rubi, Tempestade Rubra, Aventureiro do Reinado e sete temas de cristal, um por personagem, com o retrato em vidro) e, se o mestre ligar, um tema de Arton para o chat e a interface.",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "authors": [
     {
       "name": "Daniel"

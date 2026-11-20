@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.2 — 2026-11-20
+- Barras de líquido sem corte seco: a ponta do PV, do PM e dos temporários ondula sem parar, como a superfície do líquido nos orbes do Diablo (mais rápida com PV baixo). O líquido passa por cima do começo do temporário, sem fresta.
+
 ## 0.6.1 — 2026-11-20
 - Corrigido: nos temas de cristal, os tooltips dos losangos (Defesa, Iniciativa, Deslocamento) não apareciam. O recorte em losango do brilho do mouse cortava o tooltip; agora o brilho fica num pseudo-elemento.
 
