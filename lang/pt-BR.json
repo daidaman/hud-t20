@@ -6,7 +6,7 @@
       "Escala": "Tamanho da HUD",
       "EscalaDica": "Aumenta ou diminui o painel, além da escala de interface do Foundry. 1 é o tamanho normal.",
       "Visual": "Visual do módulo",
-      "VisualDica": "Vale para a mesa toda e troca na hora, sem recarregar. \"Metal e rubi\" é a HUD de sempre; com \"e tema da interface\", também veste o chat, a barra lateral, os controles de cena, as cenas e a lista de jogadores. \"Tempestade Rubra\" e \"Aventureiro do Reinado\" trocam só a moldura e as peças da HUD.",
+      "VisualDica": "Vale para a mesa toda e troca na hora, sem recarregar. \"Metal e rubi\" é a HUD de sempre; com \"e tema da interface\", também veste o chat, a barra lateral, os controles de cena, as cenas e a lista de jogadores. Os outros trocam só a moldura e as peças da HUD. Cada personagem pode ter um visual próprio (botão direito no retrato da HUD), que vale no lugar deste.",
       "VisualHud": "Metal e rubi: só a HUD",
       "VisualTema": "Metal e rubi: HUD e tema da interface",
       "VisualTempestade": "Tempestade Rubra (só a HUD)",
@@ -22,7 +22,7 @@
       "DireitoSub": "Troca a imagem e o enquadramento do retrato da HUD"
     },
     "Editor": {
-      "Titulo": "Retrato da HUD — {nome}",
+      "Titulo": "HUD de {nome}: retrato e visual",
       "Palco": "Enquadramento. Arraste ou use as setas; roda do mouse ou + e − para zoom",
       "DicaPalco": "Arraste para mover · roda do mouse para zoom",
       "Imagem": "Imagem",
@@ -34,6 +34,10 @@
       "Centralizar": "Centralizar",
       "Previa": "Como fica na HUD",
       "PreviaDica": "Tamanho real. A imagem sempre cobre a moldura, sem faixas escuras.",
+      "Visual": "Visual da HUD deste personagem",
+      "VisualMesa": "Seguir a mesa ({nome})",
+      "VisualClassico": "Metal e rubi",
+      "VisualDica": "Só a HUD deste personagem muda, para todos que a veem.",
       "Nota": "Salvo no personagem. O dono e o mestre podem mudar.",
       "Cancelar": "Cancelar",
       "Salvar": "Salvar",
@@ -92,6 +96,21 @@
       "Disponivel": "disponível",
       "Gasta": "gasta",
       "JaGasta": "{acao} de {nome} já foi gasta neste turno."
+    },
+    "Cristal": {
+      "cristal-dragao": "Cristal: Dragão Alado (só a HUD)",
+      "cristal-forja": "Cristal: Forja Mecânica (só a HUD)",
+      "cristal-fenix": "Cristal: Chama da Fênix (só a HUD)",
+      "cristal-ossario": "Cristal: Ossário (só a HUD)",
+      "cristal-corsario": "Cristal: Corsário da Raposa (só a HUD)",
+      "cristal-ursal": "Cristal: Ursal (só a HUD)",
+      "cristal-tempestade": "Cristal: Tempestade Rubra (só a HUD)"
+    },
+    "Abrev": {
+      "Defesa": "DEF",
+      "Deslocamento": "DESL",
+      "Iniciativa": "INI",
+      "CD": "CD"
     }
   }
 }

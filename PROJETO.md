@@ -163,7 +163,7 @@ Nova família de temas da HUD, um por personagem da mesa, todos no mesmo molde (
 | Chave | Nome | Personagem | Símbolo |
 |---|---|---|---|
 | `cristal-dragao` | Dragão Alado | herói (base) | dragão, pedra turquesa |
-| `cristal-forja` | Forja Rubra | anão de armadura | engrenagem com núcleo branco, gemas verdes |
+| `cristal-forja` | Forja Mecânica | anão de armadura | engrenagem com núcleo branco, gemas verdes |
 | `cristal-fenix` | Chama da Fênix | elfo da fênix | fênix, brasa e lava |
 | `cristal-ossario` | Ossário | demônio esquelético | crânio com chifres, asas negras |
 | `cristal-corsario` | Corsário da Raposa | pirata | raposa, madeira e cordas |
@@ -179,15 +179,37 @@ Nova família de temas da HUD, um por personagem da mesa, todos no mesmo molde (
 **Cuidados vistos no protótipo:**
 - Corsário: o cristal e as facetas vieram com moldura própria; no protótipo foram ampliados 128% dentro da máscara para esconder a borda.
 - Ursal: as barras vieram com pontas decoradas, que somem com a barra baixa (o `clip-path` corta da direita). As franjas têm um leve tom verde nas pontas.
-- Tempestade (cristal): PM roxo. **Decidir:** cor do PM por tema ou azul fixo em todos.
-- Forja: um pedacinho solto da arte aparece na ponta direita da moldura; limpar no recorte.
+- Tempestade (cristal): PM roxo. **Decidido (2026-11-19): PM azul fixo em todos**; a barra foi recolorida (`ajustes-0.5.0.py`, original em `barra-pm-roxo.webp`).
+- Forja: um pedacinho solto da arte aparecia na ponta direita da moldura; **limpo** (`ajustes-0.5.0.py`).
 - Proporção ~3,2 : 1: a HUD fica alta. Testar em 1366×768.
 - O escudo central é só decoração (o "Seu turno" pode usar um brilho sobre ele, como o olho da Tempestade da 0.4.0).
 
 **Para codar (0.5.0):** seguir o padrão da 0.4.0 (`visual` ganha as 7 chaves, `arte(nome)` aponta para `assets/temas/<chave>/`, CSS em `styles/hud-temas.css` ou num `hud-cristal.css`). A diferença: aqui a moldura é a peça inteira (sem faixa a recortar) e as posições vêm do JSON em %. Talvez valha **escolher o tema por personagem** (flag no ator) além do setting do mundo, já que cada tema foi feito para um personagem.
 
+**Decisões do código da 0.5.0 (2026-11-19):**
+- Nome: "Forja Rubra" virou **Forja Mecânica** (a chave continua `cristal-forja`).
+- **PM azul fixo** em todos os temas. **Tema por personagem:** flag `flags.hud-t20.visual` no ator (qualquer visual da HUD: `hud` = metal e rubi, `tempestade`, `aventureiro` ou `cristal-*`); sem a flag, vale o "Visual do módulo" do mundo, que também ganhou as 7 opções. O tema da interface (`tema`) continua só da mesa.
+- Onde escolher: a janela do retrato (botão direito no retrato ou engrenagem) virou "HUD de <nome>: retrato e visual", com o campo "Visual da HUD deste personagem" ("Seguir a mesa" + os visuais). O dono e o mestre podem mudar; a prévia do retrato na janela mostra a máscara e o vidro do tema escolhido.
+- `visualDaHud(actor)` lê a flag; `arte()` usa o visual do personagem mostrado (`visualEmUso`). Nos temas de cristal os ícones das caixinhas não existem: as caixinhas mostram número e sigla (DEF, DESL, INI, CD), com o tooltip de sempre.
+- Medidas: `cristal-medidas.json` é lido no `setup`; `varsCristal()` põe as posições em variáveis `--cr-<peça>-x/y/w/h` no `#hud-t20`, e `styles/hud-cristal.css` posiciona tudo com elas (classes `hud-t20-arte` + `hud-t20-cristal`). Losangos centrados na abertura com `losango_tamanho`. Atalhos: cada `.slot` da barra nativa na caixa medida; o seletor de página fica logo à direita da moldura.
+- Painel com 1000 px de largura na proporção da arte (~3,2 : 1); o "Tamanho da HUD" e o encaixe automático continuam valendo.
+- Retrato em vidro como no protótipo (cristal .38 e facetas .75 em `screen`, reflexo a cada 6 s; Corsário ampliado 128%); 0 PV = foto cinza e sem reflexo. **Sem "Seu turno"** nos temas de cristal (tirado a pedido em 2026-11-20: ficava estranho); o escudo do centro é só decoração.
+- Condições: medalhões acima da cabeça do símbolo, à esquerda das barras.
+- Conferido fora do Foundry com o template e o CSS reais (Playwright), nos 7 temas, em combate (seu turno), fora de combate e com 0 PV. Prévia: https://claude.ai/artifact/NjWYwkj8BEYLre4MGHXhrB
+
+## Roteiro de teste da 0.5.0 (mestre + jogador em aba anônima)
+1. Atualizar o módulo. Sem mexer em nada: tudo igual à 0.4.0.
+2. Mestre: "Visual do módulo" = "Cristal: Dragão Alado": a HUD de todos troca na hora. Conferir retrato em vidro (reflexo passando), barras, caixinhas, losangos e atalhos dentro das caixas da arte.
+3. Jogador: botão direito no retrato → "Visual da HUD deste personagem" = outro tema (ex.: Forja Mecânica) → Salvar. A HUD dele troca; o mestre, selecionando o token, vê o mesmo tema. Voltar para "Seguir a mesa": volta ao tema do mundo.
+4. Tooltips das caixinhas e do retrato, clique na Iniciativa (rola) e no retrato (abre a ficha), como antes.
+5. Combate: losangos acesos; usar magia de ação padrão gasta a espada; no turno do personagem nada brilha no escudo (sem "Seu turno"). Fora de combate, losangos apagados e sem clique.
+6. PV a 0: retrato cinza, sem reflexo. PV e PM temporários: barra escura entrando da direita.
+7. Atalhos: arrastar item, usar pela tecla, trocar de página (▲ 1 ▼ à direita da moldura). Clicar fora das peças (céu em volta dos losangos, por exemplo) chega ao mapa.
+8. Passar pelos 7 temas. Notebook (1366×768): a HUD encolhe para caber; ver se a altura incomoda (se sim, baixar o "Tamanho da HUD").
+
 ## Próximo passo (conversa nova)
-- [ ] Codar a 0.5.0 com os 7 temas de cristal (seção acima). Antes, decidir: PM azul fixo ou por tema; tema por personagem (flag no ator) ou só no setting do mundo.
+- [x] Codar a 0.5.0 com os 7 temas de cristal (2026-11-19).
+- [ ] Testar no mundo (roteiro acima).
 
 ## Funções aprovadas
 - **Clique no retrato:** abre a ficha completa do sistema (`actor.sheet.render(true)`).

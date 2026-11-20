@@ -246,6 +246,7 @@ img.hud-t20-enq {
   color: #F6EEDC;
 }
 #hud-t20 .hud-mini .val img { width: 17px; height: 17px; flex: none; border: none; }
+#hud-t20 .hud-mini :is(.abrev, .num-curto) { display: none; } /* 0.5.0: só nos temas de cristal */
 
 /* ---------- Tooltips (0.2.0): translúcidos, no esquema do tooltip de melhorias ----------
    Título da seção pequeno em caixa alta azul-aço, total em dourado à direita; uma linha por parcela

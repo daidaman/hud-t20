@@ -1,10 +1,16 @@
 <div class="hud-conteudo">
 
   {{!-- Retrato maior que o painel: ocupa a altura do status e vaza em cima e embaixo --}}
-  <div class="hud-retrato hud-tem-tip" data-action="abrirFicha">
+  <div class="hud-retrato hud-tem-tip {{#if retrato.caido}}caido{{/if}}" data-action="abrirFicha">
     <button type="button" class="hud-retrato-abrir" data-action="abrirFicha" aria-label="{{retrato.rotulo}}"></button>
     <div class="hud-retrato-abertura">
       <img class="hud-t20-enq" src="{{retrato.img}}" style="{{retrato.estilo}}" alt="" draggable="false">
+      {{#if cristal}}
+      {{!-- 0.5.0: retrato em cristal (modo vidro), por cima da foto --}}
+      <img class="hud-vidro" src="{{cristal.vidro}}" alt="" draggable="false">
+      <img class="hud-facetas" src="{{cristal.facetas}}" alt="" draggable="false">
+      <span class="hud-reflexo" aria-hidden="true"></span>
+      {{/if}}
     </div>
     <img class="hud-retrato-moldura" src="modules/hud-t20/assets/moldura-retrato.webp" alt="">
     {{#if retrato.podeEditar}}
@@ -62,7 +68,7 @@
       {{else}}
       <div class="hud-mini hud-tem-tip" tabindex="0" aria-label="{{rotulo}}: {{valor}}">
       {{/if}}
-        <span class="val"><img src="{{icone}}" alt="">{{valor}}</span>
+        <span class="val"><img src="{{icone}}" alt=""><span class="num">{{valor}}</span>{{#if valorCurto}}<span class="num-curto">{{valorCurto}}</span>{{/if}}<i class="abrev">{{abrev}}</i></span>
         <div class="hud-tip" role="tooltip">
           <div class="cab"><span class="sec">{{rotulo}}</span><b>{{valor}}</b></div>
           <ul>

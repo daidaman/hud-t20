@@ -30,10 +30,23 @@
       </div>
 
       <div class="campo">
+        <label for="{{@root.id}}-visual">{{txt.visual}}</label>
+        <select id="{{@root.id}}-visual" name="visual">
+          {{#each opcoesVisual}}<option value="{{valor}}" {{#if sel}}selected{{/if}}>{{rotulo}}</option>{{/each}}
+        </select>
+        <small class="dica-campo">{{txt.visualDica}}</small>
+      </div>
+
+      <div class="campo">
         <span class="rot">{{txt.previa}}</span>
         <div class="previa">
           <div class="retrato-previa">
-            <div class="abertura"><img class="hud-t20-enq" src="{{img}}" style="{{estilo}}" alt="" draggable="false"></div>
+            <div class="abertura">
+              <img class="hud-t20-enq" src="{{img}}" style="{{estilo}}" alt="" draggable="false">
+              {{!-- 0.5.0: só aparecem nos temas de cristal --}}
+              <img class="hud-vidro" alt="" draggable="false">
+              <img class="hud-facetas" alt="" draggable="false">
+            </div>
             <img class="moldura" src="modules/hud-t20/assets/moldura-retrato.webp" alt="">
           </div>
           <small>{{txt.previaDica}}</small>

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 — 2026-11-19
+- Sete temas de cristal, um por personagem da mesa, no "Visual do módulo": **Dragão Alado**, **Forja Mecânica**, **Chama da Fênix**, **Ossário**, **Corsário da Raposa**, **Ursal** e **Tempestade Rubra (cristal)**.
+- **Tema por personagem:** botão direito no retrato da HUD → "Visual da HUD deste personagem". Vale para todos que veem a HUD daquele personagem; "Seguir a mesa" volta ao visual do mundo. O dono e o mestre podem mudar. A janela mostra a prévia do retrato no tema escolhido.
+- Retrato em cristal (vidro): a foto com a camada de cristal, as facetas e um reflexo que passa a cada ~6 s. Com 0 PV, a foto fica cinza e o reflexo para.
+- PM azul em todos os temas (a barra roxa da Tempestade foi recolorida).
+- Caixinhas com número e sigla (DEF, DESL, INI, CD); os tooltips continuam iguais. Nos temas de cristal não há o "Seu turno" (o escudo do centro é só decoração).
+- Posições lidas de `assets/temas/cristal-medidas.json`; CSS novo em `styles/hud-cristal.css`. Forja: tirado um pedacinho solto da arte na ponta direita.
+
 ## 0.4.0 — 2026-11-18
 - Dois temas novos da HUD na configuração "Visual do módulo": **Tempestade Rubra** (carapaça rubra com garras, névoa e o olho da Tormenta no centro) e **Aventureiro do Reinado** (couro, fivelas de latão e a bússola no centro). As opções agora são: "Metal e rubi: só a HUD" (padrão), "Metal e rubi: HUD e tema da interface", "Tempestade Rubra (só a HUD)" e "Aventureiro do Reinado (só a HUD)". Troca na hora, sem recarregar. Quem já tinha escolhido uma opção na 0.3.0 continua igual.
 - Nos temas, a moldura é a arte inteira do conceito e cada peça vai na posição medida: retrato, barras de PV e PM (cor do miolo das barras da folha, cortada pelo valor), as 4 caixinhas (Defesa, Deslocamento, Iniciativa e CD, com escudo, bota, ampulheta e estrela), os 3 losangos das ações do turno e os 10 atalhos nas caixas desenhadas.

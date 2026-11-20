@@ -1,0 +1,201 @@
+/* HUD de Tormenta 20 — temas de cristal por personagem (0.5.0).
+   Só valem com a classe .hud-t20-cristal no #hud-t20 (o script também põe .hud-t20-arte, então as regras
+   gerais de styles/hud-temas.css continuam valendo: peças absolutas, losangos gastos, brilho do turno).
+
+   A moldura é a peça inteira (moldura.webp de cada pasta cristal-<tema>, ~1640 × 500 px) exibida a 1000 px de largura,
+   na proporção da arte (--cr-ar). Todas as posições vêm de assets/temas/cristal-medidas.json, em % da moldura,
+   e o script as põe em variáveis --cr-<peça>-x/-y/-w/-h no #hud-t20 (varsCristal em scripts/main.mjs).
+   Retrato em cristal (modo vidro, aprovado no protótipo de 2026-11-19): foto + cristal (.38, screen)
+   + facetas (.75, screen) + reflexo a cada ~6 s; com 0 PV a foto fica cinza e o reflexo para.
+   Sem o "Seu turno" (brilho e legenda) nos temas de cristal.
+   PM azul fixo em todos os temas (a barra roxa da Tempestade foi recolorida no recorte). */
+
+#hud-t20.hud-t20-cristal {
+  width: 1000px;
+  height: auto;
+  aspect-ratio: var(--cr-ar, 1633 / 496);
+  margin: 0 auto 4px;
+}
+#hud-t20.hud-t20-cristal::before { background-position: 0 0; background-size: 100% 100%; }
+
+/* Só as peças recebem o mouse (a camada dos atalhos cobre o painel inteiro). */
+#hud-t20.hud-t20-cristal :is(.hud-atalhos, #hotbar, #action-bar) { pointer-events: none; }
+#hud-t20.hud-t20-cristal :is(#action-bar > .slot, #hotbar-controls-right) { pointer-events: auto; }
+
+/* ---------- Posições (variáveis do JSON) ---------- */
+#hud-t20.hud-t20-cristal .hud-retrato { left: var(--cr-r-x); top: var(--cr-r-y); width: var(--cr-r-w); height: var(--cr-r-h); }
+#hud-t20.hud-t20-cristal .hud-recurso:nth-of-type(1) { left: var(--cr-pv-x); top: var(--cr-pv-y); width: var(--cr-pv-w); height: var(--cr-pv-h); }
+#hud-t20.hud-t20-cristal .hud-recurso:nth-of-type(2) { left: var(--cr-pm-x); top: var(--cr-pm-y); width: var(--cr-pm-w); height: var(--cr-pm-h); }
+#hud-t20.hud-t20-cristal .hud-mini:nth-child(1) { left: var(--cr-c1-x); top: var(--cr-c1-y); width: var(--cr-c1-w); height: var(--cr-c1-h); }
+#hud-t20.hud-t20-cristal .hud-mini:nth-child(2) { left: var(--cr-c2-x); top: var(--cr-c2-y); width: var(--cr-c2-w); height: var(--cr-c2-h); }
+#hud-t20.hud-t20-cristal .hud-mini:nth-child(3) { left: var(--cr-c3-x); top: var(--cr-c3-y); width: var(--cr-c3-w); height: var(--cr-c3-h); }
+#hud-t20.hud-t20-cristal .hud-mini:nth-child(4) { left: var(--cr-c4-x); top: var(--cr-c4-y); width: var(--cr-c4-w); height: var(--cr-c4-h); }
+#hud-t20.hud-t20-cristal .hud-acao:nth-child(1) { left: var(--cr-l1-x); top: var(--cr-l1-y); width: var(--cr-l1-w); height: var(--cr-l1-h); }
+#hud-t20.hud-t20-cristal .hud-acao:nth-child(2) { left: var(--cr-l2-x); top: var(--cr-l2-y); width: var(--cr-l2-w); height: var(--cr-l2-h); }
+#hud-t20.hud-t20-cristal .hud-acao:nth-child(3) { left: var(--cr-l3-x); top: var(--cr-l3-y); width: var(--cr-l3-w); height: var(--cr-l3-h); }
+#hud-t20.hud-t20-cristal #hotbar #action-bar > .slot:nth-child(1) { left: var(--cr-a1-x); top: var(--cr-a1-y); width: var(--cr-a1-w); height: var(--cr-a1-h); }
+#hud-t20.hud-t20-cristal #hotbar #action-bar > .slot:nth-child(2) { left: var(--cr-a2-x); top: var(--cr-a2-y); width: var(--cr-a2-w); height: var(--cr-a2-h); }
+#hud-t20.hud-t20-cristal #hotbar #action-bar > .slot:nth-child(3) { left: var(--cr-a3-x); top: var(--cr-a3-y); width: var(--cr-a3-w); height: var(--cr-a3-h); }
+#hud-t20.hud-t20-cristal #hotbar #action-bar > .slot:nth-child(4) { left: var(--cr-a4-x); top: var(--cr-a4-y); width: var(--cr-a4-w); height: var(--cr-a4-h); }
+#hud-t20.hud-t20-cristal #hotbar #action-bar > .slot:nth-child(5) { left: var(--cr-a5-x); top: var(--cr-a5-y); width: var(--cr-a5-w); height: var(--cr-a5-h); }
+#hud-t20.hud-t20-cristal #hotbar #action-bar > .slot:nth-child(6) { left: var(--cr-a6-x); top: var(--cr-a6-y); width: var(--cr-a6-w); height: var(--cr-a6-h); }
+#hud-t20.hud-t20-cristal #hotbar #action-bar > .slot:nth-child(7) { left: var(--cr-a7-x); top: var(--cr-a7-y); width: var(--cr-a7-w); height: var(--cr-a7-h); }
+#hud-t20.hud-t20-cristal #hotbar #action-bar > .slot:nth-child(8) { left: var(--cr-a8-x); top: var(--cr-a8-y); width: var(--cr-a8-w); height: var(--cr-a8-h); }
+#hud-t20.hud-t20-cristal #hotbar #action-bar > .slot:nth-child(9) { left: var(--cr-a9-x); top: var(--cr-a9-y); width: var(--cr-a9-w); height: var(--cr-a9-h); }
+#hud-t20.hud-t20-cristal #hotbar #action-bar > .slot:nth-child(10) { left: var(--cr-a10-x); top: var(--cr-a10-y); width: var(--cr-a10-w); height: var(--cr-a10-h); }
+
+/* ---------- Retrato em cristal ---------- */
+#hud-t20.hud-t20-cristal .hud-retrato-abertura {
+  inset: 0;
+  border-radius: 0;
+  background: #0b1414;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+#hud-t20.hud-t20-cristal .hud-retrato:hover .hud-retrato-abertura { box-shadow: none; }
+#hud-t20.hud-t20-cristal .hud-retrato :is(.hud-vidro, .hud-facetas) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  border: none;
+  object-fit: fill;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  user-select: none;
+}
+#hud-t20.hud-t20-cristal .hud-retrato .hud-vidro { opacity: .38; }
+#hud-t20.hud-t20-cristal .hud-retrato .hud-facetas { opacity: .75; }
+/* Corsário: o cristal e as facetas vieram com moldura própria; ampliados para escondê-la (como no protótipo). */
+#hud-t20[data-visual="cristal-corsario"] .hud-retrato :is(.hud-vidro, .hud-facetas) { inset: -14%; width: 128%; height: 128%; }
+#hud-t20.hud-t20-cristal .hud-retrato .hud-reflexo {
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, .4) 50%, transparent 60%);
+  mix-blend-mode: overlay;
+  transform: translateX(-120%);
+  animation: hud-t20-reflexo 6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes hud-t20-reflexo {
+  0%, 70% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #hud-t20.hud-t20-cristal .hud-retrato .hud-reflexo { animation: none; display: none; }
+}
+#hud-t20.hud-t20-cristal .hud-retrato.caido .hud-t20-enq { filter: grayscale(1) brightness(.55); }
+#hud-t20.hud-t20-cristal .hud-retrato.caido .hud-reflexo { display: none; }
+#hud-t20.hud-t20-cristal .hud-retrato:hover .hud-t20-enq { filter: brightness(1.15); }
+#hud-t20.hud-t20-cristal .hud-retrato.caido:hover .hud-t20-enq { filter: grayscale(1) brightness(.7); }
+#hud-t20.hud-t20-cristal .hud-retrato-ajustar { top: 4%; right: -2px; }
+
+/* ---------- Condições: medalhões acima das barras ---------- */
+#hud-t20.hud-t20-cristal .hud-condicoes { left: 21.5%; top: auto; bottom: 74%; }
+
+/* ---------- Barras: o miolo da barra da folha, cortado pelo valor; o trilho é da moldura ---------- */
+#hud-t20.hud-t20-cristal .hud-trilho { overflow: visible; border-radius: 0; clip-path: none; }
+#hud-t20.hud-t20-cristal .hud-trilho .vazio { display: none; }
+#hud-t20.hud-t20-cristal .hud-trilho :is(.cheio, .extra) { inset: -6% -1%; background-size: 100% 100%; background-repeat: no-repeat; }
+#hud-t20.hud-t20-cristal .hud-trilho .cheio { filter: none; }
+#hud-t20.hud-t20-cristal .hud-trilho .txt { z-index: 4; padding-right: 4.5%; font-size: 12px; color: #fff; text-shadow: 0 1px 2px #000, 0 0 4px #000; }
+#hud-t20.hud-t20-cristal .hud-trilho .txt small { font-size: 10px; }
+#hud-t20.hud-t20-cristal .hud-recurso-rot { left: 4%; font-size: 11.5px; color: #fff; }
+
+/* ---------- Caixinhas: número e sigla, sem ícone (as caixas da arte são pequenas) ---------- */
+#hud-t20.hud-t20-cristal :is(.hud-mini, button.hud-mini) { justify-content: center; border-radius: 3px; }
+#hud-t20.hud-t20-cristal .hud-mini .val { gap: 1px; align-items: center; color: #fff; text-shadow: 0 1px 2px #000, 0 0 3px #000; }
+#hud-t20.hud-t20-cristal .hud-mini .val img { display: none; }
+#hud-t20.hud-t20-cristal .hud-mini .num { font: 700 12.5px/1 var(--hud-fonte-titulo); }
+#hud-t20.hud-t20-cristal .hud-mini .num-curto { display: inline; font: 700 11.5px/1 var(--hud-fonte-titulo); }
+#hud-t20.hud-t20-cristal .hud-mini:has(.num-curto) .num { display: none; }
+#hud-t20.hud-t20-cristal .hud-mini .abrev { display: block; font: 700 7.5px/1 var(--hud-fonte-texto); font-style: normal; letter-spacing: .05em; color: #F1E2BF; }
+#hud-t20.hud-t20-cristal button.hud-mini .dado { right: 1px; top: 1px; width: 6px; height: 6px; }
+#hud-t20.hud-t20-cristal :is(.hud-mini, button.hud-mini):hover { background: rgba(255, 230, 160, .14); box-shadow: inset 0 0 0 1px rgba(255, 214, 120, .75), 0 0 8px rgba(255, 210, 120, .55); }
+
+/* ---------- Losangos das ações: centrados na abertura da moldura ---------- */
+#hud-t20.hud-t20-cristal .hud-acao img { width: 100%; height: 100%; object-fit: contain; }
+#hud-t20.hud-t20-cristal .hud-acao:not(:disabled):hover img { filter: drop-shadow(0 0 8px rgba(255, 220, 120, .9)) brightness(1.15); }
+#hud-t20.hud-t20-cristal .hud-acao.gasta img { filter: grayscale(1) brightness(.45) contrast(.9); }
+
+/* ---------- Sem "Seu turno" nos temas de cristal (pedido em 2026-11-20): o escudo do centro é só decoração ---------- */
+#hud-t20.hud-t20-cristal .hud-gema { display: none; }
+
+/* ---------- Atalhos: a barra nativa, cada slot na caixa medida ---------- */
+#hud-t20.hud-t20-cristal .hud-atalhos { inset: 0; }
+#hud-t20.hud-t20-cristal #hotbar { position: absolute; inset: 0; display: block; }
+#hud-t20.hud-t20-cristal #hotbar #action-bar { position: absolute; inset: 0; display: block; }
+#hud-t20.hud-t20-cristal #hotbar #action-bar > .slot { position: absolute; border-radius: 3px; }
+#hud-t20.hud-t20-cristal #hotbar .slot :is(img, .slot-icon) { inset: 3px; width: calc(100% - 6px); height: calc(100% - 6px); }
+#hud-t20.hud-t20-cristal #hotbar .slot .key { top: 2px; left: 4px; font-size: 9px; color: #F1E2BF; }
+#hud-t20.hud-t20-cristal #hotbar .slot:hover { box-shadow: inset 0 0 0 2px #ffd27a, 0 0 10px rgba(255, 210, 120, .7); filter: none; }
+/* Seletor de página (▲ 1 ▼) logo depois da moldura, à direita dos atalhos. */
+#hud-t20.hud-t20-cristal #hotbar #hotbar-controls-right {
+  position: absolute;
+  left: 100%;
+  top: calc(var(--cr-a5-y) + var(--cr-a5-h) * .5);
+  margin: 0 0 0 2px;
+}
+
+/* ---------- Arte de cada tema ---------- */
+#hud-t20[data-visual="cristal-dragao"]::before { background-image: url("../assets/temas/cristal-dragao/moldura.webp"); }
+#hud-t20[data-visual="cristal-dragao"] .hud-retrato-abertura { -webkit-mask-image: url("../assets/temas/cristal-dragao/mascara-retrato.png"); mask-image: url("../assets/temas/cristal-dragao/mascara-retrato.png"); }
+#hud-t20[data-visual="cristal-dragao"] .hud-trilho :is(.cheio, .extra).pv { background-image: url("../assets/temas/cristal-dragao/barra-pv.webp"); }
+#hud-t20[data-visual="cristal-dragao"] .hud-trilho :is(.cheio, .extra).pm { background-image: url("../assets/temas/cristal-dragao/barra-pm.webp"); }
+#hud-t20[data-visual="cristal-forja"]::before { background-image: url("../assets/temas/cristal-forja/moldura.webp"); }
+#hud-t20[data-visual="cristal-forja"] .hud-retrato-abertura { -webkit-mask-image: url("../assets/temas/cristal-forja/mascara-retrato.png"); mask-image: url("../assets/temas/cristal-forja/mascara-retrato.png"); }
+#hud-t20[data-visual="cristal-forja"] .hud-trilho :is(.cheio, .extra).pv { background-image: url("../assets/temas/cristal-forja/barra-pv.webp"); }
+#hud-t20[data-visual="cristal-forja"] .hud-trilho :is(.cheio, .extra).pm { background-image: url("../assets/temas/cristal-forja/barra-pm.webp"); }
+#hud-t20[data-visual="cristal-fenix"]::before { background-image: url("../assets/temas/cristal-fenix/moldura.webp"); }
+#hud-t20[data-visual="cristal-fenix"] .hud-retrato-abertura { -webkit-mask-image: url("../assets/temas/cristal-fenix/mascara-retrato.png"); mask-image: url("../assets/temas/cristal-fenix/mascara-retrato.png"); }
+#hud-t20[data-visual="cristal-fenix"] .hud-trilho :is(.cheio, .extra).pv { background-image: url("../assets/temas/cristal-fenix/barra-pv.webp"); }
+#hud-t20[data-visual="cristal-fenix"] .hud-trilho :is(.cheio, .extra).pm { background-image: url("../assets/temas/cristal-fenix/barra-pm.webp"); }
+#hud-t20[data-visual="cristal-ossario"]::before { background-image: url("../assets/temas/cristal-ossario/moldura.webp"); }
+#hud-t20[data-visual="cristal-ossario"] .hud-retrato-abertura { -webkit-mask-image: url("../assets/temas/cristal-ossario/mascara-retrato.png"); mask-image: url("../assets/temas/cristal-ossario/mascara-retrato.png"); }
+#hud-t20[data-visual="cristal-ossario"] .hud-trilho :is(.cheio, .extra).pv { background-image: url("../assets/temas/cristal-ossario/barra-pv.webp"); }
+#hud-t20[data-visual="cristal-ossario"] .hud-trilho :is(.cheio, .extra).pm { background-image: url("../assets/temas/cristal-ossario/barra-pm.webp"); }
+#hud-t20[data-visual="cristal-corsario"]::before { background-image: url("../assets/temas/cristal-corsario/moldura.webp"); }
+#hud-t20[data-visual="cristal-corsario"] .hud-retrato-abertura { -webkit-mask-image: url("../assets/temas/cristal-corsario/mascara-retrato.png"); mask-image: url("../assets/temas/cristal-corsario/mascara-retrato.png"); }
+#hud-t20[data-visual="cristal-corsario"] .hud-trilho :is(.cheio, .extra).pv { background-image: url("../assets/temas/cristal-corsario/barra-pv.webp"); }
+#hud-t20[data-visual="cristal-corsario"] .hud-trilho :is(.cheio, .extra).pm { background-image: url("../assets/temas/cristal-corsario/barra-pm.webp"); }
+#hud-t20[data-visual="cristal-ursal"]::before { background-image: url("../assets/temas/cristal-ursal/moldura.webp"); }
+#hud-t20[data-visual="cristal-ursal"] .hud-retrato-abertura { -webkit-mask-image: url("../assets/temas/cristal-ursal/mascara-retrato.png"); mask-image: url("../assets/temas/cristal-ursal/mascara-retrato.png"); }
+#hud-t20[data-visual="cristal-ursal"] .hud-trilho :is(.cheio, .extra).pv { background-image: url("../assets/temas/cristal-ursal/barra-pv.webp"); }
+#hud-t20[data-visual="cristal-ursal"] .hud-trilho :is(.cheio, .extra).pm { background-image: url("../assets/temas/cristal-ursal/barra-pm.webp"); }
+#hud-t20[data-visual="cristal-tempestade"]::before { background-image: url("../assets/temas/cristal-tempestade/moldura.webp"); }
+#hud-t20[data-visual="cristal-tempestade"] .hud-retrato-abertura { -webkit-mask-image: url("../assets/temas/cristal-tempestade/mascara-retrato.png"); mask-image: url("../assets/temas/cristal-tempestade/mascara-retrato.png"); }
+#hud-t20[data-visual="cristal-tempestade"] .hud-trilho :is(.cheio, .extra).pv { background-image: url("../assets/temas/cristal-tempestade/barra-pv.webp"); }
+#hud-t20[data-visual="cristal-tempestade"] .hud-trilho :is(.cheio, .extra).pm { background-image: url("../assets/temas/cristal-tempestade/barra-pm.webp"); }
+
+/* ---------- Janela "HUD de …": prévia do retrato em cristal (0.5.0) ---------- */
+.hud-t20-editor select[name=visual] { width: 100%; height: 32px; }
+.hud-t20-editor .dica-campo { display: block; margin-top: 4px; font-size: 12px; color: #9C8A6A; }
+.hud-t20-editor .retrato-previa :is(.hud-vidro, .hud-facetas) { display: none; }
+.hud-t20-editor .retrato-previa.cristal { width: auto; height: 152px; }
+.hud-t20-editor .retrato-previa.cristal .moldura { display: none; }
+.hud-t20-editor .retrato-previa.cristal .abertura {
+  inset: 0;
+  background: #0b1414;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+.hud-t20-editor .retrato-previa.cristal :is(.hud-vidro, .hud-facetas) {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  border: none;
+  object-fit: fill;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+.hud-t20-editor .retrato-previa.cristal .hud-vidro { opacity: .38; }
+.hud-t20-editor .retrato-previa.cristal .hud-facetas { opacity: .75; }
+.hud-t20-editor .retrato-previa.cristal[data-visual="cristal-corsario"] :is(.hud-vidro, .hud-facetas) { inset: -14%; width: 128%; height: 128%; }

@@ -19,19 +19,69 @@ const GASTO_POR_EXECUCAO = {
 /**
  * Visual da HUD (0.4.0). "hud" e "tema" usam a arte de metal e rubi (o "tema" ainda veste a interface);
  * "tempestade" e "aventureiro" trocam a moldura inteira da HUD pela arte do tema (styles/hud-temas.css).
+ * 0.5.0: os 7 temas de cristal ("cristal-*", styles/hud-cristal.css), um por personagem da mesa.
+ * As posições das peças vêm de assets/temas/cristal-medidas.json, em % da moldura.
  */
-const ARTE_TEMAS = ["tempestade", "aventureiro"];
+const TEMAS_CRISTAL = ["cristal-dragao", "cristal-forja", "cristal-fenix", "cristal-ossario", "cristal-corsario", "cristal-ursal", "cristal-tempestade"];
+const ARTE_TEMAS = ["tempestade", "aventureiro", ...TEMAS_CRISTAL];
 const ICONES_STAT = { defesa: "ic-defesa", desloc: "ic-desloc", iniciativa: "ic-iniciativa", cd: "ic-cd" };
+const eCristal = (visual) => TEMAS_CRISTAL.includes(visual);
 
-/** Nome do visual em uso: "classico", "tempestade" ou "aventureiro". */
-function visualDaHud() {
+/** Medidas dos temas de cristal (carregadas no setup). */
+let MEDIDAS_CRISTAL = {};
+
+/**
+ * Nome do visual da HUD: "classico", "tempestade", "aventureiro" ou "cristal-*".
+ * 0.5.0: o personagem pode ter um visual próprio (flags.hud-t20.visual); sem ele, vale o do mundo.
+ */
+function visualDaHud(actor = null) {
+  const proprio = actor?.getFlag(MODULE_ID, "visual");
+  if (proprio === "hud") return "classico";
+  if (ARTE_TEMAS.includes(proprio)) return proprio;
   const v = game.settings.get(MODULE_ID, "visual");
   return ARTE_TEMAS.includes(v) ? v : "classico";
 }
 
+/** Visual do personagem mostrado agora (as funções dos tooltips usam para achar os ícones). */
+let visualEmUso = "classico";
+
 /** Caminho de uma peça de arte do visual em uso (o clássico fica direto em assets/). */
-function arte(nome, visual = visualDaHud()) {
-  return visual === "classico" ? `modules/${MODULE_ID}/assets/${nome}.webp` : `modules/${MODULE_ID}/assets/temas/${visual}/${nome}.webp`;
+function arte(nome, visual = visualEmUso) {
+  // Os temas de cristal não têm ícones próprios: as caixinhas mostram só o número e a sigla.
+  if (visual === "classico" || (eCristal(visual) && nome.startsWith("ic-"))) return `modules/${MODULE_ID}/assets/${nome}.webp`;
+  return `modules/${MODULE_ID}/assets/temas/${visual}/${nome}.webp`;
+}
+
+/**
+ * Variáveis CSS com as posições do tema de cristal (todas em % da moldura).
+ * styles/hud-cristal.css usa: --cr-ar (proporção), --cr-r (retrato), --cr-pv/--cr-pm (barras),
+ * --cr-c1..4 (caixinhas), --cr-l1..3 (losangos, já centrados na abertura) e --cr-a1..10 (atalhos),
+ * cada uma como -x, -y, -w, -h.
+ */
+function varsCristal(visual) {
+  const m = MEDIDAS_CRISTAL[visual];
+  if (!m) return {};
+  const vars = { "--cr-ar": `${m.moldura_px[0]} / ${m.moldura_px[1]}` };
+  const caixa = (nome, [x, y, w, h]) => {
+    vars[`--cr-${nome}-x`] = `${x}%`;
+    vars[`--cr-${nome}-y`] = `${y}%`;
+    vars[`--cr-${nome}-w`] = `${w}%`;
+    vars[`--cr-${nome}-h`] = `${h}%`;
+  };
+  caixa("r", m.retrato);
+  caixa("pv", m.barras.pv);
+  caixa("pm", m.barras.pm);
+  m.caixinhas.forEach((c, i) => caixa(`c${i + 1}`, c));
+  ACOES.forEach((chave, i) => {
+    const [ax, ay, aw, ah] = m.losangos_abertura[i];
+    const [w, h] = m.losango_tamanho[chave];
+    caixa(`l${i + 1}`, [ax + aw / 2 - w / 2, ay + ah / 2 - h / 2, w, h]);
+  });
+  m.atalhos.forEach((c, i) => caixa(`a${i + 1}`, c));
+  // "Seu turno": brilho sobre o escudo do centro, embaixo do losango do meio.
+  const [mx, , mw] = m.losangos_abertura[1];
+  vars["--cr-escudo-x"] = `${mx + mw / 2}%`;
+  return vars;
 }
 
 const t = (chave, dados) => (dados ? game.i18n.format(`HUDT20.${chave}`, dados) : game.i18n.localize(`HUDT20.${chave}`));
@@ -274,6 +324,7 @@ function statDefesa(actor, rollData) {
 
   return {
     rotulo: t("Defesa"),
+    abrev: t("Abrev.Defesa"),
     icone: arte(ICONES_STAT.defesa),
     valor: String(def.value),
     linhas: fecharConta(linhas, def.value, { primeiraSemSinal: true })
@@ -293,8 +344,10 @@ function statDeslocamento(actor, rollData) {
   const valor = andar.value ?? 0;
   return {
     rotulo: t("Deslocamento"),
+    abrev: t("Abrev.Deslocamento"),
     icone: arte(ICONES_STAT.desloc),
     valor: `${valor} ${unidade}`,
+    valorCurto: `${valor}${unidade}`,
     linhas: fecharConta(linhas, valor, { formatar: fmt })
   };
 }
@@ -315,6 +368,7 @@ function statIniciativa(actor, rollData, alvo) {
   const valor = inic.value ?? 0;
   return {
     rotulo: t("Iniciativa"),
+    abrev: t("Abrev.Iniciativa"),
     icone: arte(ICONES_STAT.iniciativa),
     valor: comSinal(valor),
     linhas: fecharConta(linhas, valor),
@@ -336,7 +390,7 @@ function statCD(actor) {
   const magias = actor.itemTypes?.magia ?? [];
   const chave = sys.attributes?.conjuracao;
   if (!magias.length || !chave) {
-    return { rotulo: t("CD"), icone: arte(ICONES_STAT.cd), valor: "—", linhas: [{ rot: t("SemMagias"), val: "", sub: "", ext: false }] };
+    return { rotulo: t("CD"), abrev: t("Abrev.CD"), icone: arte(ICONES_STAT.cd), valor: "—", linhas: [{ rot: t("SemMagias"), val: "", sub: "", ext: false }] };
   }
   const meioNivel = Math.floor((sys.attributes.nivel?.value ?? 0) / 2);
   const atr = sys.atributos?.[chave]?.value ?? 0;
@@ -353,7 +407,7 @@ function statCD(actor) {
   );
   const extra = Math.max(0, ...magias.map((m) => Number(m.system.resistencia?.bonus) || 0));
   if (extra) linhas.push({ rot: t("BonusMagias"), val: `+${extra}`, sub: t("BonusMagiasDica"), ext: false });
-  return { rotulo: t("CD"), icone: arte(ICONES_STAT.cd), valor: String(valor), linhas };
+  return { rotulo: t("CD"), abrev: t("Abrev.CD"), icone: arte(ICONES_STAT.cd), valor: String(valor), linhas };
 }
 
 /** Nome legível para a chave de uma mudança de efeito (ex. system.pericias.inic.condi). */
@@ -447,7 +501,9 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
     const vez = !!emCombate && eDoAlvo(emCombate.combat.combatant, this.alvo);
 
     const retrato = retratoDoAtor(actor);
-    const visual = visualDaHud();
+    const visual = visualDaHud(actor);
+    visualEmUso = visual;
+    const cristal = eCristal(visual);
     // Coração e gota no começo das barras só no Aventureiro (no Tempestade fica o texto PV/PM).
     const iconeBarra = (n) => (visual === "aventureiro" ? arte(n, visual) : "");
 
@@ -455,8 +511,11 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
       visual,
       gema: arte("gema", "classico"),
       ator: { nome: actor.name, nivelTxt: t("Nivel", { nivel }) },
+      // 0.5.0: retrato em cristal (modo vidro): camada de cristal, facetas e um reflexo por cima da foto.
+      cristal: cristal ? { vidro: arte("cristal", visual), facetas: arte("facetas", visual) } : null,
       retrato: {
         ...retrato,
+        caido: cristal && (Number(sys.attributes?.pv?.value) || 0) <= 0,
         estilo: `--px:${retrato.x}%;--py:${retrato.y}%;--pz:${retrato.zoom}`,
         podeEditar: actor.isOwner,
         rotulo: t("Retrato.Rotulo", { nome: actor.name, nivel }),
@@ -504,6 +563,11 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
     // Visual da HUD (0.4.0): o CSS de cada tema vale só com este atributo.
     this.element.dataset.visual = context.visual;
     this.element.classList.toggle("hud-t20-arte", context.visual !== "classico");
+    // 0.5.0: temas de cristal, posições do JSON em variáveis CSS (as antigas saem ao trocar de tema).
+    const cristal = eCristal(context.visual);
+    this.element.classList.toggle("hud-t20-cristal", cristal);
+    for (const nome of [...this.element.style]) if (nome.startsWith("--cr-")) this.element.style.removeProperty(nome);
+    if (cristal) for (const [nome, valor] of Object.entries(varsCristal(context.visual))) this.element.style.setProperty(nome, valor);
     // Botão direito no retrato abre o ajuste (o botão direito dos atalhos continua o nativo).
     this.element.querySelector(".hud-retrato")?.addEventListener("contextmenu", (event) => {
       event.preventDefault();
@@ -656,6 +720,16 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
 
 const limitar = (v, a, b) => Math.min(b, Math.max(a, v));
 
+/** Visuais que um personagem pode ter (0.5.0). "hud" = metal e rubi; o tema da interface é só da mesa. */
+const OPCOES_VISUAL = ["hud", ...ARTE_TEMAS];
+
+function rotuloVisual(chave) {
+  if (chave === "hud" || chave === "tema") return t(chave === "hud" ? "Editor.VisualClassico" : "Config.VisualTema");
+  if (eCristal(chave)) return t(`Cristal.${chave}`).replace(/ \(só a HUD\)$/, "");
+  const nomes = { tempestade: "Config.VisualTempestade", aventureiro: "Config.VisualAventureiro" };
+  return nomes[chave] ? t(nomes[chave]).replace(/ \(só a HUD\)$/, "") : chave;
+}
+
 class EditorRetrato extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     classes: ["hud-t20-editor"],
@@ -686,8 +760,9 @@ class EditorRetrato extends HandlebarsApplicationMixin(ApplicationV2) {
     super(options);
     this.actor = actor;
     const r = retratoDoAtor(actor);
-    /** Rascunho: só vai para o ator ao salvar. img "" = imagem da ficha. */
-    this.rasc = { img: r.propria ? r.img : "", x: r.x, y: r.y, zoom: r.zoom };
+    /** Rascunho: só vai para o ator ao salvar. img "" = imagem da ficha; visual "" = segue a mesa. */
+    const visual = actor.getFlag(MODULE_ID, "visual");
+    this.rasc = { img: r.propria ? r.img : "", x: r.x, y: r.y, zoom: r.zoom, visual: OPCOES_VISUAL.includes(visual) ? visual : "" };
   }
 
   get title() {
@@ -705,7 +780,13 @@ class EditorRetrato extends HandlebarsApplicationMixin(ApplicationV2) {
       zoom: this.rasc.zoom,
       zoomTxt: `${Math.round(this.rasc.zoom * 100)}%`,
       estilo: this.#estilo(),
+      opcoesVisual: [
+        { valor: "", rotulo: t("Editor.VisualMesa", { nome: rotuloVisual(game.settings.get(MODULE_ID, "visual")) }) },
+        ...OPCOES_VISUAL.map((valor) => ({ valor, rotulo: rotuloVisual(valor) }))
+      ].map((o) => ({ ...o, sel: o.valor === this.rasc.visual })),
       txt: {
+        visual: t("Editor.Visual"),
+        visualDica: t("Editor.VisualDica"),
         palco: t("Editor.Palco"),
         dicaPalco: t("Editor.DicaPalco"),
         imagem: t("Editor.Imagem"),
@@ -745,6 +826,30 @@ class EditorRetrato extends HandlebarsApplicationMixin(ApplicationV2) {
     if (saida) saida.textContent = `${Math.round(this.rasc.zoom * 100)}%`;
     const campo = el.querySelector("input[name=img]");
     if (campo && document.activeElement !== campo) campo.value = this.rasc.img;
+    this.#previaVisual();
+  }
+
+  /** Prévia do retrato no visual escolhido: moldura clássica ou, nos temas de cristal, a máscara e o vidro. */
+  #previaVisual() {
+    const previa = this.element?.querySelector(".retrato-previa");
+    if (!previa) return;
+    const visual = this.rasc.visual ? visualDaHud({ getFlag: () => this.rasc.visual }) : visualDaHud();
+    const m = MEDIDAS_CRISTAL[visual];
+    const cristal = eCristal(visual) && !!m;
+    previa.classList.toggle("cristal", cristal);
+    previa.dataset.visual = visual;
+    if (!cristal) {
+      previa.style.removeProperty("aspect-ratio");
+      return;
+    }
+    const [W, H] = m.moldura_px;
+    previa.style.aspectRatio = `${(m.retrato[2] * W).toFixed(1)} / ${(m.retrato[3] * H).toFixed(1)}`;
+    const abertura = previa.querySelector(".abertura");
+    const mascara = `url("modules/${MODULE_ID}/assets/temas/${visual}/mascara-retrato.png")`;
+    abertura.style.maskImage = mascara;
+    abertura.style.webkitMaskImage = mascara;
+    previa.querySelector(".hud-vidro")?.setAttribute("src", arte("cristal", visual));
+    previa.querySelector(".hud-facetas")?.setAttribute("src", arte("facetas", visual));
   }
 
   #mudarZoom(delta) {
@@ -761,6 +866,11 @@ class EditorRetrato extends HandlebarsApplicationMixin(ApplicationV2) {
       this.rasc.zoom = Number(ev.target.value);
       this.#sincronizar();
     });
+    el.querySelector("select[name=visual]")?.addEventListener("change", (ev) => {
+      this.rasc.visual = ev.target.value;
+      this.#previaVisual();
+    });
+    this.#previaVisual();
     // Caminho digitado à mão (jogador sem permissão de navegar nos arquivos).
     el.querySelector("input[name=img]")?.addEventListener("change", (ev) => {
       this.rasc.img = ev.target.value.trim();
@@ -835,9 +945,13 @@ class EditorRetrato extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static async #salvar() {
-    const { img, x, y, zoom } = this.rasc;
+    const { img, x, y, zoom, visual } = this.rasc;
     try {
-      await this.actor.update({ [`flags.${MODULE_ID}.retrato`]: { img, x, y, zoom } });
+      await this.actor.update({
+        [`flags.${MODULE_ID}.retrato`]: { img, x, y, zoom },
+        // 0.5.0: visual próprio do personagem ("" = segue a mesa: apaga a flag).
+        ...(visual ? { [`flags.${MODULE_ID}.visual`]: visual } : { [`flags.${MODULE_ID}.-=visual`]: null })
+      });
       ui.notifications.info(t("Editor.Salvo"));
       this.close();
     } catch (err) {
@@ -1011,7 +1125,8 @@ Hooks.once("init", () => {
       hud: "HUDT20.Config.VisualHud",
       tema: "HUDT20.Config.VisualTema",
       tempestade: "HUDT20.Config.VisualTempestade",
-      aventureiro: "HUDT20.Config.VisualAventureiro"
+      aventureiro: "HUDT20.Config.VisualAventureiro",
+      ...Object.fromEntries(TEMAS_CRISTAL.map((k) => [k, `HUDT20.Cristal.${k}`]))
     },
     default: "hud",
     onChange: () => {
@@ -1041,6 +1156,16 @@ Hooks.once("init", () => {
 });
 
 Hooks.once("setup", () => aplicarVisual());
+
+/** Medidas dos temas de cristal (0.5.0). Sem elas, o tema não tem onde pôr as peças: volta ao clássico. */
+Hooks.once("setup", async () => {
+  try {
+    MEDIDAS_CRISTAL = await foundry.utils.fetchJsonWithTimeout(`modules/${MODULE_ID}/assets/temas/cristal-medidas.json`);
+  } catch (err) {
+    console.error(`${MODULE_ID} | não consegui ler as medidas dos temas de cristal`, err);
+  }
+  atualizar();
+});
 Hooks.on("renderChatMessageHTML", (message, html) => {
   if (game.system.id === "tormenta20") vestirMensagem(message, html);
 });
