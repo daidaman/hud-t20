@@ -154,8 +154,13 @@ img.hud-t20-enq {
 #hud-t20 .hud-condicoes {
   position: absolute;
   left: 30px;
-  top: -50px;
+  /* 0.5.0: preso por baixo e no máximo 5 por fileira; a 6ª condição em diante sobe para uma fileira de cima
+     (wrap-reverse), com o mesmo espaço entre fileiras e entre medalhões. Fica por cima das peças da HUD. */
+  bottom: calc(100% + 22px);
+  z-index: 6;
   display: flex;
+  flex-wrap: wrap-reverse;
+  max-width: calc(5 * 28px + 4 * 6px);
   gap: 6px;
   margin: 0;
   padding: 0;

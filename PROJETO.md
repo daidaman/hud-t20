@@ -196,7 +196,7 @@ Nova família de temas da HUD, um por personagem da mesa, todos no mesmo molde (
 - Medidas: `cristal-medidas.json` é lido no `setup`; `varsCristal()` põe as posições em variáveis `--cr-<peça>-x/y/w/h` no `#hud-t20`, e `styles/hud-cristal.css` posiciona tudo com elas (classes `hud-t20-arte` + `hud-t20-cristal`). Losangos centrados na abertura com `losango_tamanho`. Atalhos: cada `.slot` da barra nativa na caixa medida; o seletor de página fica logo à direita da moldura.
 - Painel com 1000 px de largura na proporção da arte (~3,2 : 1); o "Tamanho da HUD" e o encaixe automático continuam valendo.
 - Retrato em vidro como no protótipo (cristal .38 e facetas .75 em `screen`, reflexo a cada 6 s; Corsário ampliado 128%); 0 PV = foto cinza e sem reflexo. **Sem "Seu turno"** nos temas de cristal (tirado a pedido em 2026-11-20: ficava estranho); o escudo do centro é só decoração.
-- Condições: medalhões acima da cabeça do símbolo, à esquerda das barras.
+- Condições: medalhões acima da cabeça do símbolo, à esquerda das barras. **5 por fileira** (pedido em 2026-11-20): `.hud-condicoes` presa por baixo, `flex-wrap: wrap-reverse`, `max-width` de 5 medalhões; a 6ª em diante sobe, com 6 px entre fileiras; `z-index` acima das peças. Vale para todos os visuais.
 - Conferido fora do Foundry com o template e o CSS reais (Playwright), nos 7 temas, em combate (seu turno), fora de combate e com 0 PV. Prévia: https://claude.ai/artifact/NjWYwkj8BEYLre4MGHXhrB
 
 ## Roteiro de teste da 0.5.0 (mestre + jogador em aba anônima)
