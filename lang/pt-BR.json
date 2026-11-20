@@ -19,6 +19,10 @@
       "RetratoVidro": "Com cristal (vidro e reflexo)",
       "RetratoSuave": "Cristal suave (mais leve, sem reflexo)",
       "RetratoNenhum": "Sem cristal (só a foto)",
+      "CorTemporario": "Cor do PV/PM temporário",
+      "CorTemporarioDica": "Só neste computador e só nos temas de cristal: a cor da parte temporária das barras.",
+      "CorTempEscuro": "Vermelho vinho e azul-marinho (tons mais escuros das barras)",
+      "CorTempDourado": "Dourado e ciano",
       "VisualNenhum": "Sem HUD (barra padrão do Foundry)"
     },
     "Nivel": "Nv {nivel}",
@@ -126,6 +130,10 @@
       "Anterior": "Grupo de atalhos anterior",
       "Proximo": "Próximo grupo de atalhos",
       "Renomear": "Clique para dar nome a este grupo (ex.: Ataques, Magias, Perícias)"
+    },
+    "Barra": {
+      "Normal": "{r}",
+      "Temporario": "{r} temporário"
     }
   }
 }

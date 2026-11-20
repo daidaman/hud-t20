@@ -199,6 +199,10 @@ Nova família de temas da HUD, um por personagem da mesa, todos no mesmo molde (
 - Condições: medalhões acima da cabeça do símbolo, à esquerda das barras. **5 por fileira** (pedido em 2026-11-20): `.hud-condicoes` presa por baixo, `flex-wrap: wrap-reverse`, `max-width` de 5 medalhões; a 6ª em diante sobe, com 6 px entre fileiras; `z-index` acima das peças. Vale para todos os visuais.
 - Conferido fora do Foundry com o template e o CSS reais (Playwright), nos 7 temas, em combate (seu turno), fora de combate e com 0 PV. Prévia: https://claude.ai/artifact/NjWYwkj8BEYLre4MGHXhrB
 
+## 0.7.1 (2026-11-20)
+- Tooltip das barras (cristal): normal, temporário e total; a CD não aparece mais na HUD.
+- Setting `corTemporario` (cliente): `escuro` (padrão: texturas pv/pm com `brightness` .42/.38) ou `dourado` (pv-temp/pm-temp), via `data-temp` no `#hud-t20`.
+
 ## 0.7.0 (2026-11-20): só cristais
 - Settings: `visual` (mundo) = `nenhum` (padrão) ou `cristal-*`; `visualMeu` (cliente) = "" (seguir a mesa), `nenhum` ou `cristal-*`; flag do personagem só `cristal-*`. `visualDaHud()` devolve "nenhum" quando não há cristal escolhido, e `atualizar()` fecha a HUD (barra padrão do Foundry). Valores antigos (`hud`, `tema`, `tempestade`, `aventureiro`) contam como não escolhidos. O código e o CSS dos visuais antigos continuam no repositório, mas sem como escolher.
 - Máscara das ondas: a parte lisa sobrepõe 4 px a onda (antes ficava uma fresta). Temporários: textura sem tratamento (webp sem perda).

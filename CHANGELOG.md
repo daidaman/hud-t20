@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.1 — 2026-11-20
+- Tooltip das barras de PV e PM (temas de cristal): valor normal, temporário e total. A CD das magias saiu da barra de PM.
+- PV/PM temporário em tons mais escuros da própria barra (vermelho vinho e azul-marinho), para destacar do normal. Nova opção de cada jogador, "Cor do PV/PM temporário": esses tons escuros (padrão) ou dourado e ciano, como antes.
+
 ## 0.7.0 — 2026-11-20
 - **Só os temas de cristal:** "Visual da mesa" agora tem "Sem HUD (barra padrão do Foundry)" — o padrão — e os 7 cristais; "Meu visual" tem "Seguir a mesa", "Sem HUD" e os cristais; o visual por personagem (botão direito no retrato) só os cristais. Saíram Metal e rubi (só a HUD), Metal e rubi + tema da interface, Tempestade Rubra e Aventureiro do Reinado. Mundo ou jogador que estava num visual antigo fica sem HUD até escolher um cristal.
 - Corrigido: risco fino dentro do PV/PM extra (fresta entre as duas camadas da máscara da onda; e as texturas dourada e ciano ganhavam uma emenda no tratamento — agora ficam como vieram, sem perda).

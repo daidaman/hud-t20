@@ -569,8 +569,14 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
       recurso(t("PM"), sys.attributes?.pm, "pm", iconeBarra("ic-gota"))
     ];
     const stats = [statDefesa(actor, rollData), statDeslocamento(actor, rollData), statIniciativa(actor, rollData, this.alvo), statCD(actor)];
-    // Cristal v2: a CD sai das caixinhas e vai para o tooltip da barra de PM, só para quem conjura.
-    if (cristal && stats[3].valor !== "—") recursos[1].tip = stats[3];
+    // Cristal: tooltip das barras com o valor normal e o temporário (0.7.1; antes a barra de PM mostrava a CD).
+    if (cristal) {
+      for (const r of recursos) {
+        const linhas = [{ rot: t("Barra.Normal", { r: r.rotulo }), val: `${r.value} / ${r.max}` }];
+        if (r.temp) linhas.push({ rot: t("Barra.Temporario", { r: r.rotulo }), val: `+${r.temp}` });
+        r.tip = { rotulo: r.rotulo, valor: String(r.value + (r.temp || 0)), linhas };
+      }
+    }
 
     return {
       visual,
@@ -634,6 +640,7 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
     const cristal = eCristal(context.visual);
     this.element.classList.toggle("hud-t20-cristal", cristal);
     this.element.dataset.retrato = cristal ? efeitoRetrato() : "";
+    this.element.dataset.temp = game.settings.get(MODULE_ID, "corTemporario") === "dourado" ? "dourado" : "escuro";
     for (const nome of [...this.element.style]) if (nome.startsWith("--cr-")) this.element.style.removeProperty(nome);
     if (cristal) for (const [nome, valor] of Object.entries(varsCristal(context.visual))) this.element.style.setProperty(nome, valor);
     // Botão direito no retrato abre o ajuste (o botão direito dos atalhos continua o nativo).
@@ -1294,6 +1301,17 @@ Hooks.once("init", () => {
       aplicarVisual();
       atualizar();
     }
+  });
+  // 0.7.1: cor do PV/PM temporário, escolha de cada jogador.
+  game.settings.register(MODULE_ID, "corTemporario", {
+    name: "HUDT20.Config.CorTemporario",
+    hint: "HUDT20.Config.CorTemporarioDica",
+    scope: "client",
+    config: true,
+    type: String,
+    choices: { escuro: "HUDT20.Config.CorTempEscuro", dourado: "HUDT20.Config.CorTempDourado" },
+    default: "escuro",
+    onChange: () => atualizar()
   });
   // 0.5.0: o cristal do retrato não é obrigatório; cada jogador escolhe.
   game.settings.register(MODULE_ID, "retratoCristal", {
