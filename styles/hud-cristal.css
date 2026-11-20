@@ -384,3 +384,6 @@
 .hud-t20-editor .retrato-previa.cristal[data-retrato="suave"] .hud-facetas { opacity: .32; }
 #hud-t20.hud-t20-cristal[data-retrato="suave"] .hud-retrato .hud-reflexo { display: none; }
 .hud-t20-editor .retrato-previa.cristal[data-retrato="nenhum"] :is(.hud-vidro, .hud-facetas) { display: none; }
+
+/* Tooltip aberto fica por cima de tudo, inclusive dos medalhões de condição (0.7.2). */
+#hud-t20 .hud-tem-tip:is(:hover, :focus-within) { z-index: 20; }

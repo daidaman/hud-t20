@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.7.2 — 2026-11-20
+- Tooltip aberto fica por cima dos medalhões de condição (o da barra de PV, que abre para cima, ficava atrás deles).
+
 ## 0.7.1 — 2026-11-20
 - Tooltip das barras de PV e PM (temas de cristal): valor normal, temporário e total. A CD das magias saiu da barra de PM.
 - PV/PM temporário em tons mais escuros da própria barra (vermelho vinho e azul-marinho), para destacar do normal. Nova opção de cada jogador, "Cor do PV/PM temporário": esses tons escuros (padrão) ou dourado e ciano, como antes.
