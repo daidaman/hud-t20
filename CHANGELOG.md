@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.1 — 2026-11-20
+- Corrigido: nos temas de cristal, os tooltips dos losangos (Defesa, Iniciativa, Deslocamento) não apareciam. O recorte em losango do brilho do mouse cortava o tooltip; agora o brilho fica num pseudo-elemento.
+
 ## 0.6.0 — 2026-11-20
 Temas de cristal com a arte nova (v2), nos 7 temas:
 - **Losangos com os números principais:** Defesa (meio, maior), Iniciativa (esquerda; o clique rola) e Deslocamento (direita), com ícone e número dentro dos losangos da própria moldura. A CD das magias foi para o tooltip da barra de PM (só para quem conjura). Nos temas de cristal saíram as ações do turno e as 4 caixinhas.

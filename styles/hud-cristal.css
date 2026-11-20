@@ -218,7 +218,14 @@
   border: none;
   box-shadow: none;
   border-radius: 0;
+}
+/* O brilho do mouse fica num pseudo-elemento em losango (um clip-path no próprio losango cortaria o tooltip). */
+#hud-t20.hud-t20-cristal :is(.hud-mini, button.hud-mini)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  pointer-events: none;
 }
 #hud-t20.hud-t20-cristal .hud-mini .val { flex-direction: column; gap: 2px; align-items: center; color: #fff; text-shadow: 0 1px 3px #000, 0 0 6px #000; }
 #hud-t20.hud-t20-cristal .hud-mini .val img { display: block; width: 34%; height: auto; filter: brightness(1.45) saturate(1.2) drop-shadow(0 0 3px rgba(255, 200, 90, .55)) drop-shadow(0 1px 2px #000); }
@@ -227,7 +234,8 @@
 #hud-t20.hud-t20-cristal .hud-mini:nth-child(1) .num { font-size: 23px; }
 #hud-t20.hud-t20-cristal .hud-mini .num-curto { display: inline; font: 700 16px/1 var(--hud-fonte-titulo); }
 #hud-t20.hud-t20-cristal .hud-mini:has(.num-curto) .num { display: none; }
-#hud-t20.hud-t20-cristal :is(.hud-mini, button.hud-mini):hover { background: radial-gradient(circle, rgba(255, 220, 140, .28), transparent 70%); box-shadow: none; }
+#hud-t20.hud-t20-cristal :is(.hud-mini, button.hud-mini):hover { background: transparent; box-shadow: none; }
+#hud-t20.hud-t20-cristal :is(.hud-mini, button.hud-mini):is(:hover, :focus-visible)::before { background: radial-gradient(circle, rgba(255, 220, 140, .3), transparent 70%); }
 
 /* ---------- Placa do grupo de atalhos ---------- */
 #hud-t20.hud-t20-cristal .hud-placa { position: absolute; inset: 0; pointer-events: none; }
