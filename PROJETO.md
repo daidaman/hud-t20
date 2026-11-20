@@ -199,6 +199,10 @@ Nova família de temas da HUD, um por personagem da mesa, todos no mesmo molde (
 - Condições: medalhões acima da cabeça do símbolo, à esquerda das barras. **5 por fileira** (pedido em 2026-11-20): `.hud-condicoes` presa por baixo, `flex-wrap: wrap-reverse`, `max-width` de 5 medalhões; a 6ª em diante sobe, com 6 px entre fileiras; `z-index` acima das peças. Vale para todos os visuais.
 - Conferido fora do Foundry com o template e o CSS reais (Playwright), nos 7 temas, em combate (seu turno), fora de combate e com 0 PV. Prévia: https://claude.ai/artifact/NjWYwkj8BEYLre4MGHXhrB
 
+## 0.8.0 (2026-11-20): tela de morte
+- Com 0 PV (temas de cristal): `.hud-morte` no meio do retrato, faixa preta + frase vermelha, parada até o PV voltar (não some sozinha). `fraseDaMorte(actor)` sorteia uma frase por queda e guarda por `actor.uuid` neste computador (cada pessoa pode ver uma frase diferente). Settings do mundo: `morte` (liga) e `morteFrases` (lista separada por ";"). Prévia: https://claude.ai/artifact/4Ude3V9zHRvSSG7wgxLLdM (a primeira ideia era a tela toda; ficou no retrato).
+- Fonte: `assets/fonts/OptimusPrinceps.ttf` (o Daniel vai baixar do dafont; fonte de fã gratuita, não é a do jogo). Sem o arquivo, Cinzel (o navegador avisa no console que não achou a fonte).
+
 ## 0.7.1 (2026-11-20)
 - Tooltip das barras (cristal): normal, temporário e total; a CD não aparece mais na HUD.
 - Setting `corTemporario` (cliente): `escuro` (padrão: texturas pv/pm com `brightness` .42/.38) ou `dourado` (pv-temp/pm-temp), via `data-temp` no `#hud-t20`.

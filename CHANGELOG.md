@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.0 — 2026-11-20
+- **Tela de morte no retrato** (temas de cristal): com 0 PV, além da foto cinza, uma faixa preta com uma frase em vermelho fica parada no meio do retrato, estilo "YOU DIED", até o PV voltar. A frase é sorteada a cada queda de uma lista que o mestre edita (25 frases de fábrica, separadas por ";"). Opções do mestre: ligar/desligar e a lista de frases.
+- Fonte: OptimusPrinceps se o arquivo `assets/fonts/OptimusPrinceps.ttf` existir (fonte gratuita de fã); senão, Cinzel.
+
 ## 0.7.2 — 2026-11-20
 - Tooltip aberto fica por cima dos medalhões de condição (o da barra de PV, que abre para cima, ficava atrás deles).
 

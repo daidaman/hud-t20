@@ -11,6 +11,10 @@
       <img class="hud-facetas" src="{{cristal.facetas}}" alt="" draggable="false">
       <span class="hud-reflexo" aria-hidden="true"></span>
       {{/if}}
+      {{#if retrato.frase}}
+      {{!-- Tela de morte (0.8.0): com 0 PV, faixa preta com a frase sorteada, parada no meio do retrato --}}
+      <div class="hud-morte" role="status"><span>{{retrato.frase}}</span></div>
+      {{/if}}
     </div>
     <img class="hud-retrato-moldura" src="modules/hud-t20/assets/moldura-retrato.webp" alt="">
     {{#if retrato.podeEditar}}

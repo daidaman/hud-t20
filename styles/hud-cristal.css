@@ -387,3 +387,37 @@
 
 /* Tooltip aberto fica por cima de tudo, inclusive dos medalhões de condição (0.7.2). */
 #hud-t20 .hud-tem-tip:is(:hover, :focus-within) { z-index: 20; }
+
+/* ---------- Tela de morte no retrato (0.8.0): com 0 PV, faixa preta com a frase em vermelho, estilo "YOU DIED" ----------
+   Fonte: OptimusPrinceps (fonte gratuita de fã, de Manfred Klein) se o arquivo estiver em assets/fonts/;
+   sem ele, Cinzel. A fonte do jogo não vai no módulo. */
+@font-face {
+  font-family: "OptimusPrinceps";
+  src: url("../assets/fonts/OptimusPrinceps.ttf") format("truetype");
+  font-display: swap;
+}
+#hud-t20 .hud-morte {
+  position: absolute;
+  z-index: 5;
+  left: -10%;
+  right: -10%;
+  top: 50%;
+  transform: translateY(-50%);
+  min-height: 24%;
+  display: grid;
+  place-items: center;
+  padding: 6% 14%;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .86) 20%, rgba(0, 0, 0, .86) 80%, transparent);
+  pointer-events: none;
+  animation: hud-t20-morte 1.6s ease both;
+}
+#hud-t20 .hud-morte span {
+  font: 400 16px/1.08 "OptimusPrinceps", "Cinzel", var(--hud-fonte-titulo), Georgia, serif;
+  letter-spacing: .1em;
+  text-align: center;
+  color: #A30E0E;
+  text-shadow: 0 0 8px rgba(139, 0, 0, .7), 0 1px 0 #000;
+  overflow-wrap: anywhere;
+}
+@keyframes hud-t20-morte { from { opacity: 0; transform: translateY(-50%) scale(1.08); } to { opacity: 1; transform: translateY(-50%) scale(1); } }
+@media (prefers-reduced-motion: reduce) { #hud-t20 .hud-morte { animation: none; } }

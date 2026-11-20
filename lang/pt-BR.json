@@ -23,7 +23,11 @@
       "CorTemporarioDica": "Só neste computador e só nos temas de cristal: a cor da parte temporária das barras.",
       "CorTempEscuro": "Vermelho vinho e azul-marinho (tons mais escuros das barras)",
       "CorTempDourado": "Dourado e ciano",
-      "VisualNenhum": "Sem HUD (barra padrão do Foundry)"
+      "VisualNenhum": "Sem HUD (barra padrão do Foundry)",
+      "Morte": "Tela de morte no retrato",
+      "MorteDica": "Temas de cristal: com 0 PV, uma faixa preta com uma frase em vermelho fica no meio do retrato (estilo \"YOU DIED\") até o PV voltar.",
+      "MorteFrases": "Frases da tela de morte",
+      "MorteFrasesDica": "Separadas por ponto e vírgula (;). A cada queda sai uma, sorteada. Com uma frase só, sai sempre ela."
     },
     "Nivel": "Nv {nivel}",
     "Retrato": {
@@ -134,6 +138,9 @@
     "Barra": {
       "Normal": "{r}",
       "Temporario": "{r} temporário"
+    },
+    "Morte": {
+      "Padrao": "VOCÊ MORREU"
     }
   }
 }

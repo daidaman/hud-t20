@@ -95,6 +95,26 @@ function atualizarPlaca() {
   if (nome) nome.textContent = nomeGrupoAtalhos(grupoAtalhos());
 }
 
+/**
+ * Tela de morte (0.8.0): com 0 PV, uma frase sorteada da lista do mestre fica no meio do retrato,
+ * estilo "YOU DIED". A frase é sorteada uma vez por queda (neste computador) e some quando o PV volta.
+ */
+const FRASES_MORTE_PADRAO = "VOCÊ MORREU;SE FUDEU;DEU RUIM, PARCEIRO;KHALMYR VIU E RIU;TENEBRA MANDOU UM ABRAÇO;THYATIS TÁ OCUPADO, TENTA AMANHÃ;ROLOU 1, NÉ?;ERA SÓ NÃO TER IDO NA FRENTE;O CURANDEIRO TAVA OLHANDO O CELULAR;FAZ A FICHA NOVA AÍ;MORREU IGUAL UM GOBLIN;ACHOU QUE ERA PROTAGONISTA;NIMB DECIDIU QUE HOJE NÃO;VAI PRO BANCO DE RESERVA;PERDEU, PLAYBOY;A MESA AGRADECE SUA CONTRIBUIÇÃO;CAIU QUE NEM SACO DE BATATA;ARTON NÃO PERDOA;O MESTRE TÁ RINDO ATÉ AGORA;GIT GUD;FOI DE VASCO;VIROU CAMISA DE SAUDADE;E ESSAS FORAM SUAS ÚLTIMAS PALAVRAS;TOCA O LARALI LARALÁ;FOI DE KURIRIN";
+const frasesSorteadas = new Map();
+
+function fraseDaMorte(actor) {
+  const pv = Number(actor.system?.attributes?.pv?.value) || 0;
+  if (pv > 0 || !game.settings.get(MODULE_ID, "morte")) {
+    frasesSorteadas.delete(actor.uuid);
+    return "";
+  }
+  if (!frasesSorteadas.has(actor.uuid)) {
+    const lista = String(game.settings.get(MODULE_ID, "morteFrases") || "").split(";").map((f) => f.trim()).filter(Boolean);
+    frasesSorteadas.set(actor.uuid, lista.length ? lista[Math.floor(Math.random() * lista.length)] : t("Morte.Padrao"));
+  }
+  return frasesSorteadas.get(actor.uuid);
+}
+
 /** Visual do personagem mostrado agora (as funções dos tooltips usam para achar os ícones). */
 let visualEmUso = "classico";
 
@@ -588,6 +608,7 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
       retrato: {
         ...retrato,
         caido: cristal && (Number(sys.attributes?.pv?.value) || 0) <= 0,
+        frase: cristal ? fraseDaMorte(actor) : "",
         estilo: `--px:${retrato.x}%;--py:${retrato.y}%;--pz:${retrato.zoom}`,
         podeEditar: actor.isOwner,
         rotulo: t("Retrato.Rotulo", { nome: actor.name, nivel }),
@@ -1299,6 +1320,28 @@ Hooks.once("init", () => {
     default: "",
     onChange: () => {
       aplicarVisual();
+      atualizar();
+    }
+  });
+  // 0.8.0: tela de morte no retrato (temas de cristal).
+  game.settings.register(MODULE_ID, "morte", {
+    name: "HUDT20.Config.Morte",
+    hint: "HUDT20.Config.MorteDica",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: () => atualizar()
+  });
+  game.settings.register(MODULE_ID, "morteFrases", {
+    name: "HUDT20.Config.MorteFrases",
+    hint: "HUDT20.Config.MorteFrasesDica",
+    scope: "world",
+    config: true,
+    type: String,
+    default: FRASES_MORTE_PADRAO,
+    onChange: () => {
+      frasesSorteadas.clear();
       atualizar();
     }
   });
