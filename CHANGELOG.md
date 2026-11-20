@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.4 — 2026-11-20
+- PV e PM temporários: entram pela direita e crescem para a esquerda (somem da esquerda para a direita), por cima do líquido normal, com a onda na ponta da esquerda.
+
 ## 0.6.3 — 2026-11-20
 - Ondulação da ponta das barras mais lenta (cerca de 2× mais calma; com PV baixo continua um pouco mais rápida).
 

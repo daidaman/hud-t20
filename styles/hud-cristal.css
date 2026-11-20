@@ -135,20 +135,25 @@
 #hud-t20.hud-t20-cristal .hud-trilho .cheio.pv { background-image: url("../assets/temas/liquido/pv.webp"); filter: brightness(1.35) saturate(1.15); }
 #hud-t20.hud-t20-cristal .hud-trilho .cheio.pm { background-image: url("../assets/temas/liquido/pm.webp"); animation-duration: 20s; }
 /* Temporário: logo depois do fim do líquido (ou encostado na direita, se passar do máximo). */
-#hud-t20.hud-t20-cristal .hud-trilho .cheio { z-index: 1; } /* a onda do líquido passa por cima do temporário */
+/* Temporário: entra pela DIREITA e cresce para a esquerda (some da esquerda para a direita), POR CIMA do
+   líquido normal. A onda fica na ponta da esquerda. Largura = PV/PM temporário em % do máximo. */
 #hud-t20.hud-t20-cristal .hud-trilho .extra {
-  z-index: 0;
-  /* Temporário: começa embaixo da onda do líquido e termina com a mesma onda na ponta. */
-  right: auto;
-  left: calc(var(--ini) * 1% - 8px);
-  width: calc((var(--fim) - var(--ini)) * 1% + 16px);
+  z-index: 2;
+  left: auto;
+  right: 0;
+  width: calc(var(--pct) * 1% + 8px);
   clip-path: none;
-  -webkit-mask: linear-gradient(#000, #000) left top / calc(100% - 16px) 100% no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='26' viewBox='0 0 16 26'%3E%3Cpath d='M0 0H8Q15 6.5 8 13Q1 19.5 8 26H0Z'/%3E%3C/svg%3E") right top / 16px 26px repeat-y;
-  mask: linear-gradient(#000, #000) left top / calc(100% - 16px) 100% no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='26' viewBox='0 0 16 26'%3E%3Cpath d='M0 0H8Q15 6.5 8 13Q1 19.5 8 26H0Z'/%3E%3C/svg%3E") right top / 16px 26px repeat-y;
-  animation: hud-t20-liquido 16s linear infinite, hud-t20-borda 3.2s linear infinite reverse;
+  -webkit-mask: linear-gradient(#000, #000) right top / calc(100% - 16px) 100% no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='26' viewBox='0 0 16 26'%3E%3Cpath d='M16 0H8Q1 6.5 8 13Q15 19.5 8 26H16Z'/%3E%3C/svg%3E") left top / 16px 26px repeat-y;
+  mask: linear-gradient(#000, #000) right top / calc(100% - 16px) 100% no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='26' viewBox='0 0 16 26'%3E%3Cpath d='M16 0H8Q1 6.5 8 13Q15 19.5 8 26H16Z'/%3E%3C/svg%3E") left top / 16px 26px repeat-y;
+  animation: hud-t20-liquido 16s linear infinite reverse, hud-t20-borda-esq 3.2s linear infinite;
+  transition: width .8s cubic-bezier(.3, .7, .3, 1);
   background-size: 320px 100%;
-  opacity: .92;
+  opacity: .95;
   box-shadow: none;
+}
+@keyframes hud-t20-borda-esq {
+  from { -webkit-mask-position: right top, left 0; mask-position: right top, left 0; }
+  to { -webkit-mask-position: right top, left -26px; mask-position: right top, left -26px; }
 }
 #hud-t20.hud-t20-cristal .hud-trilho .extra.pv { background-image: url("../assets/temas/liquido/pv-temp.webp"); }
 #hud-t20.hud-t20-cristal .hud-trilho .extra.pm { background-image: url("../assets/temas/liquido/pm-temp.webp"); }
