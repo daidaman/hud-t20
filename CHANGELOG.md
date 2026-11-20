@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0 — 2026-11-20
+Temas de cristal com a arte nova (v2), nos 7 temas:
+- **Losangos com os números principais:** Defesa (meio, maior), Iniciativa (esquerda; o clique rola) e Deslocamento (direita), com ícone e número dentro dos losangos da própria moldura. A CD das magias foi para o tooltip da barra de PM (só para quem conjura). Nos temas de cristal saíram as ações do turno e as 4 caixinhas.
+- **Barras de líquido:** PV e PM mais altas, com líquido que desliza, bolhas, superfície ondulando na ponta e vidro por cima. No dano o líquido escorre e deixa um rastro claro que some; na cura, enche aos poucos. PV baixo (até 30%) acelera as bolhas e pulsa. PV e PM temporários em dourado e ciano, logo depois do fim do líquido. Tudo parado para quem pede menos animação.
+- **Atalhos em grupos de 5 com placa de nome:** ◀ nome ▶ em cima dos atalhos. As setas trocam o grupo (10 grupos: cada página do Foundry vira 2). Clicar no nome deixa escrever ("Ataques", "Magias"…); Enter salva, Esc cancela, vazio volta para "Atalhos N". Os nomes ficam na conta de cada jogador.
+
 ## 0.5.0 — 2026-11-19
 - Sete temas de cristal, um por personagem da mesa, no "Visual do módulo": **Dragão Alado**, **Forja Mecânica**, **Chama da Fênix**, **Ossário**, **Corsário da Raposa**, **Ursal** e **Tempestade Rubra (cristal)**.
 - **Tema por personagem:** botão direito no retrato da HUD → "Visual da HUD deste personagem". Vale para todos que veem a HUD daquele personagem; "Seguir a mesa" volta ao visual do mundo. O dono e o mestre podem mudar. A janela mostra a prévia do retrato no tema escolhido.

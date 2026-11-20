@@ -119,6 +119,12 @@
       "Deslocamento": "DESL",
       "Iniciativa": "INI",
       "CD": "CD"
+    },
+    "Atalhos": {
+      "Padrao": "Atalhos {n}",
+      "Anterior": "Grupo de atalhos anterior",
+      "Proximo": "Próximo grupo de atalhos",
+      "Renomear": "Clique para dar nome a este grupo (ex.: Ataques, Magias, Perícias)"
     }
   }
 }

@@ -199,13 +199,23 @@ Nova família de temas da HUD, um por personagem da mesa, todos no mesmo molde (
 - Condições: medalhões acima da cabeça do símbolo, à esquerda das barras. **5 por fileira** (pedido em 2026-11-20): `.hud-condicoes` presa por baixo, `flex-wrap: wrap-reverse`, `max-width` de 5 medalhões; a 6ª em diante sobe, com 6 px entre fileiras; `z-index` acima das peças. Vale para todos os visuais.
 - Conferido fora do Foundry com o template e o CSS reais (Playwright), nos 7 temas, em combate (seu turno), fora de combate e com 0 PV. Prévia: https://claude.ai/artifact/NjWYwkj8BEYLre4MGHXhrB
 
-## Reformulação dos temas de cristal (ideias de 2026-11-20, ainda sem arte)
+## Reformulação dos temas de cristal (0.6.0, feita em 2026-11-20)
+**Como ficou no código (0.6.0):** losangos = os da própria moldura (sem peça solta por cima, que ficava achatada), com os ícones do módulo (`ic-defesa`, `ic-iniciativa`, `ic-desloc`, iguais em todos os temas) e o número; sem ações do turno e sem gemas no escudo (sem resposta do grupo sobre usar o controle de ações: fica para depois, se fizer falta). Recorte: `recorte-v2.py` → `medir-v2.py` → `montar-v2.py` (gera `assets/temas/cristal-<tema>/`, `assets/temas/liquido/` e `cristal-medidas.json` v2). Grupos de atalhos: `metadeAtalhos` + `ui.hotbar.page` (grupo 0–9), `data-metade` no `#hud-t20` mostra 1–5 ou 6–0; nomes em `game.user` flag `gruposAtalhos`. Barras: `#animarBarras` parte do valor anterior (por ator) e liga o `.rastro` no dano. Prévia: https://claude.ai/artifact/NjWYwkj8BEYLre4MGHXhrB
+
+**Ideias originais:**
 - **Losangos com os números principais:** meio (maior) = Defesa, esquerda = Iniciativa (clique rola), direita = Deslocamento. CD vai para o tooltip da barra de PM (só para quem conjura). As ações do turno saem dos temas de cristal, a não ser que o grupo use (aí: 3 gemas pequenas no escudo, acesas só em combate). **Pendente:** o grupo usa o controle de ações?
 - **Sem as 4 caixinhas:** barras de PV e PM ~60% mais altas.
 - **Atalhos: 1 fileira de 5 com placa de nome em cima** (◀ nome ▶). O nome é do grupo de atalhos ("Ataques", "Magias"…), editável pelo jogador com um clique e salvo por jogador; vazio = "Atalhos 1, 2…". Cada página do Foundry (10) vira 2 grupos de 5. Substitui o "▲ 1 ▼".
 - **Barras de líquido (estilo orbes do Diablo, na horizontal):** textura sem emenda deslizando em loop, borda direita ondulando como superfície, bolhas (mais no PV baixo), dano escorrendo com rastro claro que some, cura enchendo aos poucos, vidro com reflexo por cima; parado com "reduzir animações". **PV/PM temporários:** uma camada de líquido própria (PV temp dourado, PM temp ciano claro) por cima da barra, entrando da ponta direita do líquido principal, com a mesma superfície ondulada.
 - **Arte recebida (2026-11-20):** as 7 folhas novas e as 4 texturas de líquido estão em `arte-original/temas-cristal/v2/` (`<tema>-folha-verde.png`, 2172 × 724; `liquido-pv.png` e `liquido-pm.png` 2172 × 724; `liquido-pv-temp.png` e `liquido-pm-temp.png` 1024 × 128). Notas da revisão: PV/PM têm uma emenda leve na repetição (corrigir com um cruzamento das pontas no recorte); os temporários repetem perfeito, mas são mais lisos/chapados que os outros dois; a Forja veio também com os losangos antigos (espada/estrela/redemoinho), que não serão usados; o brilho atrás dos losangos do Dragão e do Ossário ficou esverdeado pela chave verde (desmisturar como na v1); o Corsário de novo tem cristal com moldura própria; a Tempestade trouxe o PM roxo (a barra vai usar a textura azul de qualquer forma). **Próximo passo:** recortar, medir, montar a prévia (Dragão primeiro) e só depois o código.
 - Prompts do ChatGPT: folha nova por tema (moldura sem caixinhas, barras altas, 1 × 5 atalhos com placa e setas, losangos vazios + 3 losangos de status soltos) e, uma vez só, 4 texturas de líquido 1024 × 128 sem emenda (vermelho, azul, dourado, ciano claro). Testar primeiro só no Dragão.
+
+## Roteiro de teste da 0.6.0
+1. Num tema de cristal: losangos com Defesa, Iniciativa e Deslocamento; tooltips; clique na Iniciativa rola. Barra de PM de quem conjura mostra a CD no tooltip.
+2. Tomar dano e curar (pela ficha): o líquido escorre/enche, rastro claro no dano; PV ≤ 30% pulsa. Dar PV/PM temporário: dourado/ciano depois do líquido.
+3. Placa: ◀ ▶ trocam o grupo (Atalhos 1 → 2 → … 10 → 1), os 5 atalhos certos aparecem; arrastar item para um atalho do grupo 2 e usar. Clicar no nome, escrever "Ataques", Enter: fica; recarregar: continua. Outro jogador não vê os seus nomes.
+4. Teclas 1–0 continuam usando os atalhos da página atual.
+5. Sistema com "reduzir animações": barras paradas.
 
 ## Roteiro de teste da 0.5.0 (mestre + jogador em aba anônima)
 1. Atualizar o módulo. Sem mexer em nada: tudo igual à 0.4.0.

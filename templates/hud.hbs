@@ -49,14 +49,26 @@
     {{/if}}
 
     {{#each recursos}}
-    <div class="hud-recurso">
+    <div class="hud-recurso {{#if tip}}hud-tem-tip{{/if}}" {{#if tip}}tabindex="0"{{/if}}>
       <span class="hud-recurso-rot">{{#if icone}}<img class="hud-recurso-ic" src="{{icone}}" alt="">{{/if}}<span class="hud-recurso-txt">{{rotulo}}</span></span>
       <div class="hud-trilho" role="meter" aria-label="{{rotulo}}" aria-valuemin="0" aria-valuemax="{{max}}" aria-valuenow="{{value}}">
         <div class="vazio"></div>
-        <div class="cheio {{classe}}" style="--pct:{{pct}}"></div>
-        {{#if temp}}<div class="extra {{classe}}" style="--pct:{{tempPct}}"></div>{{/if}}
+        <div class="cheio {{classe}}" style="--pct:{{pct}}">{{#if @root.cristalTema}}<span class="bolhas"></span>{{/if}}</div>
+        {{#if temp}}<div class="extra {{classe}}" style="--pct:{{tempPct}};--ini:{{tempIni}};--fim:{{tempFim}}"></div>{{/if}}
+        {{#if @root.cristalTema}}
+        {{!-- Cristal v2: superfície ondulada na ponta do líquido, rastro do dano e vidro por cima --}}
+        <span class="superficie" style="--pct:{{pct}}"></span>
+        <span class="rastro {{classe}}"></span>
+        <span class="vidro-barra"></span>
+        {{/if}}
         <div class="txt">{{value}} / {{max}}{{#if temp}} <small>(+{{temp}})</small>{{/if}}</div>
       </div>
+      {{#if tip}}
+      <div class="hud-tip" role="tooltip">
+        <div class="cab"><span class="sec">{{tip.rotulo}}</span><b>{{tip.valor}}</b></div>
+        <ul>{{#each tip.linhas}}<li class="{{#if ext}}ext{{/if}}"><b>{{rot}}</b><span class="n">{{val}}</span>{{#if sub}}<small>{{sub}}</small>{{/if}}</li>{{/each}}</ul>
+      </div>
+      {{/if}}
     </div>
     {{/each}}
 
@@ -105,6 +117,14 @@
       {{#each acoes}}<span class="hud-acao"><img src="{{img}}" alt=""></span>{{/each}}
     </div>
     {{/if}}{{/unless}}
+    {{#if placa}}
+    {{!-- Cristal v2: nome do grupo de atalhos, com ◀ ▶ (as setas da arte acendem ao passar o mouse) --}}
+    <div class="hud-placa">
+      <button type="button" class="seta esq" data-action="grupoAnterior" aria-label="{{placa.anterior}}" data-tooltip="{{placa.anterior}}"></button>
+      <button type="button" class="nome" data-action="renomearGrupo" data-tooltip="{{placa.dica}}">{{placa.nome}}</button>
+      <button type="button" class="seta dir" data-action="grupoProximo" aria-label="{{placa.proximo}}" data-tooltip="{{placa.proximo}}"></button>
+    </div>
+    {{/if}}
     <div class="hud-gema {{#if vez}}vez{{/if}}" role="status">
       {{!-- Nos temas (0.4.0), o olho da tempestade e a bússola fazem o papel do cristal: só o brilho e a legenda --}}
       <span class="brilho" aria-hidden="true"></span>

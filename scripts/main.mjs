@@ -66,6 +66,34 @@ function efeitoRetrato() {
   }
 }
 
+/**
+ * Grupos de atalhos (cristal v2). A barra do Foundry tem 5 páginas de 10; cada página vira 2 grupos de 5
+ * (metade de cima: atalhos 1–5; de baixo: 6–0). Grupo = (página − 1) × 2 + metade, de 0 a 9.
+ */
+let metadeAtalhos = 0;
+const grupoAtalhos = () => ((ui.hotbar?.page ?? 1) - 1) * 2 + metadeAtalhos;
+
+function nomeGrupoAtalhos(g) {
+  return game.user.getFlag(MODULE_ID, "gruposAtalhos")?.[g] || t("Atalhos.Padrao", { n: g + 1 });
+}
+
+async function mudarGrupoAtalhos(passo) {
+  const g = (((grupoAtalhos() + passo) % 10) + 10) % 10;
+  metadeAtalhos = g % 2;
+  const pagina = Math.floor(g / 2) + 1;
+  if (ui.hotbar && ui.hotbar.page !== pagina) await ui.hotbar.changePage(pagina);
+  atualizarPlaca();
+}
+
+/** Atualiza a placa e a metade mostrada sem redesenhar a HUD (troca de página pelo Foundry também passa aqui). */
+function atualizarPlaca() {
+  const el = hud?.element;
+  if (!el?.classList.contains("hud-t20-cristal")) return;
+  el.dataset.metade = String(metadeAtalhos);
+  const nome = el.querySelector(".hud-placa .nome");
+  if (nome) nome.textContent = nomeGrupoAtalhos(grupoAtalhos());
+}
+
 /** Visual do personagem mostrado agora (as funções dos tooltips usam para achar os ícones). */
 let visualEmUso = "classico";
 
@@ -92,19 +120,19 @@ function varsCristal(visual) {
     vars[`--cr-${nome}-w`] = `${w}%`;
     vars[`--cr-${nome}-h`] = `${h}%`;
   };
+  // v2 (2026-11-20): losangos com Defesa/Iniciativa/Deslocamento, placa de nome dos atalhos e 5 atalhos.
   caixa("r", m.retrato);
   caixa("pv", m.barras.pv);
   caixa("pm", m.barras.pm);
-  m.caixinhas.forEach((c, i) => caixa(`c${i + 1}`, c));
-  ACOES.forEach((chave, i) => {
-    const [ax, ay, aw, ah] = m.losangos_abertura[i];
-    const [w, h] = m.losango_tamanho[chave];
-    caixa(`l${i + 1}`, [ax + aw / 2 - w / 2, ay + ah / 2 - h / 2, w, h]);
-  });
+  // Losangos: os da própria moldura (abertura escura: esquerda, meio, direita); só o ícone e o número por cima.
+  const [ini, def, des] = m.losangos_abertura;
+  caixa("ldef", def);
+  caixa("lini", ini);
+  caixa("ldes", des);
+  caixa("placa", m.placa);
+  caixa("se", m.setas.esq);
+  caixa("sd", m.setas.dir);
   m.atalhos.forEach((c, i) => caixa(`a${i + 1}`, c));
-  // "Seu turno": brilho sobre o escudo do centro, embaixo do losango do meio.
-  const [mx, , mw] = m.losangos_abertura[1];
-  vars["--cr-escudo-x"] = `${mx + mw / 2}%`;
   return vars;
 }
 
@@ -484,7 +512,9 @@ function recurso(rotulo, dados, classe, icone = "") {
   const pct = max > 0 ? Math.clamp(Math.round((value / max) * 100), 0, 100) : 0;
   // Extra (PV/PM temporários): barra mais escura da direita para a esquerda, proporcional ao máximo.
   const tempPct = max > 0 ? Math.clamp(Math.round((temp / max) * 1000) / 10, 0, 100) : (temp > 0 ? 100 : 0);
-  return { rotulo, value, max, pct, temp, tempPct, classe, icone };
+  // 0.5.0 (cristal): o temporário entra logo depois do fim do líquido; se passar do máximo, encosta na direita.
+  const tempIni = Math.max(0, Math.min(pct, 100 - tempPct));
+  return { rotulo, value, max, pct, temp, tempPct, tempIni, tempFim: Math.min(100, tempIni + tempPct), classe, icone };
 }
 
 /* -------------------------------------------- */
@@ -501,7 +531,10 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
       abrirFicha: HudT20.#abrirFicha,
       ajustarRetrato: HudT20.#ajustarRetrato,
       iniciativa: HudT20.#rolarIniciativa,
-      acao: HudT20.#alternarAcao
+      acao: HudT20.#alternarAcao,
+      grupoAnterior: HudT20.#grupoAnterior,
+      grupoProximo: HudT20.#grupoProximo,
+      renomearGrupo: HudT20.#renomearGrupo
     }
   };
 
@@ -530,6 +563,13 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
     const cristal = eCristal(visual);
     // Coração e gota no começo das barras só no Aventureiro (no Tempestade fica o texto PV/PM).
     const iconeBarra = (n) => (visual === "aventureiro" ? arte(n, visual) : "");
+    const recursos = [
+      recurso(t("PV"), sys.attributes?.pv, "pv", iconeBarra("ic-coracao")),
+      recurso(t("PM"), sys.attributes?.pm, "pm", iconeBarra("ic-gota"))
+    ];
+    const stats = [statDefesa(actor, rollData), statDeslocamento(actor, rollData), statIniciativa(actor, rollData, this.alvo), statCD(actor)];
+    // Cristal v2: a CD sai das caixinhas e vai para o tooltip da barra de PM, só para quem conjura.
+    if (cristal && stats[3].valor !== "—") recursos[1].tip = stats[3];
 
     return {
       visual,
@@ -551,14 +591,15 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
         dicaDireitoSub: t("Retrato.DireitoSub")
       },
       rotuloMudancas: t("Mudancas"),
-      recursos: [
-        recurso(t("PV"), sys.attributes?.pv, "pv", iconeBarra("ic-coracao")),
-        recurso(t("PM"), sys.attributes?.pm, "pm", iconeBarra("ic-gota"))
-      ],
-      stats: [statDefesa(actor, rollData), statDeslocamento(actor, rollData), statIniciativa(actor, rollData, this.alvo), statCD(actor)],
+      recursos,
+      stats,
+      cristalTema: cristal,
+      // v2: placa com o nome do grupo de atalhos (5 por grupo; cada página do Foundry tem 2 grupos).
+      placa: cristal ? { nome: nomeGrupoAtalhos(grupoAtalhos()), anterior: t("Atalhos.Anterior"), proximo: t("Atalhos.Proximo"), dica: t("Atalhos.Renomear") } : null,
       condicoes: condicoesDoAtor(actor),
-      combate: !!emCombate,
-      acoesDecorativas: visual !== "classico",
+      // v2 dos temas de cristal: sem as ações do turno (os losangos mostram Defesa, Iniciativa e Deslocamento).
+      combate: !!emCombate && !cristal,
+      acoesDecorativas: visual !== "classico" && !cristal,
       podeMarcar: !!emCombate?.combatant.canUserModify(game.user, "update"),
       acoes: ACOES.map((chave) => {
         const acao = t(`Acao.${chave}`);
@@ -601,8 +642,82 @@ class HudT20 extends HandlebarsApplicationMixin(ApplicationV2) {
       HudT20.#ajustarRetrato.call(this, event);
     });
     this.#puxarHotbar();
+    this.element.dataset.metade = cristal ? String(grupoAtalhos() % 2) : "";
+    if (cristal) this.#animarBarras(context);
     this.#vigiarEspaco();
     this.encaixar();
+  }
+
+  /** Último valor de cada barra (por ator), para o líquido escorrer ou encher a partir dele. */
+  #ultimo = new Map();
+
+  /**
+   * Barras de líquido (cristal v2): parte do valor anterior e anima até o novo. No dano, um rastro claro
+   * marca o que saiu e some. Sem animação para quem pede menos movimento.
+   */
+  #animarBarras(context) {
+    const reduzir = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const id = this.alvo?.actor?.uuid;
+    for (const r of context.recursos) {
+      const chave = `${id}:${r.classe}`;
+      const antes = this.#ultimo.get(chave);
+      this.#ultimo.set(chave, r.pct);
+      const cheio = this.element.querySelector(`.hud-trilho .cheio.${r.classe}`);
+      const trilho = cheio?.parentElement;
+      if (!trilho) continue;
+      trilho.classList.toggle("baixo", r.classe === "pv" && r.pct > 0 && r.pct <= 30);
+      if (reduzir || antes === undefined || antes === r.pct) continue;
+      const sup = trilho.querySelector(".superficie");
+      for (const el of [cheio, sup]) if (el) el.style.setProperty("--pct", antes);
+      if (r.pct < antes) {
+        const rastro = trilho.querySelector(".rastro");
+        rastro?.style.setProperty("--de", r.pct);
+        rastro?.style.setProperty("--ate", antes);
+        rastro?.classList.add("ativo");
+      }
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        for (const el of [cheio, sup]) if (el) el.style.setProperty("--pct", r.pct);
+      }));
+    }
+  }
+
+  /** Grupos de atalhos (cristal v2): ◀ ▶ na placa. */
+  static async #grupoAnterior() {
+    await mudarGrupoAtalhos(-1);
+  }
+
+  static async #grupoProximo() {
+    await mudarGrupoAtalhos(1);
+  }
+
+  /** Clique no nome da placa: vira campo de texto; Enter ou sair salva, Esc cancela. Salvo no usuário. */
+  static #renomearGrupo(event, alvo) {
+    const nome = alvo.closest(".hud-placa")?.querySelector(".nome");
+    if (!nome || nome.querySelector("input")) return;
+    const g = grupoAtalhos();
+    const campo = document.createElement("input");
+    campo.type = "text";
+    campo.maxLength = 24;
+    campo.value = game.user.getFlag(MODULE_ID, "gruposAtalhos")?.[g] ?? "";
+    campo.placeholder = t("Atalhos.Padrao", { n: g + 1 });
+    nome.replaceChildren(campo);
+    campo.focus();
+    let feito = false;
+    const fechar = async (salvar) => {
+      if (feito) return;
+      feito = true;
+      if (salvar) {
+        const texto = campo.value.trim();
+        await game.user.update({ [`flags.${MODULE_ID}.gruposAtalhos.${g}`]: texto || null });
+      }
+      atualizarPlaca();
+    };
+    campo.addEventListener("keydown", (ev) => {
+      ev.stopPropagation(); // as teclas não disparam os atalhos enquanto escreve
+      if (ev.key === "Enter") fechar(true);
+      else if (ev.key === "Escape") fechar(false);
+    });
+    campo.addEventListener("blur", () => fechar(true));
   }
 
   _onClose(options) {
@@ -1219,6 +1334,8 @@ Hooks.once("init", () => {
 });
 
 Hooks.once("setup", () => aplicarVisual());
+// Cristal v2: trocar a página da barra (pelo Foundry ou pelo teclado) atualiza o nome da placa.
+Hooks.on("renderHotbar", () => atualizarPlaca());
 
 /** Medidas dos temas de cristal (0.5.0). Sem elas, o tema não tem onde pôr as peças: volta ao clássico. */
 Hooks.once("setup", async () => {
